@@ -2,7 +2,10 @@
   "name": "@fsms/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "serve:teacher-app": "pnpm nx serve teacher-app --port 62001",
+    "serve:student-app": "pnpm nx serve teacher-app --port 62002"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "~21.1.0",
