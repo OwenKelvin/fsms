@@ -8,9 +8,9 @@ import { JwtService } from '@nestjs/jwt';
   providers: [JwtService],
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
-      debug: process.env['TAHINIWA_ENVIRONMENT'] === 'development',
+      debug: process.env['FSMS_ENVIRONMENT'] === 'development',
       driver: ApolloDriver,
-      playground: process.env['TAHINIWA_ENVIRONMENT'] === 'development',
+      playground: process.env['FSMS_ENVIRONMENT'] === 'development',
       typePaths: ['./**/*.graphql'],
       context: (ctx: Record<string, string>) => ctx,
       path: 'graphql',
@@ -39,7 +39,7 @@ import { JwtService } from '@nestjs/jwt';
             }
 
             const jwtService = new JwtService({
-              secret: String(process.env['TAHINIWA_JWT_SECRET']), // Ensure this matches your JWT config
+              secret: String(process.env['FSMS_JWT_SECRET']), // Ensure this matches your JWT config
             });
 
             const decodedUser = await jwtService.verifyAsync(authToken);

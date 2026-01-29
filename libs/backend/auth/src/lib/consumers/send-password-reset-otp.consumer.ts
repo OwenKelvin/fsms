@@ -15,7 +15,7 @@ export class SendPasswordResetOtpConsumer {
   async sendPasswordResetOtpEmail(job: Job<{email: string, otp: string, firstName: string}>): Promise<void> {
 
     await this.emailService.send({
-      from: process.env['TAHINIWA_MAIL_FROM'],
+      from: process.env['FSMS_MAIL_FROM'],
       to: job.data.email,
       subject: 'Your Password Reset Link',
       template: 'reset-password-otp.template',

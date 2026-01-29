@@ -61,7 +61,7 @@ export class OtpBackendService extends CrudAbstractService<OtpModel> {
   }
 
   private generatePin(digits = 4): string {
-    if (process.env['TAHINIWA_MAIL_HOST'] === 'sandbox.smtp.mailtrap.io') {
+    if (process.env['FSMS_MAIL_HOST'] === 'sandbox.smtp.mailtrap.io') {
       return '123456';
     }
     let pin = '';

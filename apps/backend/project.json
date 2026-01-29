@@ -20,7 +20,7 @@
           },
           {
             "glob": "**/*.hbs",
-            "input": "libs/backend/services/email/src/lib/templates/",
+            "input": "libs/backend/services/email-service/src/lib/templates/",
             "output": "templates"
           }
         ]

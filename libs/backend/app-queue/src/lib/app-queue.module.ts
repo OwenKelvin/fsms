@@ -5,9 +5,9 @@ import { BullModule } from '@nestjs/bull';
   imports: [
     BullModule.forRoot({
       redis: {
-        host: process.env['TAHINIWA_REDIS_HOST'],
-        port: Number(process.env['TAHINIWA_REDIS_PORT']),
-        // password: process.env['TAHINIWA_REDIS_PASSWORD'],
+        host: process.env['FSMS_REDIS_HOST'],
+        port: Number(process.env['FSMS_REDIS_PORT']),
+        // password: process.env['FSMS_REDIS_PASSWORD'],
       },
     }),
   ]

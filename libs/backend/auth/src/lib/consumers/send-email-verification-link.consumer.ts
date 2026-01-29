@@ -24,10 +24,10 @@ export class SendEmailVerificationLinkConsumer {
     if (user) {
       const verificationCode = Math.random().toString(36).slice(2, 10);
       await this.keyvRedis.set(verificationCode, job.data.email, 3600000);
-      const verifyEmailLink = `${process.env['TAHINIWA_APP_URL']}/auth/verify/${verificationCode}`;
+      const verifyEmailLink = `${process.env['FSMS_APP_URL']}/auth/verify/${verificationCode}`;
 
       await this.emailService.send({
-        from: process.env['TAHINIWA_MAIL_FROM'],
+        from: process.env['FSMS_MAIL_FROM'],
         to: job.data.email,
         subject: 'Your email verification link',
         template: 'verify-email-link-template',

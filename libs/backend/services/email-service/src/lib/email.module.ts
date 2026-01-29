@@ -11,15 +11,15 @@ import { ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         transport: {
-          host: configService.get<string>('TAHINIWA_MAIL_HOST'),
-          port: configService.get<number>('TAHINIWA_MAIL_PORT'),
+          host: configService.get<string>('FSMS_MAIL_HOST'),
+          port: configService.get<number>('FSMS_MAIL_PORT'),
           auth: {
-            user: configService.get<string>('TAHINIWA_MAIL_USERNAME'),
-            pass: configService.get<string>('TAHINIWA_MAIL_PASSWORD'),
+            user: configService.get<string>('FSMS_MAIL_USERNAME'),
+            pass: configService.get<string>('FSMS_MAIL_PASSWORD'),
           },
         },
         defaults: {
-          from: configService.get<string>('TAHINIWA_MAIL_FROM'),
+          from: configService.get<string>('FSMS_MAIL_FROM'),
         },
         template: {
           dir: join(__dirname, './templates'),

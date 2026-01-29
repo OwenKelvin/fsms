@@ -23,55 +23,55 @@
         "libs/backend/activity-log/src/index.ts"
       ],
       "@fsms/backend/activity-log-backend-service": [
-        "libs/backend/services/activity-log/src/index.ts"
+        "libs/backend/services/activity-log-service/src/index.ts"
       ],
       "@fsms/backend/app-event": ["libs/backend/app-event/src/index.ts"],
       "@fsms/backend/app-queue": ["libs/backend/app-queue/src/index.ts"],
       "@fsms/backend/auth": ["libs/backend/auth/src/index.ts"],
       "@fsms/backend/auth-service": [
-        "libs/backend/services/auth/src/index.ts"
+        "libs/backend/services/auth-service/src/index.ts"
       ],
       "@fsms/backend/cache": ["libs/backend/app-cache/src/index.ts"],
       "@fsms/backend/choice-backend": ["libs/backend/choice/src/index.ts"],
       "@fsms/backend/choice-backend-service": [
-        "libs/backend/services/choice/src/index.ts"
+        "libs/backend/services/choice-service/src/index.ts"
       ],
       "@fsms/backend/config-backend": ["libs/backend/config/src/index.ts"],
       "@fsms/backend/config-backend-service": [
-        "libs/backend/services/config/src/index.ts"
+        "libs/backend/services/config-service/src/index.ts"
       ],
       "@fsms/backend/credit-backend": ["libs/backend/credit/src/index.ts"],
       "@fsms/backend/credit-backend-service": [
-        "libs/backend/services/credit/src/index.ts"
+        "libs/backend/services/credit-service/src/index.ts"
       ],
       "@fsms/backend/crud-abstract": [
-        "libs/backend/services/crud-abstract/src/index.ts"
+        "libs/backend/services/crud-abstract-service/src/index.ts"
       ],
       "@fsms/backend/db": ["libs/backend/db/src/index.ts"],
       "@fsms/backend/email-service": [
-        "libs/backend/services/email/src/index.ts"
+        "libs/backend/services/email-service/src/index.ts"
       ],
       "@fsms/backend/exam": ["libs/backend/exam/src/index.ts"],
       "@fsms/backend/exam-paper-backend": [
         "libs/backend/exam-paper/src/index.ts"
       ],
       "@fsms/backend/exam-paper-backend-service": [
-        "libs/backend/services/exam-paper/src/index.ts"
+        "libs/backend/services/exam-paper-service/src/index.ts"
       ],
       "@fsms/backend/exam-service": [
-        "libs/backend/services/exam/src/index.ts"
+        "libs/backend/services/exam-service/src/index.ts"
       ],
       "@fsms/backend/examinee-backend": [
         "libs/backend/examinee/src/index.ts"
       ],
       "@fsms/backend/examinee-backend-service": [
-        "libs/backend/services/examinee/src/index.ts"
+        "libs/backend/services/examinee-service/src/index.ts"
       ],
       "@fsms/backend/examinee-group-backend": [
         "libs/backend/examinee-group/src/index.ts"
       ],
       "@fsms/backend/examinee-group-backend-service": [
-        "libs/backend/services/examinee-group/src/index.ts"
+        "libs/backend/services/examinee-group-service/src/index.ts"
       ],
       "@fsms/backend/file-upload": [
         "libs/backend/file-upload/src/index.ts"
@@ -81,90 +81,90 @@
         "libs/backend/institution/src/index.ts"
       ],
       "@fsms/backend/institution-backend-service": [
-        "libs/backend/services/institution/src/index.ts"
+        "libs/backend/services/institution-service/src/index.ts"
       ],
       "@fsms/backend/instruction-backend": [
         "libs/backend/instruction/src/index.ts"
       ],
       "@fsms/backend/instruction-backend-service": [
-        "libs/backend/services/instruction/src/index.ts"
+        "libs/backend/services/instruction-service/src/index.ts"
       ],
       "@fsms/backend/mpesa": ["libs/backend/mpesa/src/index.ts"],
       "@fsms/backend/mpesa-service": [
-        "libs/backend/services/mpesa/src/index.ts"
+        "libs/backend/services/mpesa-service/src/index.ts"
       ],
       "@fsms/backend/notification-backend": [
         "libs/backend/notification/src/index.ts"
       ],
       "@fsms/backend/notification-backend-service": [
-        "libs/backend/services/notification/src/index.ts"
+        "libs/backend/services/notification-service/src/index.ts"
       ],
       "@fsms/backend/otp-backend": ["libs/backend/otp/src/index.ts"],
       "@fsms/backend/otp-backend-service": [
-        "libs/backend/services/otp/src/index.ts"
+        "libs/backend/services/otp-service/src/index.ts"
       ],
       "@fsms/backend/password-reset-backend": [
         "libs/backend/password-reset/src/index.ts"
       ],
       "@fsms/backend/password-reset-backend-service": [
-        "libs/backend/services/password-reset/src/index.ts"
+        "libs/backend/services/password-reset-service/src/index.ts"
       ],
       "@fsms/backend/payment-backend": [
         "libs/backend/payment/src/index.ts"
       ],
       "@fsms/backend/payment-backend-service": [
-        "libs/backend/services/payment/src/index.ts"
+        "libs/backend/services/payment-service/src/index.ts"
       ],
       "@fsms/backend/permission": ["libs/backend/permission/src/index.ts"],
       "@fsms/backend/permission-service": [
-        "libs/backend/services/permission/src/index.ts"
+        "libs/backend/services/permission-service/src/index.ts"
       ],
       "@fsms/backend/plan-backend": ["libs/backend/plan/src/index.ts"],
       "@fsms/backend/plan-backend-service": [
-        "libs/backend/services/plan/src/index.ts"
+        "libs/backend/services/plan-service/src/index.ts"
       ],
       "@fsms/backend/plan-info-backend": [
         "libs/backend/plan-info/src/index.ts"
       ],
       "@fsms/backend/plan-info-backend-service": [
-        "libs/backend/services/plan-info/src/index.ts"
+        "libs/backend/services/plan-info-service/src/index.ts"
       ],
       "@fsms/backend/question-backend": [
         "libs/backend/question/src/index.ts"
       ],
       "@fsms/backend/question-backend-service": [
-        "libs/backend/services/question/src/index.ts"
+        "libs/backend/services/question-service/src/index.ts"
       ],
       "@fsms/backend/quote-backend": ["libs/backend/quote/src/index.ts"],
       "@fsms/backend/quote-backend-service": [
-        "libs/backend/services/quote/src/index.ts"
+        "libs/backend/services/quote-service/src/index.ts"
       ],
       "@fsms/backend/role": ["libs/backend/role/src/index.ts"],
       "@fsms/backend/role-service": [
-        "libs/backend/services/role/src/index.ts"
+        "libs/backend/services/role-service/src/index.ts"
       ],
       "@fsms/backend/setting-backend": [
         "libs/backend/setting/src/index.ts"
       ],
       "@fsms/backend/setting-backend-service": [
-        "libs/backend/services/setting/src/index.ts"
+        "libs/backend/services/setting-service/src/index.ts"
       ],
       "@fsms/backend/tag-backend": ["libs/backend/tag/src/index.ts"],
       "@fsms/backend/tag-backend-service": [
-        "libs/backend/services/tag/src/index.ts"
+        "libs/backend/services/tag-service/src/index.ts"
       ],
       "@fsms/backend/transaction-backend": [
         "libs/backend/transaction/src/index.ts"
       ],
       "@fsms/backend/transaction-backend-service": [
-        "libs/backend/services/transaction/src/index.ts"
+        "libs/backend/services/transaction-service/src/index.ts"
       ],
       "@fsms/backend/translation": [
         "libs/backend/translation/src/index.ts"
       ],
       "@fsms/backend/user": ["libs/backend/user/src/index.ts"],
       "@fsms/backend/user-service": [
-        "libs/backend/services/user/src/index.ts"
+        "libs/backend/services/user-service/src/index.ts"
       ],
       "@fsms/backend/util": ["libs/backend/util/src/index.ts"],
       "@fsms/backend/validators": ["libs/backend/validators/src/index.ts"],

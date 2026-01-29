@@ -3,9 +3,9 @@ import Keyv from 'keyv';
 import KeyvRedis from '@keyv/redis';
 
 const generateRedisURIFromEnv = () => {
-  const host = process.env['TAHINIWA_REDIS_HOST'] || 'localhost';
-  const port = process.env['TAHINIWA_REDIS_PORT'] || '6379';
-  const password = process.env['TAHINIWA_REDIS_PASSWORD'] || '';
+  const host = process.env['FSMS_REDIS_HOST'] || 'localhost';
+  const port = process.env['FSMS_REDIS_PORT'] || '6379';
+  const password = process.env['FSMS_REDIS_PASSWORD'] || '';
   return password
     ? `redis://:${password}@${host}:${port}`
     : `redis://${host}:${port}`;

@@ -17,9 +17,9 @@ describe('KeyvRedisModule', () => {
   const mockRedisPassword = 'mock-password';
 
   beforeEach(async () => {
-    process.env['TAHINIWA_REDIS_HOST'] = mockRedisHost;
-    process.env['TAHINIWA_REDIS_PORT'] = mockRedisPort;
-    process.env['TAHINIWA_REDIS_PASSWORD'] = mockRedisPassword;
+    process.env['FSMS_REDIS_HOST'] = mockRedisHost;
+    process.env['FSMS_REDIS_PORT'] = mockRedisPort;
+    process.env['FSMS_REDIS_PASSWORD'] = mockRedisPassword;
 
     // Build the test module
     module = await Test.createTestingModule({

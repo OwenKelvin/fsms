@@ -8,7 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       provide: 'JWT_SECRET',
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
-        configService.get<string>('TAHINIWA_JWT_SECRET'),
+        configService.get<string>('FSMS_JWT_SECRET'),
     },
   ],
   exports: ['JWT_SECRET'],

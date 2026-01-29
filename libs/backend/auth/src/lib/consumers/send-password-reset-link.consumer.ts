@@ -26,9 +26,9 @@ export class SendPasswordResetLinkConsumer {
       const token = await this.passwordResetService.generatePasswordResetToken(
         job.data.email,
       );
-      const resetLink = `${process.env['TAHINIWA_APP_URL']}/auth/reset-password/${token}`;
+      const resetLink = `${process.env['FSMS_APP_URL']}/auth/reset-password/${token}`;
       await this.emailService.send({
-        from: process.env['TAHINIWA_MAIL_FROM'],
+        from: process.env['FSMS_MAIL_FROM'],
         to: job.data.email,
         subject: 'Your Password Reset Link',
         template: 'reset-password-link-template',

@@ -67,13 +67,13 @@ const parseTimeSpan = (timeSpan: string): number => {
 export class AuthService {
   saltRounds = 10;
   private oauthClient?: Auth.OAuth2Client = new google.auth.OAuth2(
-    process.env?.['TAHINIWA_GOOGLE_CLIENT_ID'] ?? '',
-    process.env?.['TAHINIWA_GOOGLE_CLIENT_SECRET'] ?? '',
+    process.env?.['FSMS_GOOGLE_CLIENT_ID'] ?? '',
+    process.env?.['FSMS_GOOGLE_CLIENT_SECRET'] ?? '',
   );
   private accessTokenExpiryPeriod =
-    process.env?.['TAHINIWA_EXPIRY_PERIOD_ACCESS_TOKEN'] ?? '300s';
+    process.env?.['FSMS_EXPIRY_PERIOD_ACCESS_TOKEN'] ?? '300s';
   private refreshTokenExpiryPeriod =
-    process.env?.['TAHINIWA_EXPIRY_PERIOD_REFRESH_TOKEN'] ?? '7d';
+    process.env?.['FSMS_EXPIRY_PERIOD_REFRESH_TOKEN'] ?? '7d';
 
   constructor(
     @Inject('JWT_SECRET') private jwtSecret: string,
@@ -247,11 +247,11 @@ export class AuthService {
       user: user,
       accessToken: this.jwtService.sign(
         { ...payload, type: 'AuthToken', sessionId },
-        { secret: this.jwtSecret, expiresIn: this.accessTokenExpiryPeriod },
+        { secret: this.jwtSecret, expiresIn: this.accessTokenExpiryPeriod as any },
       ),
       refreshToken: this.jwtService.sign(
-        { ...payload, type: 'RefreshToken', sessionId },
-        { secret: this.jwtSecret, expiresIn: this.refreshTokenExpiryPeriod },
+        { ...payload, type: 'RefreshToken', sessionId } as any,
+        { secret: this.jwtSecret, expiresIn: this.refreshTokenExpiryPeriod  as any },
       ),
       refreshTokenKey: uuid(),
     };

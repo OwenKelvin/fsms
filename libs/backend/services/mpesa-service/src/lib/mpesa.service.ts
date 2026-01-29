@@ -19,16 +19,16 @@ export interface ISTKPushRequest {
 
 @Injectable()
 export class MpesaService {
-  private readonly url = process.env['TAHINIWA_SAFARICOM_MPESA_URL'];
+  private readonly url = process.env['FSMS_SAFARICOM_MPESA_URL'];
   private readonly timestamp = new Date()
     .toISOString()
     .replace(/\D/g, '')
     .slice(0, 14);
-  private readonly consumerKey = process.env['TAHINIWA_MPESA_CONSUMER_KEY'];
+  private readonly consumerKey = process.env['FSMS_MPESA_CONSUMER_KEY'];
   private readonly consumerSecret =
-    process.env['TAHINIWA_MPESA_CONSUMER_SECRET'];
-  private readonly passKey = process.env['TAHINIWA_MPESA_PASS_KEY'];
-  private readonly shortCode = Number(process.env['TAHINIWA_MPESA_SHORT_CODE']);
+    process.env['FSMS_MPESA_CONSUMER_SECRET'];
+  private readonly passKey = process.env['FSMS_MPESA_PASS_KEY'];
+  private readonly shortCode = Number(process.env['FSMS_MPESA_SHORT_CODE']);
   private readonly password = Buffer.from(
     `${this.shortCode}${this.passKey}${this.timestamp}`,
   ).toString('base64');
@@ -68,8 +68,8 @@ export class MpesaService {
           TransactionID: 'OEI2AK4Q16',
           PartyA: 600983,
           IdentifierType: '4',
-          ResultURL: `${process.env['TAHINIWA_MPESA_CALLBACK_BASE']}/api/payment-callback/transaction-status/result`,
-          QueueTimeOutURL: `${process.env['TAHINIWA_MPESA_CALLBACK_BASE']}/api/payment-callback/transaction-status/timeout`,
+          ResultURL: `${process.env['FSMS_MPESA_CALLBACK_BASE']}/api/payment-callback/transaction-status/result`,
+          QueueTimeOutURL: `${process.env['FSMS_MPESA_CALLBACK_BASE']}/api/payment-callback/transaction-status/timeout`,
           Remarks: 'Test',
           Occassion: 'Testing',
         },
@@ -112,7 +112,7 @@ export class MpesaService {
           PartyA: Number(phoneNumber.replace('+', '')),
           PartyB: this.shortCode,
           PhoneNumber: Number(phoneNumber.replace('+', '')),
-          CallBackURL: `${process.env['TAHINIWA_MPESA_CALLBACK_BASE']}/api/payment-callback/stk-push-request`,
+          CallBackURL: `${process.env['FSMS_MPESA_CALLBACK_BASE']}/api/payment-callback/stk-push-request`,
           AccountReference: 'Tahiniwa',
           TransactionDesc: 'Plan Payment',
         },

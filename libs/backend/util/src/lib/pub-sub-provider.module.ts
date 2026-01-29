@@ -13,8 +13,8 @@ export const PUB_SUB = 'PUB_SUB';
       useFactory: (configService: ConfigService) =>
         new RedisPubSub({
           connection: {
-            host: configService.get<string>('TAHINIWA_REDIS_HOST'),
-            port: configService.get<number>('TAHINIWA_REDIS_PORT'),
+            host: configService.get<string>('FSMS_REDIS_HOST'),
+            port: configService.get<number>('FSMS_REDIS_PORT'),
           },
         }),
     },
