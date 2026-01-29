@@ -1,0 +1,9 @@
+{
+  "name": "examinee-backend",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/examinee-backend/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project examinee-backend --web",
+  "targets": {}
+}

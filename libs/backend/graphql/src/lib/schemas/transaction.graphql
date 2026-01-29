@@ -1,0 +1,48 @@
+enum TransactionTypeEnum {
+  purchase
+  exam
+  promotion
+}
+type TransactionModel {
+  id: Int!
+  type: TransactionTypeEnum
+  amount: Float!
+  balanceAfterTransaction: Float!
+  description: String
+}
+
+input CreateTransactionInput {
+  name: String
+}
+
+input UpdateTransactionInput {
+  name: String
+}
+
+type PaginatedTransaction {
+  items: [TransactionModel]
+  meta: Pagination
+}
+
+type CreateTransactionSuccessResponse {
+  message: String!
+  data: TransactionModel!
+}
+
+extend type Query {
+  transactions(query: QueryParams): PaginatedTransaction!
+  transaction(id: Int!): TransactionModel
+}
+
+extend type Mutation {
+  updateTransaction(
+    id: Int!
+    params: UpdateTransactionInput
+  ): CreateTransactionSuccessResponse
+
+  createTransaction(
+    params: CreateTransactionInput
+  ): CreateTransactionSuccessResponse
+
+  deleteTransaction(id: Int!): DeleteSuccessResponse
+}

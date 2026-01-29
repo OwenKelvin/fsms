@@ -1,0 +1,40 @@
+type InstitutionModel {
+  id: Int!
+  name: String!
+}
+
+input CreateInstitutionInput {
+  name: String
+}
+
+input UpdateInstitutionInput {
+  name: String
+}
+
+type PaginatedInstitution {
+  items: [InstitutionModel]
+  meta: Pagination
+}
+
+type CreateInstitutionSuccessResponse {
+  message: String!
+  data: InstitutionModel!
+}
+
+extend type Query {
+  institutions(query: QueryParams): PaginatedInstitution!
+  institution(id: Int!): InstitutionModel
+}
+
+extend type Mutation {
+  updateInstitution(
+    id: Int!
+    params: UpdateInstitutionInput
+  ): CreateInstitutionSuccessResponse
+
+  createInstitution(
+    params: CreateInstitutionInput
+  ): CreateInstitutionSuccessResponse
+
+  deleteInstitution(id: Int!): DeleteSuccessResponse
+}

@@ -1,0 +1,54 @@
+type ExamModel {
+  id: Int!
+  name: String!
+  startDate: String
+  endDate: String
+  tags: [TagModel]!
+  configs: [ExamConfig]!
+  createdAt: String!
+  examPapers: [ExamPaperModel]
+}
+
+input ExamTagInput {
+  id: Int
+  name: String
+}
+
+input CreateExamInput {
+  name: String!
+  startDate: String
+  endDate: String
+  configs: [ExamConfigInput]!
+  tags: [ExamTagInput]!
+}
+
+input UpdateExamInput {
+  name: String!
+  startDate: String
+  endDate: String
+  configs: [ExamConfigInput]
+  tags: [ExamTagInput]
+}
+
+type PaginatedExam {
+  items: [ExamModel]
+  meta: Pagination
+}
+
+type CreateExamSuccessResponse {
+  message: String!
+  data: ExamModel!
+}
+
+extend type Query {
+  exams(query: QueryParams): PaginatedExam!
+  exam(id: Int!): ExamModel
+}
+
+extend type Mutation {
+  updateExam(id: Int!, params: UpdateExamInput): CreateExamSuccessResponse
+
+  createExam(params: CreateExamInput!): CreateExamSuccessResponse
+
+  deleteExam(id: Int!): DeleteSuccessResponse
+}

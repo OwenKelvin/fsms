@@ -1,0 +1,15 @@
+extend type Query {
+  mpesaTransactionStatus(transactionRef: String!): String
+}
+
+extend type Mutation {
+  requestMpesaStk(phoneNumber: String!, quoteId: Int!): SuccessResponse
+}
+
+type ReceivedPaymentSubscription {
+  transaction: TransactionModel
+}
+
+extend type Subscription {
+  mpesaPaymentReceived(quoteId: Int!): ReceivedPaymentSubscription
+}

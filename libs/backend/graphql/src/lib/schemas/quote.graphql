@@ -1,0 +1,45 @@
+type QuoteModel {
+  id: Int!
+  planId: Int!
+  expireAt: String
+  totalCost: Float
+  creditAmount: Float!
+  creditCost: Float!
+  feeCost: Float!
+  currency: CurrencyModel!
+  taxCost: Float!
+  createdAt: String!
+}
+
+input CreateQuoteInput {
+  planId: Int!
+  creditAmount: Int!
+}
+
+input UpdateQuoteInput {
+  planId: Int!
+  paymentAmount: Float!
+}
+
+type PaginatedQuote {
+  items: [QuoteModel]
+  meta: Pagination
+}
+
+type CreateQuoteSuccessResponse {
+  message: String!
+  data: QuoteModel!
+}
+
+extend type Query {
+  quotes(query: QueryParams): PaginatedQuote!
+  quote(id: Int!): QuoteModel
+}
+
+extend type Mutation {
+  updateQuote(id: Int!, params: UpdateQuoteInput): CreateQuoteSuccessResponse
+
+  createQuote(params: CreateQuoteInput): CreateQuoteSuccessResponse
+
+  deleteQuote(id: Int!): DeleteSuccessResponse
+}

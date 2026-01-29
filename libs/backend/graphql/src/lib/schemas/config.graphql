@@ -1,0 +1,56 @@
+enum ConfigType {
+  EXAM
+  EXAM_PAPER
+}
+
+type ExamConfig {
+  id: Int!
+  name: String!
+  selected: Boolean
+  value: String
+}
+
+input ExamConfigInput {
+  id: Int!
+  selected: Boolean!
+  value: String
+}
+
+type ConfigModel {
+  id: Int!
+  name: String!
+  type: ConfigType
+}
+
+input CreateConfigInput {
+  name: String!
+  type: ConfigType
+}
+
+input UpdateConfigInput {
+  name: String!
+  type: ConfigType
+}
+
+type PaginatedConfig {
+  items: [ConfigModel]
+  meta: Pagination
+}
+
+type CreateConfigSuccessResponse {
+  message: String!
+  data: ConfigModel!
+}
+
+extend type Query {
+  configs(query: QueryParams): PaginatedConfig!
+  config(id: Int!): ConfigModel
+}
+
+extend type Mutation {
+  updateConfig(id: Int!, params: UpdateConfigInput): CreateConfigSuccessResponse
+
+  createConfig(params: CreateConfigInput!): CreateConfigSuccessResponse
+
+  deleteConfig(id: Int!): DeleteSuccessResponse
+}

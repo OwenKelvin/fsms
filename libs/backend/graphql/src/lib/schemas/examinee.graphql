@@ -1,0 +1,49 @@
+type ExamineeOtherDetails {
+  firstName: String
+  lastName: String
+}
+input ExamineeOtherDetailsInput {
+  firstName: String
+  lastName: String
+}
+type ExamineeModel {
+  id: Int!
+  uniqueIdentifier: String!
+  otherDetails: ExamineeOtherDetails
+}
+
+input CreateExamineeInput {
+  uniqueIdentifier: String!
+  otherDetails: ExamineeOtherDetailsInput
+}
+
+input UpdateExamineeInput {
+  uniqueIdentifier: String!
+  otherDetails: ExamineeOtherDetailsInput
+}
+
+type PaginatedExaminee {
+  items: [ExamineeModel]
+  meta: Pagination
+}
+
+type CreateExamineeSuccessResponse {
+  message: String!
+  data: ExamineeModel!
+}
+
+extend type Query {
+  examinees(query: QueryParams): PaginatedExaminee!
+  examinee(id: Int!): ExamineeModel
+}
+
+extend type Mutation {
+  updateExaminee(
+    id: Int!
+    params: UpdateExamineeInput
+  ): CreateExamineeSuccessResponse
+
+  createExaminee(params: CreateExamineeInput): CreateExamineeSuccessResponse
+
+  deleteExaminee(id: Int!): DeleteSuccessResponse
+}

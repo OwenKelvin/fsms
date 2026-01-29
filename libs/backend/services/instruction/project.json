@@ -1,0 +1,9 @@
+{
+  "name": "instruction-backend-service",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/services/instruction/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project instruction-backend-service --web",
+  "targets": {}
+}

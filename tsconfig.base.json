@@ -10,11 +10,351 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+
+      "@fsms/backend/activity-log-backend": [
+        "libs/backend/activity-log/src/index.ts"
+      ],
+      "@fsms/backend/activity-log-backend-service": [
+        "libs/backend/services/activity-log/src/index.ts"
+      ],
+      "@fsms/backend/app-event": ["libs/backend/app-event/src/index.ts"],
+      "@fsms/backend/app-queue": ["libs/backend/app-queue/src/index.ts"],
+      "@fsms/backend/auth": ["libs/backend/auth/src/index.ts"],
+      "@fsms/backend/auth-service": [
+        "libs/backend/services/auth/src/index.ts"
+      ],
+      "@fsms/backend/cache": ["libs/backend/app-cache/src/index.ts"],
+      "@fsms/backend/choice-backend": ["libs/backend/choice/src/index.ts"],
+      "@fsms/backend/choice-backend-service": [
+        "libs/backend/services/choice/src/index.ts"
+      ],
+      "@fsms/backend/config-backend": ["libs/backend/config/src/index.ts"],
+      "@fsms/backend/config-backend-service": [
+        "libs/backend/services/config/src/index.ts"
+      ],
+      "@fsms/backend/credit-backend": ["libs/backend/credit/src/index.ts"],
+      "@fsms/backend/credit-backend-service": [
+        "libs/backend/services/credit/src/index.ts"
+      ],
+      "@fsms/backend/crud-abstract": [
+        "libs/backend/services/crud-abstract/src/index.ts"
+      ],
+      "@fsms/backend/db": ["libs/backend/db/src/index.ts"],
+      "@fsms/backend/email-service": [
+        "libs/backend/services/email/src/index.ts"
+      ],
+      "@fsms/backend/exam": ["libs/backend/exam/src/index.ts"],
+      "@fsms/backend/exam-paper-backend": [
+        "libs/backend/exam-paper/src/index.ts"
+      ],
+      "@fsms/backend/exam-paper-backend-service": [
+        "libs/backend/services/exam-paper/src/index.ts"
+      ],
+      "@fsms/backend/exam-service": [
+        "libs/backend/services/exam/src/index.ts"
+      ],
+      "@fsms/backend/examinee-backend": [
+        "libs/backend/examinee/src/index.ts"
+      ],
+      "@fsms/backend/examinee-backend-service": [
+        "libs/backend/services/examinee/src/index.ts"
+      ],
+      "@fsms/backend/examinee-group-backend": [
+        "libs/backend/examinee-group/src/index.ts"
+      ],
+      "@fsms/backend/examinee-group-backend-service": [
+        "libs/backend/services/examinee-group/src/index.ts"
+      ],
+      "@fsms/backend/file-upload": [
+        "libs/backend/file-upload/src/index.ts"
+      ],
+      "@fsms/backend/graphql": ["libs/backend/graphql/src/index.ts"],
+      "@fsms/backend/institution-backend": [
+        "libs/backend/institution/src/index.ts"
+      ],
+      "@fsms/backend/institution-backend-service": [
+        "libs/backend/services/institution/src/index.ts"
+      ],
+      "@fsms/backend/instruction-backend": [
+        "libs/backend/instruction/src/index.ts"
+      ],
+      "@fsms/backend/instruction-backend-service": [
+        "libs/backend/services/instruction/src/index.ts"
+      ],
+      "@fsms/backend/mpesa": ["libs/backend/mpesa/src/index.ts"],
+      "@fsms/backend/mpesa-service": [
+        "libs/backend/services/mpesa/src/index.ts"
+      ],
+      "@fsms/backend/notification-backend": [
+        "libs/backend/notification/src/index.ts"
+      ],
+      "@fsms/backend/notification-backend-service": [
+        "libs/backend/services/notification/src/index.ts"
+      ],
+      "@fsms/backend/otp-backend": ["libs/backend/otp/src/index.ts"],
+      "@fsms/backend/otp-backend-service": [
+        "libs/backend/services/otp/src/index.ts"
+      ],
+      "@fsms/backend/password-reset-backend": [
+        "libs/backend/password-reset/src/index.ts"
+      ],
+      "@fsms/backend/password-reset-backend-service": [
+        "libs/backend/services/password-reset/src/index.ts"
+      ],
+      "@fsms/backend/payment-backend": [
+        "libs/backend/payment/src/index.ts"
+      ],
+      "@fsms/backend/payment-backend-service": [
+        "libs/backend/services/payment/src/index.ts"
+      ],
+      "@fsms/backend/permission": ["libs/backend/permission/src/index.ts"],
+      "@fsms/backend/permission-service": [
+        "libs/backend/services/permission/src/index.ts"
+      ],
+      "@fsms/backend/plan-backend": ["libs/backend/plan/src/index.ts"],
+      "@fsms/backend/plan-backend-service": [
+        "libs/backend/services/plan/src/index.ts"
+      ],
+      "@fsms/backend/plan-info-backend": [
+        "libs/backend/plan-info/src/index.ts"
+      ],
+      "@fsms/backend/plan-info-backend-service": [
+        "libs/backend/services/plan-info/src/index.ts"
+      ],
+      "@fsms/backend/question-backend": [
+        "libs/backend/question/src/index.ts"
+      ],
+      "@fsms/backend/question-backend-service": [
+        "libs/backend/services/question/src/index.ts"
+      ],
+      "@fsms/backend/quote-backend": ["libs/backend/quote/src/index.ts"],
+      "@fsms/backend/quote-backend-service": [
+        "libs/backend/services/quote/src/index.ts"
+      ],
+      "@fsms/backend/role": ["libs/backend/role/src/index.ts"],
+      "@fsms/backend/role-service": [
+        "libs/backend/services/role/src/index.ts"
+      ],
+      "@fsms/backend/setting-backend": [
+        "libs/backend/setting/src/index.ts"
+      ],
+      "@fsms/backend/setting-backend-service": [
+        "libs/backend/services/setting/src/index.ts"
+      ],
+      "@fsms/backend/tag-backend": ["libs/backend/tag/src/index.ts"],
+      "@fsms/backend/tag-backend-service": [
+        "libs/backend/services/tag/src/index.ts"
+      ],
+      "@fsms/backend/transaction-backend": [
+        "libs/backend/transaction/src/index.ts"
+      ],
+      "@fsms/backend/transaction-backend-service": [
+        "libs/backend/services/transaction/src/index.ts"
+      ],
+      "@fsms/backend/translation": [
+        "libs/backend/translation/src/index.ts"
+      ],
+      "@fsms/backend/user": ["libs/backend/user/src/index.ts"],
+      "@fsms/backend/user-service": [
+        "libs/backend/services/user/src/index.ts"
+      ],
+      "@fsms/backend/util": ["libs/backend/util/src/index.ts"],
+      "@fsms/backend/validators": ["libs/backend/validators/src/index.ts"],
+
+
+
+
+
+
+
+
+
+      "@fsms/ui": [
+        "libs/shared/ui/src/index.ts"
+      ],
+      "@fsms/ui/accordion": [
+        "libs/shared/ui/accordion/src/index.ts"
+      ],
+      "@fsms/ui/alert": [
+        "libs/shared/ui/alert/src/index.ts"
+      ],
+      "@fsms/ui/alert-dialog": [
+        "libs/shared/ui/alert-dialog/src/index.ts"
+      ],
+      "@fsms/ui/aspect-ratio": [
+        "libs/shared/ui/aspect-ratio/src/index.ts"
+      ],
+      "@fsms/ui/autocomplete": [
+        "libs/shared/ui/autocomplete/src/index.ts"
+      ],
+      "@fsms/ui/avatar": [
+        "libs/shared/ui/avatar/src/index.ts"
+      ],
+      "@fsms/ui/badge": [
+        "libs/shared/ui/badge/src/index.ts"
+      ],
+      "@fsms/ui/breadcrumb": [
+        "libs/shared/ui/breadcrumb/src/index.ts"
+      ],
+      "@fsms/ui/button": [
+        "libs/shared/ui/button/src/index.ts"
+      ],
+      "@fsms/ui/button-group": [
+        "libs/shared/ui/button-group/src/index.ts"
+      ],
+      "@fsms/ui/calendar": [
+        "libs/shared/ui/calendar/src/index.ts"
+      ],
+      "@fsms/ui/card": [
+        "libs/shared/ui/card/src/index.ts"
+      ],
+      "@fsms/ui/carousel": [
+        "libs/shared/ui/carousel/src/index.ts"
+      ],
+      "@fsms/ui/checkbox": [
+        "libs/shared/ui/checkbox/src/index.ts"
+      ],
+      "@fsms/ui/collapsible": [
+        "libs/shared/ui/collapsible/src/index.ts"
+      ],
+      "@fsms/ui/combobox": [
+        "libs/shared/ui/combobox/src/index.ts"
+      ],
+      "@fsms/ui/command": [
+        "libs/shared/ui/command/src/index.ts"
+      ],
+      "@fsms/ui/context-menu": [
+        "libs/shared/ui/context-menu/src/index.ts"
+      ],
+      "@fsms/ui/date-picker": [
+        "libs/shared/ui/date-picker/src/index.ts"
+      ],
+      "@fsms/ui/dialog": [
+        "libs/shared/ui/dialog/src/index.ts"
+      ],
+      "@fsms/ui/dropdown-menu": [
+        "libs/shared/ui/dropdown-menu/src/index.ts"
+      ],
+      "@fsms/ui/empty": [
+        "libs/shared/ui/empty/src/index.ts"
+      ],
+      "@fsms/ui/field": [
+        "libs/shared/ui/field/src/index.ts"
+      ],
+      "@fsms/ui/form-field": [
+        "libs/shared/ui/form-field/src/index.ts"
+      ],
+      "@fsms/ui/hover-card": [
+        "libs/shared/ui/hover-card/src/index.ts"
+      ],
+      "@fsms/ui/icon": [
+        "libs/shared/ui/icon/src/index.ts"
+      ],
+      "@fsms/ui/input": [
+        "libs/shared/ui/input/src/index.ts"
+      ],
+      "@fsms/ui/input-group": [
+        "libs/shared/ui/input-group/src/index.ts"
+      ],
+      "@fsms/ui/input-otp": [
+        "libs/shared/ui/input-otp/src/index.ts"
+      ],
+      "@fsms/ui/item": [
+        "libs/shared/ui/item/src/index.ts"
+      ],
+      "@fsms/ui/kbd": [
+        "libs/shared/ui/kbd/src/index.ts"
+      ],
+      "@fsms/ui/label": [
+        "libs/shared/ui/label/src/index.ts"
+      ],
+      "@fsms/ui/menubar": [
+        "libs/shared/ui/menubar/src/index.ts"
+      ],
+      "@fsms/ui/navigation-menu": [
+        "libs/shared/ui/navigation-menu/src/index.ts"
+      ],
+      "@fsms/ui/pagination": [
+        "libs/shared/ui/pagination/src/index.ts"
+      ],
+      "@fsms/ui/popover": [
+        "libs/shared/ui/popover/src/index.ts"
+      ],
+      "@fsms/ui/progress": [
+        "libs/shared/ui/progress/src/index.ts"
+      ],
+      "@fsms/ui/radio-group": [
+        "libs/shared/ui/radio-group/src/index.ts"
+      ],
+      "@fsms/ui/resizable": [
+        "libs/shared/ui/resizable/src/index.ts"
+      ],
+      "@fsms/ui/scroll-area": [
+        "libs/shared/ui/scroll-area/src/index.ts"
+      ],
+      "@fsms/ui/select": [
+        "libs/shared/ui/select/src/index.ts"
+      ],
+      "@fsms/ui/separator": [
+        "libs/shared/ui/separator/src/index.ts"
+      ],
+      "@fsms/ui/sheet": [
+        "libs/shared/ui/sheet/src/index.ts"
+      ],
+      "@fsms/ui/sidebar": [
+        "libs/shared/ui/sidebar/src/index.ts"
+      ],
+      "@fsms/ui/skeleton": [
+        "libs/shared/ui/skeleton/src/index.ts"
+      ],
+      "@fsms/ui/slider": [
+        "libs/shared/ui/slider/src/index.ts"
+      ],
+      "@fsms/ui/sonner": [
+        "libs/shared/ui/sonner/src/index.ts"
+      ],
+      "@fsms/ui/spinner": [
+        "libs/shared/ui/spinner/src/index.ts"
+      ],
+      "@fsms/ui/switch": [
+        "libs/shared/ui/switch/src/index.ts"
+      ],
+      "@fsms/ui/table": [
+        "libs/shared/ui/table/src/index.ts"
+      ],
+      "@fsms/ui/tabs": [
+        "libs/shared/ui/tabs/src/index.ts"
+      ],
+      "@fsms/ui/textarea": [
+        "libs/shared/ui/textarea/src/index.ts"
+      ],
+      "@fsms/ui/toggle": [
+        "libs/shared/ui/toggle/src/index.ts"
+      ],
+      "@fsms/ui/toggle-group": [
+        "libs/shared/ui/toggle-group/src/index.ts"
+      ],
+      "@fsms/ui/tooltip": [
+        "libs/shared/ui/tooltip/src/index.ts"
+      ],
+      "@fsms/ui/typography": [
+        "libs/shared/ui/typography/src/index.ts"
+      ],
+      "@fsms/ui/utils": [
+        "libs/shared/ui/utils/src/index.ts"
+      ]
+    }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

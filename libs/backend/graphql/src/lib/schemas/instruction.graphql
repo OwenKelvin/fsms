@@ -1,0 +1,42 @@
+type InstructionModel {
+  id: Int!
+  description: String!
+}
+
+input CreateInstructionInput {
+  examPaperId: Int!
+  description: String!
+}
+
+input UpdateInstructionInput {
+  examPaperId: Int!
+  description: String!
+}
+
+type PaginatedInstruction {
+  items: [InstructionModel]
+  meta: Pagination
+}
+
+type CreateInstructionSuccessResponse {
+  message: String!
+  data: InstructionModel!
+}
+
+extend type Query {
+  instructions(query: QueryParams): PaginatedInstruction!
+  instruction(id: Int!): InstructionModel
+}
+
+extend type Mutation {
+  updateInstruction(
+    id: Int!
+    params: UpdateInstructionInput
+  ): CreateInstructionSuccessResponse
+
+  createInstruction(
+    params: CreateInstructionInput
+  ): CreateInstructionSuccessResponse
+
+  deleteInstruction(id: Int!): DeleteSuccessResponse
+}

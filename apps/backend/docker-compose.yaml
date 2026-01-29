@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - '5454:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+  maildev:
+    image: maildev/maildev
+    ports:
+      - '1080:1080'
+      - '1025:1025'
+    volumes:
+      - maildev_data:/var/lib/maildev
+
+  minio:
+    image: quay.io/minio/minio
+    ports:
+      - '9090:9000/tcp'
+      - '9001:9001'
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+  adminer:
+    image: adminer
+    ports:
+      - '8088:8080'
+    environment:
+      ADMINER_PLUGINS: 'tables-filter tinymce'
+      ADMINER_DESIGN: 'dracula'
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
+
+volumes:
+  postgres_data:
+  minio_data:
+  maildev_data:

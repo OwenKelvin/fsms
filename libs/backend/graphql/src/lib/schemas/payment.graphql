@@ -1,0 +1,38 @@
+type PaymentModel {
+  id: Int!
+  name: String!
+}
+
+input CreatePaymentInput {
+  name: String
+}
+
+input UpdatePaymentInput {
+  name: String
+}
+
+type PaginatedPayment {
+  items: [PaymentModel]
+  meta: Pagination
+}
+
+type CreatePaymentSuccessResponse {
+  message: String!
+  data: PaymentModel!
+}
+
+extend type Query {
+  payments(query: QueryParams): PaginatedPayment!
+  payment(id: Int!): PaymentModel
+}
+
+extend type Mutation {
+  updatePayment(
+    id: Int!
+    params: UpdatePaymentInput
+  ): CreatePaymentSuccessResponse
+
+  createPayment(params: CreatePaymentInput): CreatePaymentSuccessResponse
+
+  deletePayment(id: Int!): DeleteSuccessResponse
+}

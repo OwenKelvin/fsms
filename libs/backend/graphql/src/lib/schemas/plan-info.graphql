@@ -1,0 +1,41 @@
+type PlanInfoModel {
+  id: Int!
+  description: String!
+  planId: Int!
+}
+
+input CreatePlanInfoInput {
+  description: String!
+  planId: Int!
+}
+
+input UpdatePlanInfoInput {
+  description: String
+  planId: Int
+}
+
+type PaginatedPlanInfo {
+  items: [PlanInfoModel]
+  meta: Pagination
+}
+
+type CreatePlanInfoSuccessResponse {
+  message: String!
+  data: PlanInfoModel!
+}
+
+extend type Query {
+  planInfos(query: QueryParams): PaginatedPlanInfo!
+  planInfo(id: Int!): PlanInfoModel
+}
+
+extend type Mutation {
+  updatePlanInfo(
+    id: Int!
+    params: UpdatePlanInfoInput
+  ): CreatePlanInfoSuccessResponse
+
+  createPlanInfo(params: CreatePlanInfoInput): CreatePlanInfoSuccessResponse
+
+  deletePlanInfo(id: Int!): DeleteSuccessResponse
+}

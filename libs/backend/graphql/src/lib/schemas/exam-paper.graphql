@@ -1,0 +1,62 @@
+type ExamPaperModel {
+  id: Int!
+  name: String!
+  examId: Int!
+  publishedAt: String
+  createdAt: String!
+  paperDate: String
+  exam: ExamModel
+  tags: [TagModel]!
+  configs: [ExamConfig]!
+  examineeGroups: [ExamineeGroupModel]
+}
+
+input CreateExamPaperInput {
+  name: String!
+  examId: Int!
+  paperDate: String
+  configs: [ExamConfigInput]!
+  tags: [ExamTagInput]!
+}
+
+input UpdateExamPaperInput {
+  name: String!
+  examId: Int!
+}
+
+type PaginatedExamPaper {
+  items: [ExamPaperModel]
+  meta: Pagination
+}
+
+type CreateExamPaperSuccessResponse {
+  message: String!
+  data: ExamPaperModel!
+}
+
+extend type Query {
+  examPapers(query: QueryParams): PaginatedExamPaper!
+  examPaper(id: Int!): ExamPaperModel
+}
+
+input AssignExamineeToExamPaperInput {
+  examPaperId: Int!
+  examineeGroups: [SelectCategory!]!
+}
+
+extend type Mutation {
+  updateExamPaper(
+    id: Int!
+    params: UpdateExamPaperInput
+  ): CreateExamPaperSuccessResponse
+
+  createExamPaper(params: CreateExamPaperInput!): CreateExamPaperSuccessResponse
+
+  deleteExamPaper(id: Int!): DeleteSuccessResponse
+
+  publishExamPaper(id: Int!): CreateExamPaperSuccessResponse
+
+  assignExamineeGroupToExamPaper(
+    params: AssignExamineeToExamPaperInput
+  ): SuccessResponse
+}

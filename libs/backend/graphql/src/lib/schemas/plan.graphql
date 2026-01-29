@@ -1,0 +1,48 @@
+type PlanModel {
+  id: Int!
+  name: String!
+  tagLine: String!
+  costPerCreditInKES: Float!
+  planInfos: [PlanInfoModel]!
+}
+
+input CreatePlanInfoPlanInput {
+  description: String!
+}
+
+input CreatePlanInput {
+  name: String!
+  tagLine: String!
+  costPerCreditInKES: Float!
+  planInfos: [CreatePlanInfoPlanInput]
+}
+
+input UpdatePlanInput {
+  name: String
+  tagLine: String
+  costPerCreditInKES: Float
+  planInfos: [CreatePlanInfoPlanInput]
+}
+
+type PaginatedPlan {
+  items: [PlanModel]
+  meta: Pagination
+}
+
+type CreatePlanSuccessResponse {
+  message: String!
+  data: PlanModel!
+}
+
+extend type Query {
+  plans(query: QueryParams): PaginatedPlan!
+  plan(id: Int!): PlanModel
+}
+
+extend type Mutation {
+  updatePlan(id: Int!, params: UpdatePlanInput): CreatePlanSuccessResponse
+
+  createPlan(params: CreatePlanInput): CreatePlanSuccessResponse
+
+  deletePlan(id: Int!): DeleteSuccessResponse
+}

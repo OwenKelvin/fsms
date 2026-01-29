@@ -1,0 +1,49 @@
+type ExamineeGroupModel {
+  id: Int!
+  name: String!
+  examinees: [ExamineeModel]
+}
+
+input CreateGroupExamineeInput {
+  id: Int
+  uniqueIdentifier: String
+  otherDetails: ExamineeOtherDetailsInput
+}
+
+input CreateExamineeGroupInput {
+  name: String
+  examinees: [CreateGroupExamineeInput]
+}
+
+input UpdateExamineeGroupInput {
+  name: String
+  examinees: [CreateGroupExamineeInput]
+}
+
+type PaginatedExamineeGroup {
+  items: [ExamineeGroupModel]
+  meta: Pagination
+}
+
+type CreateExamineeGroupSuccessResponse {
+  message: String!
+  data: ExamineeGroupModel!
+}
+
+extend type Query {
+  examineeGroups(query: QueryParams): PaginatedExamineeGroup!
+  examineeGroup(id: Int!): ExamineeGroupModel
+}
+
+extend type Mutation {
+  updateExamineeGroup(
+    id: Int!
+    params: UpdateExamineeGroupInput
+  ): CreateExamineeGroupSuccessResponse
+
+  createExamineeGroup(
+    params: CreateExamineeGroupInput
+  ): CreateExamineeGroupSuccessResponse
+
+  deleteExamineeGroup(id: Int!): DeleteSuccessResponse
+}

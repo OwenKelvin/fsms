@@ -1,0 +1,9 @@
+{
+  "name": "credit-backend-service",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/services/credit/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project credit-backend-service --web",
+  "targets": {}
+}

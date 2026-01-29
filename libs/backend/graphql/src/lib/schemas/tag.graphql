@@ -1,0 +1,35 @@
+type TagModel {
+  id: Int!
+  name: String!
+}
+
+input CreateTagInput {
+  name: String
+}
+
+input UpdateTagInput {
+  name: String
+}
+
+type PaginatedTag {
+  items: [TagModel]
+  meta: Pagination
+}
+
+type CreateTagSuccessResponse {
+  message: String!
+  data: TagModel!
+}
+
+extend type Query {
+  tags(query: QueryParams): PaginatedTag!
+  tag(id: Int!): TagModel
+}
+
+extend type Mutation {
+  updateTag(id: Int!, params: UpdateTagInput): CreateTagSuccessResponse
+
+  createTag(params: CreateTagInput): CreateTagSuccessResponse
+
+  deleteTag(id: Int!): DeleteSuccessResponse
+}

@@ -1,0 +1,6 @@
+{
+  "componentsPath": "libs/shared/ui",
+  "buildable": true,
+  "generateAs": "entrypoint",
+  "importAlias": "@fsms/ui"
+}

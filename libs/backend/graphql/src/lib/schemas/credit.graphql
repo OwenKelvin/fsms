@@ -1,0 +1,35 @@
+type CreditModel {
+  id: Int!
+  balance: Int!
+}
+
+input CreateCreditInput {
+  balance: Int!
+}
+
+input UpdateCreditInput {
+  balance: Int!
+}
+
+type PaginatedCredit {
+  items: [CreditModel]
+  meta: Pagination
+}
+
+type CreateCreditSuccessResponse {
+  message: String!
+  data: CreditModel!
+}
+
+extend type Query {
+  credits(query: QueryParams): PaginatedCredit!
+  credit(id: Int!): CreditModel
+}
+
+extend type Mutation {
+  updateCredit(id: Int!, params: UpdateCreditInput): CreateCreditSuccessResponse
+
+  createCredit(params: CreateCreditInput): CreateCreditSuccessResponse
+
+  deleteCredit(id: Int!): DeleteSuccessResponse
+}

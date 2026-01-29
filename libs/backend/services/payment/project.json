@@ -1,0 +1,9 @@
+{
+  "name": "payment-backend-service",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/services/payment/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project payment-backend-service --web",
+  "targets": {}
+}

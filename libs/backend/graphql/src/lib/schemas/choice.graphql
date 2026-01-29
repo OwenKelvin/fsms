@@ -1,0 +1,39 @@
+type ChoiceModel {
+  id: Int!
+  questionId: Int!
+  question: QuestionModel!
+  description: String!
+  isCorrectChoice: Boolean
+}
+
+input CreateChoiceInput {
+  description: String!
+  isCorrectChoice: Boolean
+}
+
+input UpdateChoiceInput {
+  name: String
+}
+
+type PaginatedChoice {
+  items: [ChoiceModel]
+  meta: Pagination
+}
+
+type CreateChoiceSuccessResponse {
+  message: String!
+  data: ChoiceModel!
+}
+
+extend type Query {
+  choices(query: QueryParams): PaginatedChoice!
+  choice(id: Int!): ChoiceModel
+}
+
+extend type Mutation {
+  updateChoice(id: Int!, params: UpdateChoiceInput): CreateChoiceSuccessResponse
+
+  createChoice(params: CreateChoiceInput): CreateChoiceSuccessResponse
+
+  deleteChoice(id: Int!): DeleteSuccessResponse
+}

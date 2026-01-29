@@ -1,0 +1,66 @@
+enum ChoiceType {
+  CheckBox
+  Radio
+  Input
+}
+
+input QuestionTagInput {
+  id: Int
+  name: String
+}
+
+type QuestionModel {
+  id: Int!
+  examPaperId: Int!
+  exam: ExamModel!
+  description: String!
+  choiceType: ChoiceType!
+  autoMark: Boolean
+  correctChoiceExplanation: String
+  choices: [ChoiceModel]!
+  tags: [TagModel]!
+}
+
+input CreateQuestionInput {
+  examPaperId: Int!
+  description: String!
+  choiceType: ChoiceType!
+  autoMark: Boolean
+  correctChoiceExplanation: String
+  choices: [CreateChoiceInput]!
+  tags: [QuestionTagInput]!
+}
+
+input UpdateQuestionInput {
+  examPaperId: Int!
+  description: String!
+  choiceType: ChoiceType!
+  correctChoiceExplanation: String
+  autoMark: Boolean
+}
+
+type PaginatedQuestion {
+  items: [QuestionModel]
+  meta: Pagination
+}
+
+type CreateQuestionSuccessResponse {
+  message: String!
+  data: QuestionModel!
+}
+
+extend type Query {
+  questions(query: QueryParams): PaginatedQuestion!
+  question(id: Int!): QuestionModel
+}
+
+extend type Mutation {
+  updateQuestion(
+    id: Int!
+    params: UpdateQuestionInput
+  ): CreateQuestionSuccessResponse
+
+  createQuestion(params: CreateQuestionInput): CreateQuestionSuccessResponse
+
+  deleteQuestion(id: Int!): DeleteSuccessResponse
+}
