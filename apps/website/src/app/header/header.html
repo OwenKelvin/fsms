@@ -1,0 +1,74 @@
+<header class="p-2 flex flex-col md:flex-row justify-between bg-card px-2 md:px-10 lg:px-20 flex-wrap">
+  <div class="flex items-center font-semibold justify-between">
+    <div class="flex items-center">
+      <img ngSrc="images/logo.svg" width="38" height="38" alt="" class="me-2">
+      Furaha School Management
+    </div>
+
+    @if (isMobile()) {
+      <button (click)="isOpenMobile.set(!isOpenMobile())" class="relative w-6 h-6">
+        <ng-icon
+          hlmIcon
+          [name]="isOpenMobile() ? 'lucideX' : 'lucideMenu'"
+          class="absolute inset-0 transition-all duration-300"
+          [class.rotate-90]="isOpenMobile()"
+          [class.scale-100]="!isOpenMobile()"
+          [class.scale-0]="isOpenMobile()"
+        />
+        <ng-icon
+          hlmIcon
+          name="lucideX"
+          class="absolute inset-0 transition-all duration-300"
+          [class.rotate-0]="isOpenMobile()"
+          [class.-rotate-90]="!isOpenMobile()"
+          [class.scale-100]="isOpenMobile()"
+          [class.scale-0]="!isOpenMobile()"
+        />
+      </button>
+    }
+  </div>
+
+  @if (isMobile()) {
+    <div class="w-full overflow-hidden transition-all duration-300 ease-in-out"
+         [class.max-h-0]="!isOpenMobile()"
+         [class.max-h-96]="isOpenMobile()"
+         [class.opacity-0]="!isOpenMobile()"
+         [class.opacity-100]="isOpenMobile()">
+      <nav hlmNavigationMenu
+           class="max-w-full p-4 bg-card"
+           orientation="vertical">
+        <ul hlmNavigationMenuList>
+          <li hlmNavigationMenuItem class="w-full">
+            <a hlmNavigationMenuLink href="/documentation/introduction">Home</a>
+          </li>
+          <li hlmNavigationMenuItem class="w-full">
+            <a hlmNavigationMenuLink href="/documentation/introduction">Features</a>
+          </li>
+          <li hlmNavigationMenuItem class="w-full">
+            <a hlmNavigationMenuLink href="/documentation/introduction">About</a>
+          </li>
+          <li class="w-full">
+            <button hlmBtn class="w-full">Login</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  } @else {
+    <nav hlmNavigationMenu orientation="horizontal">
+      <ul hlmNavigationMenuList>
+        <li hlmNavigationMenuItem>
+          <a hlmNavigationMenuLink href="/documentation/introduction">Home</a>
+        </li>
+        <li hlmNavigationMenuItem>
+          <a hlmNavigationMenuLink href="/documentation/introduction">Features</a>
+        </li>
+        <li hlmNavigationMenuItem>
+          <a hlmNavigationMenuLink href="/documentation/introduction">About</a>
+        </li>
+        <li>
+          <button hlmBtn>Login</button>
+        </li>
+      </ul>
+    </nav>
+  }
+</header>

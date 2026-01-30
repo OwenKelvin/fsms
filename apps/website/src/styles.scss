@@ -1,0 +1,89 @@
+@use "tailwindcss";
+@use "@angular/cdk/overlay-prebuilt.css";
+
+@theme {
+  /* Background & Foreground */
+  --color-background: #FAFAFA;
+  --color-foreground: hsl(344.17, 10.1%, 4.29%);
+
+  /* Card */
+  --color-card: hsl(0, 0%, 100%);
+  --color-card-foreground: hsl(344.17, 10.1%, 4.29%);
+
+  /* Popover */
+  --color-popover: hsl(0, 0%, 100%);
+  --color-popover-foreground: hsl(344.17, 10.1%, 4.29%);
+
+  /* Primary */
+  --color-primary: #6C0B0B;
+  --color-primary-foreground: hsl(344, 8.87%, 98.11%);
+
+  /* Secondary */
+  --color-secondary: hsl(344.02, 4.34%, 96.14%);
+  --color-secondary-foreground: hsl(344.37, 6.88%, 10.34%);
+
+  /* Muted */
+  --color-muted: hsl(344.02, 4.34%, 96.14%);
+  --color-muted-foreground: hsl(25.05, 5.89%, 44.64%);
+
+  /* Accent */
+  --color-accent: hsl(344.02, 4.34%, 96.14%);
+  --color-accent-foreground: hsl(344.37, 6.88%, 10.34%);
+
+  /* Destructive */
+  --color-destructive: hsl(351.72, 100%, 40.53%);
+
+  /* Border, Input & Ring */
+  --color-border: hsl(344.71, 5.22%, 90.18%);
+  --color-input: hsl(344.71, 5.22%, 90.18%);
+  --color-ring: hsl(24.07, 5.83%, 63.06%);
+
+  /* Border Radius */
+  --radius: 0.625rem;
+
+  /* Sidebar */
+  --color-sidebar: hsl(40, 10%, 98%);
+  --color-sidebar-foreground: hsl(30, 6%, 16%);
+  --color-sidebar-accent: hsl(40, 8%, 96%);
+  --color-sidebar-accent-foreground: hsl(40, 5%, 22%);
+  --color-sidebar-border: hsl(40, 8%, 90%);
+  --color-sidebar-ring: hsl(40, 8%, 70%);
+}
+
+/* Optional: For backward compatibility with the original variable names */
+:root .theme-default {
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --card: var(--color-card);
+  --card-foreground: var(--color-card-foreground);
+  --popover: var(--color-popover);
+  --popover-foreground: var(--color-popover-foreground);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-foreground);
+  --muted: var(--color-muted);
+  --muted-foreground: var(--color-muted-foreground);
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-accent-foreground);
+  --destructive: var(--color-destructive);
+  --border: var(--color-border);
+  --input: var(--color-input);
+  --ring: var(--color-ring);
+  --sidebar: var(--color-sidebar);
+  --sidebar-foreground: var(--color-sidebar-foreground);
+  --sidebar-accent: var(--color-sidebar-accent);
+  --sidebar-accent-foreground: var(--color-sidebar-accent-foreground);
+  --sidebar-border: var(--color-sidebar-border);
+  --sidebar-ring: var(--color-sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
