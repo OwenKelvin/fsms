@@ -1,0 +1,28 @@
+<section class="py-16 lg:py-24 px-2 md:px-10 lg:px-20 bg-card">
+  <!-- Header -->
+  <div class="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
+    <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
+      Why Choose Our Platform
+    </h2>
+    <p class="text-base md:text-lg text-muted-foreground leading-relaxed">
+      Designed for modern institutions looking to scale and secure their operations in an increasingly digital world.
+    </p>
+  </div>
+
+  <!-- Feature Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mx-auto">
+
+    @for (feature of features(); track feature.title) {
+      <div class="rounded-xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300 border border-primary/20">
+        <div class="w-14 h-14 bg-primary/5 rounded-xl flex items-center justify-center mb-6 text-primary">
+          <ng-icon hlmIcon [name]="feature.icon" size="base" color="primary" />
+        </div>
+        <h3 class="text-xl font-bold mb-3">{{ feature.title }}</h3>
+        <p class="text-muted-foreground leading-relaxed">
+          {{ feature.description }}
+        </p>
+      </div>
+    }
+
+  </div>
+</section>
