@@ -7,6 +7,6 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'register',
-    loadComponent: () => import('./institution-form/institution-form'),
+    loadComponent: () => import('./registration-form/registration-form'),
   },
 ];

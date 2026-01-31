@@ -1,5 +1,9 @@
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideGlobe2, lucideLayoutGrid, lucideShieldCheck } from '@ng-icons/lucide';
+import {
+  lucideGlobe2,
+  lucideLayoutGrid,
+  lucideShieldCheck,
+} from '@ng-icons/lucide';
 import { Component, signal } from '@angular/core';
 import { HlmIcon } from '@fsms/ui/icon';
 

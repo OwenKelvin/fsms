@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideShare2, lucideGlobe, lucideMail } from '@ng-icons/lucide';
+import { lucideGlobe, lucideMail, lucideShare2 } from '@ng-icons/lucide';
 import { NgOptimizedImage } from '@angular/common';
 
 interface FooterLink {
