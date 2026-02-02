@@ -1,54 +1,47 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Top Navigation -->
-  <header class="bg-white border-b border-gray-200 px-4 md:px-10 lg:px-20 py-4">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2 font-semibold text-lg">
-        <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
-          <ng-icon name="lucideBuilding2" size="18" class="text-white" />
-        </div>
-        <span>EduReg</span>
-      </div>
-
-      <div class="flex items-center gap-4">
+<app-header>
+  <div slot="end" class="flex items-center gap-4">
         <span class="text-sm text-muted-foreground">
           Need help? <a href="#" class="text-primary hover:underline">Support Center</a>
         </span>
-        <button
-          hlmBtn
-          variant="outline"
-          (click)="saveAndExit()"
-          class="text-sm">
-          Save & Exit
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <div class="flex gap-0 max-w-7xl mx-auto">
+    <button
+      hlmBtn
+      variant="outline"
+      (click)="saveAndExit()"
+      class="text-sm">
+      Save & Exit
+    </button>
+  </div>
+</app-header>
+<div class="min-h-screen bg-gray-50 pt-15">
+  <div class="flex gap-0 px-2 md:px-10 lg:px-20 mx-auto">
     <!-- Sidebar Stepper -->
     <aside class="w-80 bg-white border-r border-gray-200 min-h-[calc(100vh-73px)] p-8">
       <nav class="space-y-2">
         @for (step of steps(); track step.id; let i = $index) {
           <div
-            class="flex items-start gap-4 p-4 rounded-lg transition-colors cursor-pointer"
+            class="flex border-s-6 items-start gap-4 p-4 rounded-lg transition-colors cursor-pointer"
             [class.bg-primary/10]="currentStep() === i"
+            [class.border-primary]="currentStep() === i"
+            [class.border-success/10]="step.completed && currentStep() !== i"
+            [class.border-success]="step.completed && currentStep() === i"
+            [class.bg-success/10]="step.completed && currentStep() === i"
             [class.hover:bg-gray-50]="currentStep() !== i"
             (click)="currentStep.set(i)">
 
             <!-- Icon/Check -->
           <div
             class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-            [class.bg-green-100]="step.completed"
-            [class.text-green-600]="step.completed"
+            [class.bg-success/20]="step.completed"
+            [class.text-success]="step.completed"
             [class.bg-primary]="currentStep() === i && !step.completed"
             [class.text-white]="currentStep() === i && !step.completed"
             [class.bg-gray-100]="currentStep() !== i && !step.completed"
             [class.text-gray-400]="currentStep() !== i && !step.completed">
-            @if (step.completed) {
-              <ng-icon name="lucideCheck" size="20" />
-            } @else {
-              <ng-icon [name]="step.icon" size="20" />
-            }
+          @if (step.completed) {
+            <ng-icon name="lucideCheck" size="20" />
+          } @else {
+            <ng-icon [name]="step.icon" size="20" />
+          }
           </div>
 
           <!-- Text -->
@@ -56,10 +49,15 @@
             <h3
               class="font-semibold text-sm mb-0.5"
               [class.text-primary]="currentStep() === i"
+              [class.text-success]="step.completed"
               [class.text-foreground]="currentStep() !== i">
               {{ step.title }}
             </h3>
-            <p class="text-xs text-muted-foreground">{{ step.subtitle }}</p>
+            <p
+              class="text-xs text-muted-foreground"
+              [class.text-success/80]="step.completed"
+
+            >{{ step.subtitle }}</p>
           </div>
           </div>
         }

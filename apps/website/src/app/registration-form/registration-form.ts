@@ -13,6 +13,7 @@ import { ProfileInfoStep } from './profile-info-step/profile-info-step';
 import { InstitutionDetailsStep } from './institution-details-step/institution-details-step';
 import { DocumentsStep } from './documents-step/documents-step';
 import { AdminCredentialsStep } from './admin-credentials-step/admin-credentials-step';
+import { Header } from '../header/header';
 
 interface Step {
   id: string;
@@ -60,6 +61,7 @@ interface RegistrationData {
     InstitutionDetailsStep,
     DocumentsStep,
     AdminCredentialsStep,
+    Header,
   ],
   providers: [
     provideIcons({

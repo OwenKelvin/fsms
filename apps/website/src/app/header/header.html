@@ -29,47 +29,50 @@
     }
   </div>
 
-  @if (isMobile()) {
-    <div class="w-full overflow-hidden transition-all duration-300 ease-in-out"
-         [class.max-h-0]="!isOpenMobile()"
-         [class.max-h-96]="isOpenMobile()"
-         [class.opacity-0]="!isOpenMobile()"
-         [class.opacity-100]="isOpenMobile()">
-      <nav hlmNavigationMenu
-           class="max-w-full p-4 bg-card"
-           orientation="vertical">
+  <ng-content select="[slot=end]">
+    @if (isMobile()) {
+      <div class="w-full overflow-hidden transition-all duration-300 ease-in-out"
+           [class.max-h-0]="!isOpenMobile()"
+           [class.max-h-96]="isOpenMobile()"
+           [class.opacity-0]="!isOpenMobile()"
+           [class.opacity-100]="isOpenMobile()">
+        <nav hlmNavigationMenu
+             class="max-w-full p-4 bg-card"
+             orientation="vertical">
+          <ul hlmNavigationMenuList>
+            <li hlmNavigationMenuItem class="w-full">
+              <a hlmNavigationMenuLink href="/documentation/introduction">Home</a>
+            </li>
+            <li hlmNavigationMenuItem class="w-full">
+              <a hlmNavigationMenuLink href="/documentation/introduction">Features</a>
+            </li>
+            <li hlmNavigationMenuItem class="w-full">
+              <a hlmNavigationMenuLink href="/documentation/introduction">About</a>
+            </li>
+            <li class="w-full">
+              <button hlmBtn class="w-full">Login</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    } @else {
+      <nav hlmNavigationMenu orientation="horizontal">
         <ul hlmNavigationMenuList>
-          <li hlmNavigationMenuItem class="w-full">
+          <li hlmNavigationMenuItem>
             <a hlmNavigationMenuLink href="/documentation/introduction">Home</a>
           </li>
-          <li hlmNavigationMenuItem class="w-full">
+          <li hlmNavigationMenuItem>
             <a hlmNavigationMenuLink href="/documentation/introduction">Features</a>
           </li>
-          <li hlmNavigationMenuItem class="w-full">
+          <li hlmNavigationMenuItem>
             <a hlmNavigationMenuLink href="/documentation/introduction">About</a>
           </li>
-          <li class="w-full">
-            <button hlmBtn class="w-full">Login</button>
+          <li>
+            <button hlmBtn>Login</button>
           </li>
         </ul>
       </nav>
-    </div>
-  } @else {
-    <nav hlmNavigationMenu orientation="horizontal">
-      <ul hlmNavigationMenuList>
-        <li hlmNavigationMenuItem>
-          <a hlmNavigationMenuLink href="/documentation/introduction">Home</a>
-        </li>
-        <li hlmNavigationMenuItem>
-          <a hlmNavigationMenuLink href="/documentation/introduction">Features</a>
-        </li>
-        <li hlmNavigationMenuItem>
-          <a hlmNavigationMenuLink href="/documentation/introduction">About</a>
-        </li>
-        <li>
-          <button hlmBtn>Login</button>
-        </li>
-      </ul>
-    </nav>
-  }
+    }
+  </ng-content>
+
 </header>

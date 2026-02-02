@@ -1,12 +1,25 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideChevronRight, lucideMail } from '@ng-icons/lucide';
+import { lucideChevronRight, lucideMail, lucideUser } from '@ng-icons/lucide';
 import { FormField } from '@angular/forms/signals';
-import { BrnSelectImports } from '@spartan-ng/brain/select';
+import { BrnSelect, BrnSelectImports } from '@spartan-ng/brain/select';
 
 import { HlmButton } from '@fsms/ui/button';
 import { HlmInput } from '@fsms/ui/input';
 import { HlmLabel } from '@fsms/ui/label';
+import {
+  HlmError,
+  HlmFormControl,
+  HlmFormField,
+  HlmPrefix,
+} from '@fsms/ui/form-field';
+import {
+  HlmSelectContent,
+  HlmSelectOption,
+  HlmSelectTrigger,
+  HlmSelectValue,
+} from '@fsms/ui/select';
+import { HlmIcon } from '@fsms/ui/icon';
 
 @Component({
   selector: 'app-profile-info-step',
@@ -19,8 +32,18 @@ import { HlmLabel } from '@fsms/ui/label';
     HlmButton,
     BrnSelectImports,
     HlmButton,
+    HlmFormField,
+    HlmSelectTrigger,
+    HlmError,
+    BrnSelect,
+    HlmSelectContent,
+    HlmSelectOption,
+    HlmSelectValue,
+    HlmIcon,
+    HlmFormControl,
+    HlmPrefix,
   ],
-  providers: [provideIcons({ lucideMail, lucideChevronRight })],
+  providers: [provideIcons({ lucideMail, lucideChevronRight, lucideUser })],
   template: `
     <div>
       <!-- Page Header -->
@@ -36,99 +59,105 @@ import { HlmLabel } from '@fsms/ui/label';
       <div class="space-y-6">
         <!-- First Name & Last Name -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="space-y-2">
+          <hlm-form-field>
             <label hlmLabel for="firstName">First Name</label>
-            <input
-              hlmInput
-              id="firstName"
-              type="text"
-              [formField]="form().firstName"
-              placeholder="e.g. John"
-              class="w-full"
-            />
-            @if (form().firstName().touched() && form().firstName().invalid()) {
-              <p class="text-xs text-red-600">
-                @for (error of form().firstName().errors(); track error) {
-                  {{ error.message }}
-                }
-              </p>
+            <hlm-form-control>
+              <hlm-prefix>
+                <ng-icon hlmIcon name="lucideUser" />
+              </hlm-prefix>
+              <input
+                hlmInput
+                id="firstName"
+                type="text"
+                [formField]="form().firstName"
+                placeholder="e.g. John"
+                class="w-full pl-9"
+              />
+            </hlm-form-control>
+            @for (error of form().firstName().errors(); track error) {
+              <hlm-error>{{ error.message }}</hlm-error>
             }
-          </div>
+          </hlm-form-field>
 
-          <div class="space-y-2">
+          <hlm-form-field>
             <label hlmLabel for="lastName">Last Name</label>
-            <input
-              hlmInput
-              id="lastName"
-              type="text"
-              [formField]="form().lastName"
-              placeholder="e.g. Smith"
+            <hlm-form-control>
+              <hlm-prefix>
+                <ng-icon hlmIcon name="lucideUser" />
+              </hlm-prefix>
+              <input
+                hlmInput
+                id="lastName"
+                type="text"
+                [formField]="form().lastName"
+                placeholder="e.g. Smith"
+                class="w-full pl-10"
+              />
+            </hlm-form-control>
+            @for (error of form().lastName().errors(); track error) {
+              <hlm-error>{{ error.message }}</hlm-error>
+            }
+          </hlm-form-field>
+
+          <!-- Job Title / Role -->
+          <hlm-form-field>
+            <label hlmLabel for="jobTitle">Job Title / Role</label>
+            <hlm-select
               class="w-full"
-            />
-            @if (form().lastName().touched() && form().lastName().invalid()) {
-              <p class="text-xs text-red-600">
-                @for (error of form().lastName().errors(); track error) {
-                  {{ error.message }}
+              placeholder="Select your role"
+              [formField]="form().jobTitle"
+            >
+              <hlm-select-trigger class="w-full">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content>
+                @for (jobTitle of jobTitles(); track jobTitle.id) {
+                  <hlm-option [value]="$any(jobTitle.id)">{{
+                    jobTitle.label
+                  }}</hlm-option>
                 }
+              </hlm-select-content>
+            </hlm-select>
+            @for (error of form().jobTitle().errors(); track error) {
+              <hlm-error>
+                {{ error.message }}
+              </hlm-error>
+            }
+          </hlm-form-field>
+
+          <!-- Professional Email Address -->
+          <hlm-form-field>
+            <label hlmLabel for="email">Professional Email Address</label>
+            <hlm-form-control>
+              <hlm-prefix>
+                <ng-icon
+                  name="lucideMail"
+                  size="base"
+                  class="text-muted-foreground"
+                />
+              </hlm-prefix>
+              <input
+                hlmInput
+                id="email"
+                type="email"
+                [formField]="form().email"
+                placeholder="john.smith@university.edu"
+                class="w-full pl-10"
+              />
+            </hlm-form-control>
+            @if (form().email().touched() && form().email().invalid()) {
+              @for (error of form().email().errors(); track error) {
+                <p class="text-xs text-red-600">
+                  {{ error.message }}
+                </p>
+              }
+            } @else {
+              <p class="text-xs text-muted-foreground">
+                Please use your official institutional email address for
+                verification.
               </p>
             }
-          </div>
-        </div>
-
-        <!-- Job Title / Role -->
-        <div class="space-y-2">
-          <label hlmLabel for="jobTitle">Job Title / Role</label>
-          <select
-            [formField]="form().jobTitle"
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
-            <option value="">Select your role</option>
-            <option value="registrar">Registrar</option>
-            <option value="dean">Dean</option>
-            <option value="director">Director</option>
-            <option value="administrator">Administrator</option>
-            <option value="president">President</option>
-            <option value="vice-president">Vice President</option>
-          </select>
-          @if (form().jobTitle().touched() && form().jobTitle().invalid()) {
-            <p class="text-xs text-red-600">
-              @for (error of form().jobTitle().errors(); track error) {
-                {{ error.message }}
-              }
-            </p>
-          }
-        </div>
-
-        <!-- Professional Email Address -->
-        <div class="space-y-2">
-          <label hlmLabel for="email">Professional Email Address</label>
-          <div class="relative">
-            <ng-icon
-              name="lucideMail"
-              size="18"
-              class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-            />
-            <input
-              hlmInput
-              id="email"
-              type="email"
-              [formField]="form().email"
-              placeholder="john.smith@university.edu"
-              class="w-full pl-10"
-            />
-          </div>
-          @if (form().email().touched() && form().email().invalid()) {
-            <p class="text-xs text-red-600">
-              @for (error of form().email().errors(); track error) {
-                {{ error.message }}
-              }
-            </p>
-          } @else {
-            <p class="text-xs text-muted-foreground">
-              Please use your official institutional email address for
-              verification.
-            </p>
-          }
+          </hlm-form-field>
         </div>
 
         <!-- Form Actions -->
@@ -137,16 +166,18 @@ import { HlmLabel } from '@fsms/ui/label';
             All fields are required
           </p>
 
-          <button
-            hlmBtn
-            type="button"
-            (click)="next.emit()"
-            [disabled]="!isValid()"
-            class="flex items-center gap-2"
-          >
-            Save & Continue
-            <ng-icon name="lucideChevronRight" size="18" />
-          </button>
+          <div>
+            <button
+              hlmBtn
+              type="button"
+              (click)="next.emit()"
+              [disabled]="!isValid()"
+              class="flex items-center gap-2"
+            >
+              Save & Continue
+              <ng-icon hlmIcon name="lucideChevronRight" size="base" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -156,4 +187,13 @@ export class ProfileInfoStep {
   form = input.required<any>();
   isValid = input.required<boolean>();
   next = output<void>();
+
+  jobTitles = signal([
+    { id: 'registrar', label: 'Registrar' },
+    { id: 'dean', label: 'Dean' },
+    { id: 'director', label: 'Director' },
+    { id: 'administrator', label: 'Administrator' },
+    { id: 'president', label: 'President' },
+    { id: 'vice-president', label: 'Vice President' },
+  ]);
 }
