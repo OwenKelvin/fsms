@@ -12,12 +12,14 @@ import {
   HlmFormControl,
   HlmFormField,
   HlmPrefix,
+  HlmHint
 } from '@fsms/ui/form-field';
 import {
+  HlmSelect,
   HlmSelectContent,
   HlmSelectOption,
   HlmSelectTrigger,
-  HlmSelectValue,
+  HlmSelectValue
 } from '@fsms/ui/select';
 import { HlmIcon } from '@fsms/ui/icon';
 
@@ -31,8 +33,10 @@ import { HlmIcon } from '@fsms/ui/icon';
     HlmLabel,
     HlmButton,
     BrnSelectImports,
+    HlmHint,
     HlmButton,
     HlmFormField,
+    HlmSelect,
     HlmSelectTrigger,
     HlmError,
     BrnSelect,
@@ -58,7 +62,7 @@ import { HlmIcon } from '@fsms/ui/icon';
       <!-- Form -->
       <div class="space-y-6">
         <!-- First Name & Last Name -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-8">
           <hlm-form-field>
             <label hlmLabel for="firstName">First Name</label>
             <hlm-form-control>
@@ -71,7 +75,7 @@ import { HlmIcon } from '@fsms/ui/icon';
                 type="text"
                 [formField]="form().firstName"
                 placeholder="e.g. John"
-                class="w-full pl-9"
+                class="w-full"
               />
             </hlm-form-control>
             @for (error of form().firstName().errors(); track error) {
@@ -91,7 +95,7 @@ import { HlmIcon } from '@fsms/ui/icon';
                 type="text"
                 [formField]="form().lastName"
                 placeholder="e.g. Smith"
-                class="w-full pl-10"
+                class="w-full"
               />
             </hlm-form-control>
             @for (error of form().lastName().errors(); track error) {
@@ -102,22 +106,28 @@ import { HlmIcon } from '@fsms/ui/icon';
           <!-- Job Title / Role -->
           <hlm-form-field>
             <label hlmLabel for="jobTitle">Job Title / Role</label>
-            <hlm-select
-              class="w-full"
-              placeholder="Select your role"
-              [formField]="form().jobTitle"
-            >
-              <hlm-select-trigger class="w-full">
-                <hlm-select-value />
-              </hlm-select-trigger>
-              <hlm-select-content>
-                @for (jobTitle of jobTitles(); track jobTitle.id) {
-                  <hlm-option [value]="$any(jobTitle.id)">{{
-                    jobTitle.label
-                  }}</hlm-option>
-                }
-              </hlm-select-content>
-            </hlm-select>
+            <hlm-form-control>
+              <hlm-prefix>
+                <ng-icon name="lucideUser" />
+              </hlm-prefix>
+              <hlm-select
+                class="w-full"
+                placeholder="Select your role"
+                [formField]="form().jobTitle"
+              >
+                <hlm-select-trigger class="w-full">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content>
+                  @for (jobTitle of jobTitles(); track jobTitle.id) {
+                    <hlm-option [value]="$any(jobTitle.id)">{{
+                        jobTitle.label
+                      }}
+                    </hlm-option>
+                  }
+                </hlm-select-content>
+              </hlm-select>
+            </hlm-form-control>
             @for (error of form().jobTitle().errors(); track error) {
               <hlm-error>
                 {{ error.message }}
@@ -131,8 +141,8 @@ import { HlmIcon } from '@fsms/ui/icon';
             <hlm-form-control>
               <hlm-prefix>
                 <ng-icon
+                  hlmIcon
                   name="lucideMail"
-                  size="base"
                   class="text-muted-foreground"
                 />
               </hlm-prefix>
@@ -142,21 +152,21 @@ import { HlmIcon } from '@fsms/ui/icon';
                 type="email"
                 [formField]="form().email"
                 placeholder="john.smith@university.edu"
-                class="w-full pl-10"
+                class="w-full"
               />
             </hlm-form-control>
-            @if (form().email().touched() && form().email().invalid()) {
-              @for (error of form().email().errors(); track error) {
-                <p class="text-xs text-red-600">
-                  {{ error.message }}
-                </p>
-              }
-            } @else {
-              <p class="text-xs text-muted-foreground">
-                Please use your official institutional email address for
-                verification.
-              </p>
+
+            @for (error of form().email().errors(); track error) {
+              <hlm-error>
+                {{ error.message }}
+              </hlm-error>
             }
+
+            <hlm-hint>
+              Please use your official institutional email address for
+              verification.
+            </hlm-hint>
+
           </hlm-form-field>
         </div>
 

@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { BrnFormFieldControl } from '@spartan-ng/brain/form-field';
+import { HlmFormFieldControlDirective } from '@fsms/ui/form-field';
 import { ErrorStateMatcher, ErrorStateTracker } from '@spartan-ng/brain/forms';
 import { classes } from '@fsms/ui/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -42,6 +43,7 @@ type InputVariants = VariantProps<typeof inputVariants>;
 			useExisting: forwardRef(() => HlmInput),
 		},
 	],
+	hostDirectives: [HlmFormFieldControlDirective],
 })
 export class HlmInput implements BrnFormFieldControl, DoCheck {
 	private readonly _injector = inject(Injector);
@@ -60,7 +62,7 @@ export class HlmInput implements BrnFormFieldControl, DoCheck {
 	public readonly ngControl: NgControl | null = this._injector.get(NgControl, null);
 
 	public readonly errorState = computed(() => this._errorStateTracker.errorState());
-
+	private readonly _formFieldControlDirective = inject(HlmFormFieldControlDirective, { self: true, optional: true });
 	constructor() {
 		this._errorStateTracker = new ErrorStateTracker(
 			this._defaultErrorStateMatcher,
@@ -69,7 +71,10 @@ export class HlmInput implements BrnFormFieldControl, DoCheck {
 			this._parentForm,
 		);
 
-		classes(() => [inputVariants({ error: this._state().error }), this._additionalClasses()]);
+		classes(() => {
+			const padding = this._formFieldControlDirective?.hasPrefix() ? 'pl-10' : '';
+			return [inputVariants({ error: this._state().error }), this._additionalClasses(), padding];
+		});
 
 		effect(() => {
 			const error = this._errorStateTracker.errorState();

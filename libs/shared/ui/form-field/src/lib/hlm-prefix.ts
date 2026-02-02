@@ -5,7 +5,7 @@ import { provideHlmIconConfig } from '@fsms/ui/icon';
 	selector: 'hlm-prefix',
 	template: ` <ng-content /> `,
 	host: {
-		class: 'absolute text-muted-foreground left-3 flex items-center',
+		class: 'pointer-events-none absolute text-muted-foreground left-3 flex items-center',
 	},
 	changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
