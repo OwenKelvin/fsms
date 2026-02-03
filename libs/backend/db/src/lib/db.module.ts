@@ -37,6 +37,7 @@ import {
   QuestionTagModel,
   ActivityLogModel,
   ActivityLogUserModel,
+  JobTitleModel
 } from './models';
 import { dbConfig } from './config/db.config';
 @Module({
@@ -81,6 +82,7 @@ import { dbConfig } from './config/db.config';
         QuestionTagModel,
         ActivityLogModel,
         ActivityLogUserModel,
+        JobTitleModel
       ],
     }),
   ],

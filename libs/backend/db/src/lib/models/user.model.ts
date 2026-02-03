@@ -1,5 +1,6 @@
-import { BelongsToMany, Column, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, BelongsToMany, Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { RoleModel } from './role.model';
+import { JobTitleModel } from './job-title.model';
 import { DataTypes } from 'sequelize';
 import { ActivityLogUserModel } from './activity-log-user.model';
 
@@ -37,6 +38,16 @@ export class UserModel extends Model {
 
   @Column({ type: DataTypes.STRING, allowNull: true })
   profilePhotoLink?: string;
+
+  @ForeignKey(() => JobTitleModel)
+  @Column({
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  })
+  jobTitleId?: number;
+
+  @BelongsTo(() => JobTitleModel)
+  jobTitle?: JobTitleModel;
 
   @BelongsToMany(() => RoleModel, {
     foreignKeyConstraint: true,

@@ -6,7 +6,8 @@
     "serve:website": "pnpm nx serve website --port 62000",
     "serve:teacher-app": "pnpm nx serve teacher-app --port 62001",
     "serve:student-app": "pnpm nx serve teacher-app --port 62002",
-    "docker-compose:up": "pnpm nx docker-compose:up backend"
+    "docker-compose:up": "pnpm nx docker-compose:up backend",
+    "docker-compose:down": "pnpm nx docker-compose:down backend"
   },
   "private": true,
   "dependencies": {
