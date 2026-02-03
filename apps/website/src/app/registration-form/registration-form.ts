@@ -1,5 +1,4 @@
 import { Component, computed, signal } from '@angular/core';
-import { email, form, minLength, required } from '@angular/forms/signals';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBuilding2,
@@ -23,14 +22,14 @@ interface Step {
   completed: boolean;
 }
 
-interface RegistrationData {
-  // Profile Info
+interface ProfileInfoFormValue {
   firstName: string;
   lastName: string;
   jobTitle: string;
   email: string;
+}
 
-  // Institution Details
+interface InstitutionDetailsFormValue {
   legalName: string;
   institutionType: string;
   accreditationNumber: string;
@@ -39,12 +38,14 @@ interface RegistrationData {
   stateProvince: string;
   zipPostalCode: string;
   officialWebsite: string;
+}
 
-  // Documents
+interface DocumentsFormValue {
   accreditationCertificate: File | null;
   operatingLicense: File | null;
+}
 
-  // Admin Credentials
+interface AdminCredentialsFormValue {
   username: string;
   password: string;
   confirmPassword: string;
@@ -108,12 +109,15 @@ export default class RegistrationForm {
     },
   ]);
 
-  // Signal-based form model
-  registrationModel = signal<RegistrationData>({
+  profileInfoValue = signal<ProfileInfoFormValue>({
     firstName: '',
     lastName: '',
     jobTitle: '',
     email: '',
+  });
+  profileInfoValid = signal(false);
+
+  institutionDetailsValue = signal<InstitutionDetailsFormValue>({
     legalName: '',
     institutionType: '',
     accreditationNumber: '',
@@ -122,104 +126,41 @@ export default class RegistrationForm {
     stateProvince: '',
     zipPostalCode: '',
     officialWebsite: '',
+  });
+  institutionDetailsValid = signal(false);
+
+  documentsValue = signal<DocumentsFormValue>({
     accreditationCertificate: null,
     operatingLicense: null,
+  });
+  documentsValid = signal(false);
+
+  adminCredentialsValue = signal<AdminCredentialsFormValue>({
     username: '',
     password: '',
     confirmPassword: '',
     enableTwoFactor: true,
   });
+  adminCredentialsValid = signal(false);
 
-  // Create field tree with validation
-  registrationForm = form(this.registrationModel, (schemaPath) => {
-    // Profile validation
-    required(schemaPath.firstName, { message: 'First name is required' });
-    required(schemaPath.lastName, { message: 'Last name is required' });
-    required(schemaPath.jobTitle, { message: 'Job title is required' });
-    required(schemaPath.email, { message: 'Email is required' });
-    email(schemaPath.email, { message: 'Please enter a valid email' });
-
-    // Institution validation
-    required(schemaPath.legalName, {
-      message: 'Institution legal name is required',
-    });
-    required(schemaPath.institutionType, {
-      message: 'Institution type is required',
-    });
-    required(schemaPath.accreditationNumber, {
-      message: 'Accreditation number is required',
-    });
-    required(schemaPath.streetAddress, {
-      message: 'Street address is required',
-    });
-    required(schemaPath.city, { message: 'City is required' });
-    required(schemaPath.stateProvince, {
-      message: 'State/Province is required',
-    });
-    required(schemaPath.zipPostalCode, {
-      message: 'ZIP/Postal code is required',
-    });
-    required(schemaPath.officialWebsite, {
-      message: 'Official website is required',
-    });
-
-    // Documents validation
-    required(schemaPath.accreditationCertificate, {
-      message: 'Accreditation certificate is required',
-    });
-    required(schemaPath.operatingLicense, {
-      message: 'Operating license is required',
-    });
-
-    // Credentials validation
-    required(schemaPath.username, { message: 'Username is required' });
-    minLength(schemaPath.username, 6, {
-      message: 'Username must be at least 6 characters',
-    });
-    required(schemaPath.password, { message: 'Password is required' });
-    minLength(schemaPath.password, 8, {
-      message: 'Password must be at least 8 characters',
-    });
-    required(schemaPath.confirmPassword, {
-      message: 'Please confirm your password',
-    });
-  });
+  registrationFormData = computed(() => ({
+    ...this.profileInfoValue(),
+    ...this.institutionDetailsValue(),
+    ...this.documentsValue(),
+    ...this.adminCredentialsValue(),
+  }));
 
   currentStepValid = computed(() => {
     const step = this.currentStep();
-    const form = this.registrationForm;
-
     switch (step) {
-      case 0: // Profile Info
-        return (
-          form.firstName().valid() &&
-          form.lastName().valid() &&
-          form.jobTitle().valid() &&
-          form.email().valid()
-        );
-      case 1: // Institution Details
-        return (
-          form.legalName().valid() &&
-          form.institutionType().valid() &&
-          form.accreditationNumber().valid() &&
-          form.streetAddress().valid() &&
-          form.city().valid() &&
-          form.stateProvince().valid() &&
-          form.zipPostalCode().valid() &&
-          form.officialWebsite().valid()
-        );
-      case 2: // Documents
-        return (
-          form.accreditationCertificate().valid() &&
-          form.operatingLicense().valid()
-        );
-      case 3: // Admin Credentials
-        return (
-          form.username().valid() &&
-          form.password().valid() &&
-          form.confirmPassword().valid() &&
-          form.password().value() === form.confirmPassword().value()
-        );
+      case 0:
+        return this.profileInfoValid();
+      case 1:
+        return this.institutionDetailsValid();
+      case 2:
+        return this.documentsValid();
+      case 3:
+        return this.adminCredentialsValid();
       default:
         return false;
     }
@@ -249,12 +190,12 @@ export default class RegistrationForm {
   }
 
   saveAndExit() {
-    console.log('Saving and exiting:', this.registrationModel());
+    console.log('Saving and exiting:', this.registrationFormData());
   }
 
   submitRegistration() {
     if (this.currentStepValid()) {
-      console.log('Submitting registration:', this.registrationModel());
+      console.log('Submitting registration:', this.registrationFormData());
       // Handle submission
     }
   }

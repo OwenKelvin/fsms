@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, effect, model, output, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideAward,
@@ -9,11 +9,18 @@ import {
 } from '@ng-icons/lucide';
 import { NgClass } from '@angular/common';
 import { HlmButton } from '@fsms/ui/button';
+import { form, required } from '@angular/forms/signals';
+import { HlmError } from '@fsms/ui/form-field';
+
+interface DocumentsFormValue {
+  accreditationCertificate: File | null;
+  operatingLicense: File | null;
+}
 
 @Component({
   selector: 'app-documents-step',
   standalone: true,
-  imports: [NgIcon, NgClass, HlmButton],
+  imports: [NgIcon, NgClass, HlmButton, HlmError],
   providers: [
     provideIcons({
       lucideAward,
@@ -98,12 +105,12 @@ import { HlmButton } from '@fsms/ui/button';
             </p>
           </div>
           @if (
-            form().accreditationCertificate().touched() &&
-            form().accreditationCertificate().invalid()
+            documentsForm.accreditationCertificate().touched() &&
+            documentsForm.accreditationCertificate().invalid()
           ) {
             <p class="text-xs text-red-600">
               @for (
-                error of form().accreditationCertificate().errors();
+                error of documentsForm.accreditationCertificate().errors();
                 track error
               ) {
                 {{ error.message }}
@@ -173,15 +180,11 @@ import { HlmButton } from '@fsms/ui/button';
               PDF, JPG, PNG · MAX 10MB
             </p>
           </div>
-          @if (
-            form().operatingLicense().touched() &&
-            form().operatingLicense().invalid()
-          ) {
-            <p class="text-xs text-red-600">
-              @for (error of form().operatingLicense().errors(); track error) {
-                {{ error.message }}
-              }
-            </p>
+          @for (
+              error of documentsForm.operatingLicense().errors();
+            track error
+            ) {
+            <hlm-error>{{ error.message }}</hlm-error>
           }
         </section>
 
@@ -204,7 +207,7 @@ import { HlmButton } from '@fsms/ui/button';
             hlmBtn
             type="button"
             (click)="next.emit()"
-            [disabled]="!isValid()"
+            [disabled]="!documentsForm().valid()"
             class="flex items-center gap-2"
           >
             Save & Continue
@@ -216,13 +219,29 @@ import { HlmButton } from '@fsms/ui/button';
   `,
 })
 export class DocumentsStep {
-  form = input.required<any>();
-  isValid = input.required<boolean>();
   next = output<void>();
   back = output<void>();
 
   accreditationFile = signal<File | null>(null);
   licenseFile = signal<File | null>(null);
+  formValue = model<DocumentsFormValue>({
+    accreditationCertificate: null,
+    operatingLicense: null,
+  });
+
+  public readonly documentsForm = form<DocumentsFormValue>(
+    this.formValue,
+    (schemaPath) => {
+      required(schemaPath.accreditationCertificate, {
+        message: 'Accreditation certificate is required',
+      });
+      required(schemaPath.operatingLicense, {
+        message: 'Operating license is required',
+      });
+    },
+  );
+
+  isValid = model<boolean>();
 
   onFileSelected(event: Event, type: 'accreditation' | 'license') {
     const input = event.target as HTMLInputElement;
@@ -230,10 +249,10 @@ export class DocumentsStep {
       const file = input.files[0];
       if (type === 'accreditation') {
         this.accreditationFile.set(file);
-        this.form().accreditationCertificate().value.set(file);
+        this.documentsForm.accreditationCertificate().value.set(file);
       } else {
         this.licenseFile.set(file);
-        this.form().operatingLicense().value.set(file);
+        this.documentsForm.operatingLicense().value.set(file);
       }
     }
   }

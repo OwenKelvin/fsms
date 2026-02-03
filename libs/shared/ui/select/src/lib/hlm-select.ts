@@ -6,6 +6,6 @@ import { classes } from '@fsms/ui/utils';
 })
 export class HlmSelect {
 	constructor() {
-		classes(() => 'space-y-2');
+		classes(() => 'w-full space-y-2');
 	}
 }

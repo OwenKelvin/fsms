@@ -1,0 +1,142 @@
+<form (submit)="onSubmit($event)">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold mb-2">Profile Information</h1>
+    <p class="text-muted-foreground">
+      Step 1 of 4: Tell us about yourself. You are registering as the
+      primary point of contact for your institution.
+    </p>
+  </div>
+
+  <!-- Form -->
+  <div class="space-y-6">
+    <!-- First Name & Last Name -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-8">
+      <hlm-form-field>
+        <label hlmLabel for="firstName">First Name</label>
+        <hlm-form-control>
+          <hlm-prefix>
+            <ng-icon hlmIcon name="lucideUser" />
+          </hlm-prefix>
+          <input
+            hlmInput
+            id="firstName"
+            type="text"
+            [formField]="profileInfoForm.firstName"
+            placeholder="e.g. John"
+            class="w-full"
+          />
+        </hlm-form-control>
+        @for (error of profileInfoForm.firstName().errors(); track error) {
+          <hlm-error>{{ error.message }}</hlm-error>
+        }
+      </hlm-form-field>
+
+      <hlm-form-field>
+        <label hlmLabel for="lastName">Last Name</label>
+        <hlm-form-control>
+          <hlm-prefix>
+            <ng-icon hlmIcon name="lucideUser" />
+          </hlm-prefix>
+          <input
+            hlmInput
+            id="lastName"
+            type="text"
+            [formField]="profileInfoForm.lastName"
+            placeholder="e.g. Smith"
+            class="w-full"
+          />
+        </hlm-form-control>
+        @for (error of profileInfoForm.lastName().errors(); track error) {
+          <hlm-error>{{ error.message }}</hlm-error>
+        }
+      </hlm-form-field>
+
+      <!-- Job Title / Role -->
+      <hlm-form-field>
+        <label hlmLabel for="jobTitle">Job Title / Role</label>
+        <hlm-form-control>
+          <hlm-prefix>
+            <ng-icon name="lucideUser" />
+          </hlm-prefix>
+          <hlm-select
+            id="jobTitle"
+            placeholder="Select your role"
+            [formField]="profileInfoForm.jobTitle"
+          >
+            <hlm-select-trigger>
+              <hlm-select-value />
+            </hlm-select-trigger>
+            <hlm-select-content>
+              @for (jobTitle of jobTitles(); track jobTitle.id) {
+                <hlm-option [value]="$any(jobTitle.id)">{{
+                    jobTitle.label
+                  }}
+                </hlm-option>
+              }
+            </hlm-select-content>
+          </hlm-select>
+        </hlm-form-control>
+        @for (error of profileInfoForm.jobTitle().errors(); track error) {
+          <hlm-error>
+            {{ error.message }}
+          </hlm-error>
+        }
+      </hlm-form-field>
+
+      <!-- Professional Email Address -->
+      <hlm-form-field>
+        <label hlmLabel for="email">Professional Email Address</label>
+        <hlm-form-control>
+          <hlm-prefix>
+            <ng-icon
+              hlmIcon
+              name="lucideMail"
+              class="text-muted-foreground"
+            />
+          </hlm-prefix>
+          <input
+            hlmInput
+            id="email"
+            type="email"
+            [formField]="profileInfoForm.email"
+            placeholder="john.smith@university.edu"
+            class="w-full"
+          />
+        </hlm-form-control>
+
+        @for (error of profileInfoForm.email().errors(); track error) {
+          <hlm-error>
+            {{ error.message }}
+          </hlm-error>
+        }
+
+        <hlm-hint>
+          Please use your official institutional email address for
+          verification.
+        </hlm-hint>
+
+      </hlm-form-field>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-between pt-8">
+      <p class="text-sm italic text-muted-foreground">
+        All fields are required
+      </p>
+
+      <div>
+        <button
+          hlmBtn
+          type="submit"
+          (click)="next.emit()"
+          [disabled]="!profileInfoForm().valid()"
+          class="flex items-center gap-2"
+        >
+          Save & Continue
+          <ng-icon hlmIcon name="lucideChevronRight" size="base" />
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

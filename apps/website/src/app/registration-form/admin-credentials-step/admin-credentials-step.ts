@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, model, output } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideCheckCircle,
@@ -7,15 +7,33 @@ import {
   lucideShieldCheck,
   lucideUser,
 } from '@ng-icons/lucide';
-import { FormField } from '@angular/forms/signals';
+import { form, FormField, minLength, required, validate } from '@angular/forms/signals';
 import { HlmLabel } from '@fsms/ui/label';
 import { HlmInput } from '@fsms/ui/input';
 import { HlmButton } from '@fsms/ui/button';
+import { HlmError, HlmFormControl, HlmHint, HlmPrefix } from '@fsms/ui/form-field';
+
+interface AdminCredentialsFormValue {
+  username: string;
+  password: string;
+  confirmPassword: string;
+  enableTwoFactor: boolean;
+}
 
 @Component({
   selector: 'app-admin-credentials-step',
   standalone: true,
-  imports: [NgIcon, FormField, HlmLabel, HlmInput, HlmButton],
+  imports: [
+    NgIcon,
+    FormField,
+    HlmLabel,
+    HlmInput,
+    HlmButton,
+    HlmFormControl,
+    HlmPrefix,
+    HlmError,
+    HlmHint,
+  ],
   providers: [
     provideIcons({
       lucideUser,
@@ -50,31 +68,30 @@ import { HlmButton } from '@fsms/ui/button';
           <!-- Username -->
           <div class="space-y-2">
             <label hlmLabel for="username">Username</label>
-            <div class="relative">
-              <span
-                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm"
-                >&#64;</span
-              >
+            <hlm-form-control>
+              <hlm-prefix>
+                <span class="text-muted-foreground text-sm">&#64;</span>
+              </hlm-prefix>
               <input
                 hlmInput
                 id="username"
                 type="text"
-                [formField]="form().username"
-                placeholder="admin_metrouni"
-                class="w-full pl-8"
+                [formField]="adminCredentialsForm.username"
+                placeholder="Enter username"
+                class="w-full"
               />
-            </div>
-            @if (form().username().touched() && form().username().invalid()) {
-              <p class="text-xs text-red-600">
-                @for (error of form().username().errors(); track error) {
-                  {{ error.message }}
-                }
-              </p>
-            } @else {
-              <p class="text-xs text-muted-foreground">
-                Must be unique and at least 6 characters.
-              </p>
+            </hlm-form-control>
+
+            @for (
+                error of adminCredentialsForm.username().errors();
+              track error
+              ) {
+              <hlm-error>{{ error.message }}</hlm-error>
             }
+
+            <hlm-hint>
+              Must be unique and at least 6 characters.
+            </hlm-hint>
           </div>
         </section>
 
@@ -95,16 +112,15 @@ import { HlmButton } from '@fsms/ui/button';
                 hlmInput
                 id="password"
                 type="password"
-                [formField]="form().password"
+                [formField]="adminCredentialsForm.password"
                 placeholder="••••••••"
                 class="w-full"
               />
-              @if (form().password().touched() && form().password().invalid()) {
-                <p class="text-xs text-red-600">
-                  @for (error of form().password().errors(); track error) {
-                    {{ error.message }}
-                  }
-                </p>
+              @for (
+                  error of adminCredentialsForm.password().errors();
+                track error
+                ) {
+                <hlm-error>{{ error.message }}</hlm-error>
               }
             </div>
 
@@ -114,29 +130,15 @@ import { HlmButton } from '@fsms/ui/button';
                 hlmInput
                 id="confirmPassword"
                 type="password"
-                [formField]="form().confirmPassword"
+                [formField]="adminCredentialsForm.confirmPassword"
                 placeholder="••••••••"
                 class="w-full"
               />
-              @if (
-                form().confirmPassword().touched() &&
-                form().confirmPassword().invalid()
-              ) {
-                <p class="text-xs text-red-600">
-                  @for (
-                    error of form().confirmPassword().errors();
-                    track error
-                  ) {
-                    {{ error.message }}
-                  }
-                </p>
-              }
-              @if (
-                form().password().value() !==
-                  form().confirmPassword().value() &&
-                form().confirmPassword().touched()
-              ) {
-                <p class="text-xs text-red-600">Passwords do not match</p>
+              @for (
+                  error of adminCredentialsForm.confirmPassword().errors();
+                track error
+                ) {
+                <hlm-error>{{ error.message }}</hlm-error>
               }
             </div>
           </div>
@@ -172,7 +174,7 @@ import { HlmButton } from '@fsms/ui/button';
             <div class="flex items-start gap-3">
               <input
                 type="checkbox"
-                [formField]="form().enableTwoFactor"
+                [formField]="adminCredentialsForm.enableTwoFactor"
                 class="mt-0.5"
               />
               <div class="flex-1">
@@ -215,7 +217,7 @@ import { HlmButton } from '@fsms/ui/button';
             hlmBtn
             type="button"
             (click)="submitted.emit()"
-            [disabled]="!isValid()"
+            [disabled]="!adminCredentialsForm().valid()"
             class="flex items-center gap-2"
           >
             Submit Registration
@@ -227,13 +229,43 @@ import { HlmButton } from '@fsms/ui/button';
   `,
 })
 export class AdminCredentialsStep {
-  form = input.required<any>();
-  isValid = input.required<boolean>();
   submitted = output<void>();
   back = output<void>();
+  formValue = model<AdminCredentialsFormValue>({
+    username: '',
+    password: '',
+    confirmPassword: '',
+    enableTwoFactor: true,
+  });
+
+  public readonly adminCredentialsForm = form<AdminCredentialsFormValue>(
+    this.formValue,
+    (schemaPath) => {
+      required(schemaPath.username, { message: 'Username is required' });
+      minLength(schemaPath.username, 6, {
+        message: 'Username must be at least 6 characters',
+      });
+      required(schemaPath.password, { message: 'Password is required' });
+      minLength(schemaPath.password, 8, {
+        message: 'Password must be at least 8 characters',
+      });
+      required(schemaPath.confirmPassword, {
+        message: 'Please confirm your password',
+      });
+      validate(schemaPath.confirmPassword, ({ value, valueOf }) => {
+        if (value() !== valueOf(schemaPath.password)) {
+          return {
+            kind: 'mismatch',
+            message: 'Passwords do not match',
+          };
+        }
+        return undefined;
+      });
+    },
+  );
 
   passwordStrength = computed(() => {
-    const pwd = this.form().password().value() || '';
+    const pwd = this.adminCredentialsForm.password().value() || '';
     let strength = 0;
 
     if (pwd.length >= 8) strength += 25;
@@ -252,4 +284,6 @@ export class AdminCredentialsStep {
     if (strength < 65) return 'MODERATE PASSWORD';
     return 'STRONG PASSWORD';
   });
+
+  isValid = model<boolean>();
 }

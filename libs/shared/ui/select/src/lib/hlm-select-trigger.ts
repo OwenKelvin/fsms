@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, contentChild, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, contentChild, HostBinding, inject, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronDown } from '@ng-icons/lucide';
 import { BrnSelect, BrnSelectTrigger } from '@spartan-ng/brain/select';
@@ -9,7 +9,7 @@ import type { ClassValue } from 'clsx';
 import { HlmFormFieldControlDirective } from '@fsms/ui/form-field';
 
 export const selectTriggerVariants = cva(
-	`border-input [&>ng-icon:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 [&>ng-icon]:pointer-events-none [&>ng-icon]:size-4 [&>ng-icon]:shrink-0`,
+	`w-full border-input [&>ng-icon:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 [&>ng-icon]:pointer-events-none [&>ng-icon]:size-4 [&>ng-icon]:shrink-0`,
 	{
 		variants: {
 			error: {
@@ -41,6 +41,10 @@ export const selectTriggerVariants = cva(
 	`,
 })
 export class HlmSelectTrigger {
+  @HostBinding('class')
+  get hostClass() {
+    return 'block w-full'
+  }
 	protected readonly _icon = contentChild(HlmIcon);
 
 	protected readonly _brnSelect = inject(BrnSelect, { optional: true });
@@ -54,4 +58,5 @@ export class HlmSelectTrigger {
 		const padding = this._formFieldControlDirective?.hasPrefix() ? 'pl-10' : '';
 		return hlm(selectTriggerVariants({ error: this._brnSelect?.errorState() }), this.userClass(), padding);
 	});
+
 }

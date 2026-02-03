@@ -1,0 +1,241 @@
+<div>
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold mb-2">Institution Details</h1>
+    <p class="text-muted-foreground">
+      Step 2 of 4: Please provide the legal identification and location of
+      your entity.
+    </p>
+  </div>
+
+  <!-- Form -->
+  <div class="space-y-8">
+    <!-- IDENTIFICATION Section -->
+    <section class="space-y-6">
+      <div
+        class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground"
+      >
+        <ng-icon name="lucideFingerprint" size="18" />
+        <span>IDENTIFICATION</span>
+      </div>
+
+      <!-- Institution Legal Name -->
+      <div class="space-y-2">
+        <hlm-form-field>
+          <label hlmLabel for="legalName">Institution Legal Name</label>
+          <input
+            hlmInput
+            id="legalName"
+            type="text"
+            [formField]="institutionDetailsForm.legalName"
+            placeholder="e.g. Metropolitan University of Technology"
+            class="w-full"
+          />
+          @for (error of institutionDetailsForm.legalName().errors();
+            track error) {
+            <hlm-error>{{ error.message }}</hlm-error>
+          }
+        </hlm-form-field>
+      </div>
+
+      <!-- Institution Type & Accreditation Number -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <hlm-form-field>
+          <label hlmLabel for="institutionType">Institution Type</label>
+          <hlm-form-control>
+            <hlm-prefix>
+              <ng-icon name="lucideUser" />
+            </hlm-prefix>
+            <hlm-select
+              id="institutionType"
+              [formField]="institutionDetailsForm.institutionType"
+            >
+              <hlm-select-trigger>
+                <hlm-select-value>Select Institution</hlm-select-value>
+              </hlm-select-trigger>
+              <hlm-select-content>
+                <hlm-option [value]="">Select type</hlm-option>
+                @for (institutionType of institutionTypes(); track institutionType.id) {
+                  <hlm-option [value]="$any(institutionType.id)">{{ institutionType.label }}</hlm-option>
+                }
+              </hlm-select-content>
+
+            </hlm-select>
+          </hlm-form-control>
+          @for (error of institutionDetailsForm.institutionType().errors();
+            track error.kind) {
+            <hlm-error>{{ error.message }}</hlm-error>
+          }
+        </hlm-form-field>
+
+        <hlm-form-field>
+          <label hlmLabel for="accreditationNumber"
+          >Accreditation Number</label
+          >
+          <input
+            hlmInput
+            id="accreditationNumber"
+            type="text"
+            [formField]="institutionDetailsForm.accreditationNumber"
+            placeholder="REG-000000"
+            class="w-full"
+          />
+
+          @for (error of institutionDetailsForm.accreditationNumber().errors();
+            track error) {
+            <hlm-error>{{ error.message }}</hlm-error>
+          }
+          <hlm-hint>Found on your Ministry of Education certificate</hlm-hint>
+        </hlm-form-field>
+      </div>
+    </section>
+
+    <!-- LOCATION Section -->
+    <section class="space-y-6">
+      <div
+        class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground"
+      >
+        <ng-icon name="lucideMapPin" size="18" />
+        <span>LOCATION</span>
+      </div>
+
+      <!-- Street Address -->
+      <div class="space-y-2">
+        <label hlmLabel for="streetAddress">Street Address</label>
+        <input
+          hlmInput
+          id="streetAddress"
+          type="text"
+          [formField]="institutionDetailsForm.streetAddress"
+          placeholder="123 Education Plaza"
+          class="w-full"
+        />
+        @for (error of institutionDetailsForm.streetAddress().errors();
+          track error) {
+          <hlm-error>{{ error.message }}</hlm-error>
+        }
+      </div>
+
+      <!-- City, State, ZIP -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="space-y-2">
+          <hlm-form-field>
+            <label hlmLabel for="city">City</label>
+            <input
+              hlmInput
+              id="city"
+              type="text"
+              [formField]="institutionDetailsForm.city"
+              class="w-full"
+            />
+            @for (error of institutionDetailsForm.city().errors();
+              track error) {
+              <hlm-error>{{ error.message }}</hlm-error>
+            }
+          </hlm-form-field>
+        </div>
+
+        <div class="space-y-2">
+          <hlm-form-field>
+            <label hlmLabel for="stateProvince">State / Province</label>
+            <input
+              hlmInput
+              id="stateProvince"
+              type="text"
+              [formField]="institutionDetailsForm.stateProvince"
+              class="w-full"
+            />
+            @for (error of institutionDetailsForm.stateProvince().errors();
+              track error) {
+              <hlm-error>{{ error.message }}</hlm-error>
+            }
+          </hlm-form-field>
+        </div>
+
+        <div class="space-y-2">
+          <hlm-form-field>
+            <label hlmLabel for="zipPostalCode">ZIP / Postal Code</label>
+            <input
+              hlmInput
+              id="zipPostalCode"
+              type="text"
+              [formField]="institutionDetailsForm.zipPostalCode"
+              class="w-full"
+            />
+
+            @for (error of institutionDetailsForm.zipPostalCode().errors();
+              track error) {
+              <hlm-error>{{ error.message }}</hlm-error>
+            }
+          </hlm-form-field>
+        </div>
+      </div>
+    </section>
+
+    <!-- ONLINE PRESENCE Section -->
+    <section class="space-y-6">
+      <div
+        class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground"
+      >
+        <ng-icon name="lucideGlobe" size="18" />
+        <span>ONLINE PRESENCE</span>
+      </div>
+
+      <!-- Official Website -->
+      <div class="space-y-2">
+        <label hlmLabel for="officialWebsite">Official Website</label>
+        <div class="relative">
+              <span
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm"
+              >
+                https://
+              </span>
+          <input
+            hlmInput
+            id="officialWebsite"
+            type="text"
+            [formField]="institutionDetailsForm.officialWebsite"
+            placeholder="www.university.edu"
+            class="w-full pl-16"
+          />
+        </div>
+        @if (institutionDetailsForm.officialWebsite().touched() &&
+        institutionDetailsForm.officialWebsite().invalid()) {
+          <p class="text-xs text-red-600">
+            @for (error of institutionDetailsForm.officialWebsite().errors();
+              track error) {
+              {{ error.message }}
+            }
+          </p>
+        }
+      </div>
+    </section>
+
+    <!-- Form Actions -->
+    <div
+      class="flex items-center justify-between pt-8 border-t border-gray-200"
+    >
+      <button
+        hlmBtn
+        variant="ghost"
+        type="button"
+        (click)="back.emit()"
+        class="flex items-center gap-2"
+      >
+        <ng-icon name="lucideChevronLeft" size="18" />
+        Back to Profile Info
+      </button>
+
+      <button
+        hlmBtn
+        type="button"
+        (click)="next.emit()"
+        [disabled]="!institutionDetailsForm().valid()"
+        class="flex items-center gap-2"
+      >
+        Save & Continue
+        <ng-icon hlmIcon name="lucideChevronRight" size="base" />
+      </button>
+    </div>
+  </div>
+</div>

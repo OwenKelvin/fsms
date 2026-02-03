@@ -70,30 +70,34 @@
         @switch (currentStep()) {
           @case (0) {
             <app-profile-info-step
-              [form]="registrationForm"
-              [isValid]="currentStepValid()"
-              (next)="saveAndContinue()" />
+              [(formValue)]="profileInfoValue"
+              [(isValid)]="profileInfoValid"
+              (next)="saveAndContinue()"
+            />
           }
           @case (1) {
             <app-institution-details-step
-              [form]="registrationForm"
-              [isValid]="currentStepValid()"
+              [(formValue)]="institutionDetailsValue"
+              [(isValid)]="institutionDetailsValid"
               (next)="saveAndContinue()"
-              (back)="previousStep()" />
+              (back)="previousStep()"
+            />
           }
           @case (2) {
             <app-documents-step
-              [form]="registrationForm"
-              [isValid]="currentStepValid()"
+              [(formValue)]="documentsValue"
+              [(isValid)]="documentsValid"
               (next)="saveAndContinue()"
-              (back)="previousStep()" />
+              (back)="previousStep()"
+            />
           }
           @case (3) {
             <app-admin-credentials-step
-              [form]="registrationForm"
-              [isValid]="currentStepValid()"
+              [(formValue)]="adminCredentialsValue"
+              [(isValid)]="adminCredentialsValid"
               (submit)="submitRegistration()"
-              (back)="previousStep()" />
+              (back)="previousStep()"
+            />
           }
         }
       </div>
