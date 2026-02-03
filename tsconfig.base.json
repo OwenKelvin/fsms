@@ -73,6 +73,9 @@
       "@fsms/backend/examinee-group-backend-service": [
         "libs/backend/services/examinee-group-service/src/index.ts"
       ],
+      "@fsms/backend/registration-backend-service": [
+        "libs/backend/services/registration-service/src/index.ts"
+      ],
       "@fsms/backend/file-upload": [
         "libs/backend/file-upload/src/index.ts"
       ],
