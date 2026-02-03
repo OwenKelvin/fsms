@@ -9,7 +9,7 @@
   </div>
 
   <!-- Form -->
-  <div class="space-y-6">
+  <form class="space-y-4">
     <!-- First Name & Last Name -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-8">
       <hlm-form-field>
@@ -105,7 +105,7 @@
           />
         </hlm-form-control>
 
-        @for (error of profileInfoForm.email().errors(); track error) {
+        @for (error of profileInfoForm.email().errors(); track error.kind) {
           <hlm-error>
             {{ error.message }}
           </hlm-error>
@@ -138,5 +138,5 @@
         </button>
       </div>
     </div>
-  </div>
+  </form>
 </form>
