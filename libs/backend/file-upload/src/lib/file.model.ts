@@ -24,7 +24,7 @@ export interface StoredFileMetadata {
   fileSrc?: string;
 }
 
-export type AppMimeType = 'image/png' | 'image/jpeg';
+export type AppMimeType = 'image/png' | 'image/jpeg' | 'application/pdf';
 
 export interface UploadedFileMetadata {
   file: Promise<{

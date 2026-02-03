@@ -27,8 +27,14 @@ export class FileUploadService extends CrudAbstractService<FileUploadModel> {
     file: BufferedFile,
     baseBucket: string = this.baseBucket,
   ) {
-    if (!(file.mimetype.includes('jpeg') || file.mimetype.includes('png'))) {
-      throw new HttpException('Error uploading file', HttpStatus.BAD_REQUEST);
+    // Support PDF, JPEG, and PNG files
+    const allowedTypes = ['jpeg', 'jpg', 'png', 'pdf'];
+    const isAllowedType = allowedTypes.some(type => 
+      file.mimetype.toLowerCase().includes(type)
+    );
+    
+    if (!isAllowedType) {
+      throw new HttpException('File type not supported. Only PDF, JPG, and PNG files are allowed.', HttpStatus.BAD_REQUEST);
     }
     const temp_filename = Date.now().toString();
     const hashedFileName = crypto
