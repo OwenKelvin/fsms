@@ -1,40 +1,9 @@
 {
-  "name": "backend-registration-service",
+  "name": "registration-backend-service",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/backend/services/registration-service/src",
+  "sourceRoot": "libs/backend/services/registration/src",
   "projectType": "library",
-  "tags": ["backend", "service"],
-  "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/backend/services/registration-service",
-        "main": "libs/backend/services/registration-service/src/index.ts",
-        "tsConfig": "libs/backend/services/registration-service/tsconfig.lib.json",
-        "assets": ["libs/backend/services/registration-service/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/backend/services/registration-service/**/*.ts"]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/backend/services/registration-service/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "coverageReporters": ["text"]
-        }
-      }
-    }
-  }
+  "tags": [],
+  "// targets": "to see all targets run: nx show project registration-backend-service --web",
+  "targets": {}
 }

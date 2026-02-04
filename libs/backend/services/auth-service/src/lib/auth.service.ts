@@ -13,6 +13,8 @@ import { v4 as uuid } from 'uuid';
 import { JwtPayload, verify } from 'jsonwebtoken';
 import { compare, hash } from 'bcrypt';
 import Keyv from 'keyv';
+import * as speakeasy from 'speakeasy';
+import * as QRCode from 'qrcode';
 
 interface RegisterInputDto {
   firstName: string;
@@ -26,6 +28,17 @@ interface LoginInputDto {
   email: string;
 
   password: string;
+}
+
+interface TwoFactorSetup {
+  secret: string;
+  qrCodeUrl: string;
+  backupCodes: string[];
+}
+
+interface TwoFactorVerification {
+  token: string;
+  backupCode?: string;
 }
 
 const parseTimeSpan = (timeSpan: string): number => {
@@ -312,5 +325,172 @@ export class AuthService {
     await user.save();
 
     return user;
+  }
+
+  /**
+   * Setup two-factor authentication for a user
+   * Generates TOTP secret, QR code, and backup codes
+   */
+  async setupTwoFactorAuth(userId: number): Promise<TwoFactorSetup> {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    // Generate TOTP secret
+    const secret = speakeasy.generateSecret({
+      name: `FSMS (${user.email})`,
+      issuer: 'FSMS',
+      length: 32,
+    });
+
+    // Generate QR code URL
+    const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url!);
+
+    // Generate backup codes
+    const backupCodes = this.generateBackupCodes();
+
+    // Store the secret and backup codes (but don't enable 2FA yet)
+    user.twoFactorSecret = secret.base32;
+    user.twoFactorBackupCodes = JSON.stringify(backupCodes);
+    await user.save();
+
+    return {
+      secret: secret.base32!,
+      qrCodeUrl,
+      backupCodes,
+    };
+  }
+
+  /**
+   * Enable two-factor authentication after verifying the initial token
+   */
+  async enableTwoFactorAuth(userId: number, token: string): Promise<boolean> {
+    const user = await this.userService.findById(userId);
+    if (!user || !user.twoFactorSecret) {
+      throw new BadRequestException('Two-factor authentication not set up');
+    }
+
+    const isValid = speakeasy.totp.verify({
+      secret: user.twoFactorSecret,
+      encoding: 'base32',
+      token,
+      window: 2, // Allow 2 time steps of tolerance
+    });
+
+    if (!isValid) {
+      throw new BadRequestException('Invalid verification token');
+    }
+
+    user.twoFactorEnabled = true;
+    await user.save();
+
+    return true;
+  }
+
+  /**
+   * Disable two-factor authentication
+   */
+  async disableTwoFactorAuth(userId: number, token: string): Promise<boolean> {
+    const user = await this.userService.findById(userId);
+    if (!user || !user.twoFactorEnabled) {
+      throw new BadRequestException('Two-factor authentication not enabled');
+    }
+
+    const isValid = await this.verifyTwoFactorToken(user, { token });
+    if (!isValid) {
+      throw new BadRequestException('Invalid verification token');
+    }
+
+    user.twoFactorEnabled = false;
+    user.twoFactorSecret = null;
+    user.twoFactorBackupCodes = null;
+    await user.save();
+
+    return true;
+  }
+
+  /**
+   * Verify two-factor authentication token or backup code
+   */
+  async verifyTwoFactorToken(
+    user: UserModel,
+    verification: TwoFactorVerification,
+  ): Promise<boolean> {
+    if (!user.twoFactorEnabled || !user.twoFactorSecret) {
+      return false;
+    }
+
+    // Try backup code first if provided
+    if (verification.backupCode) {
+      return this.verifyBackupCode(user, verification.backupCode);
+    }
+
+    // Verify TOTP token
+    const isValid = speakeasy.totp.verify({
+      secret: user.twoFactorSecret,
+      encoding: 'base32',
+      token: verification.token,
+      window: 2, // Allow 2 time steps of tolerance
+    });
+
+    return isValid;
+  }
+
+  /**
+   * Verify and consume a backup code
+   */
+  private async verifyBackupCode(user: UserModel, backupCode: string): Promise<boolean> {
+    if (!user.twoFactorBackupCodes) {
+      return false;
+    }
+
+    const backupCodes = JSON.parse(user.twoFactorBackupCodes) as string[];
+    const codeIndex = backupCodes.indexOf(backupCode);
+
+    if (codeIndex === -1) {
+      return false;
+    }
+
+    // Remove the used backup code
+    backupCodes.splice(codeIndex, 1);
+    user.twoFactorBackupCodes = JSON.stringify(backupCodes);
+    await user.save();
+
+    return true;
+  }
+
+  /**
+   * Generate backup codes for 2FA recovery
+   */
+  private generateBackupCodes(): string[] {
+    const codes: string[] = [];
+    for (let i = 0; i < 10; i++) {
+      // Generate 8-character alphanumeric codes
+      const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+      codes.push(code);
+    }
+    return codes;
+  }
+
+  /**
+   * Regenerate backup codes for a user
+   */
+  async regenerateBackupCodes(userId: number, token: string): Promise<string[]> {
+    const user = await this.userService.findById(userId);
+    if (!user || !user.twoFactorEnabled) {
+      throw new BadRequestException('Two-factor authentication not enabled');
+    }
+
+    const isValid = await this.verifyTwoFactorToken(user, { token });
+    if (!isValid) {
+      throw new BadRequestException('Invalid verification token');
+    }
+
+    const backupCodes = this.generateBackupCodes();
+    user.twoFactorBackupCodes = JSON.stringify(backupCodes);
+    await user.save();
+
+    return backupCodes;
   }
 }

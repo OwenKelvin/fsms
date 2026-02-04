@@ -39,6 +39,15 @@ export class UserModel extends Model {
   @Column({ type: DataTypes.STRING, allowNull: true })
   profilePhotoLink?: string;
 
+  @Column({ type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false })
+  twoFactorEnabled?: boolean;
+
+  @Column({ type: DataTypes.STRING, allowNull: true })
+  twoFactorSecret?: string;
+
+  @Column({ type: DataTypes.TEXT, allowNull: true })
+  twoFactorBackupCodes?: string;
+
   @ForeignKey(() => JobTitleModel)
   @Column({
     type: DataTypes.INTEGER,

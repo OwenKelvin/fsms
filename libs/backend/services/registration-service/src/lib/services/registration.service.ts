@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, ConflictException } from '@nestjs/common';
+import { Injectable, BadRequestException, ConflictException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { 
   UserModel, 
@@ -7,10 +7,14 @@ import {
   RegistrationRecordModel, 
   RegistrationStatus,
   RegistrationStatusHistoryModel,
-  InstitutionType 
+  InstitutionType,
+  RoleModel 
 } from '@fsms/backend/db';
 import { Op, Transaction } from 'sequelize';
 import { hash } from 'bcrypt';
+import { Sequelize } from 'sequelize-typescript';
+import { EmailService } from '@fsms/backend/email-service';
+import { AuthServiceBackend } from '@fsms/backend/auth-service';
 
 export interface ProfileInfoInput {
   firstName: string;
@@ -47,8 +51,27 @@ export interface ValidationError {
   message: string;
 }
 
+export interface RegistrationResult {
+  success: boolean;
+  institutionId?: number;
+  adminUserId?: number;
+  twoFactorSetup?: {
+    secret: string;
+    qrCodeUrl: string;
+    backupCodes: string[];
+  };
+  errors?: ValidationError[];
+}
+
+export interface CompleteRegistrationData {
+  profileInfo: ProfileInfoInput;
+  institutionDetails: InstitutionDetailsInput;
+  adminCredentials: AdminCredentialsInput;
+}
+
 @Injectable()
 export class RegistrationService {
+  private readonly logger = new Logger(RegistrationService.name);
   private readonly saltOrRounds = 10;
 
   constructor(
@@ -57,7 +80,13 @@ export class RegistrationService {
     @InjectModel(JobTitleModel) private readonly jobTitleModel: typeof JobTitleModel,
     @InjectModel(RegistrationRecordModel) private readonly registrationRecordModel: typeof RegistrationRecordModel,
     @InjectModel(RegistrationStatusHistoryModel) private readonly registrationStatusHistoryModel: typeof RegistrationStatusHistoryModel,
-  ) {}
+    @InjectModel(RoleModel) private readonly roleModel: typeof RoleModel,
+    private readonly sequelize: Sequelize,
+    private readonly emailService: EmailService,
+    private readonly authService: AuthServiceBackend,
+  ) {
+    this.logger.log('RegistrationService initialized');
+  }
 
   /**
    * Validates profile information including email format and uniqueness checks
@@ -370,9 +399,587 @@ export class RegistrationService {
   }
 
   /**
+   * Query registrations by status
+   * Requirements: 6.4
+   */
+  async getRegistrationsByStatus(status: RegistrationStatus): Promise<RegistrationRecordModel[]> {
+    return await this.registrationRecordModel.findAll({
+      where: { status },
+      include: [
+        { model: this.institutionModel },
+        { model: this.userModel },
+        { model: this.registrationStatusHistoryModel }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+  }
+
+  /**
+   * Query registrations by date range
+   * Requirements: 6.4
+   */
+  async getRegistrationsByDateRange(
+    startDate: Date,
+    endDate: Date,
+    status?: RegistrationStatus
+  ): Promise<RegistrationRecordModel[]> {
+    const whereClause: any = {
+      createdAt: {
+        [Op.between]: [startDate, endDate]
+      }
+    };
+
+    if (status) {
+      whereClause.status = status;
+    }
+
+    return await this.registrationRecordModel.findAll({
+      where: whereClause,
+      include: [
+        { model: this.institutionModel },
+        { model: this.userModel },
+        { model: this.registrationStatusHistoryModel }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+  }
+
+  /**
+   * Query registrations with multiple status filters
+   * Requirements: 6.4
+   */
+  async getRegistrationsByStatuses(statuses: RegistrationStatus[]): Promise<RegistrationRecordModel[]> {
+    return await this.registrationRecordModel.findAll({
+      where: {
+        status: {
+          [Op.in]: statuses
+        }
+      },
+      include: [
+        { model: this.institutionModel },
+        { model: this.userModel },
+        { model: this.registrationStatusHistoryModel }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+  }
+
+  /**
+   * Get registration status history for a specific registration
+   * Requirements: 6.1, 6.2
+   */
+  async getRegistrationStatusHistory(registrationId: number): Promise<RegistrationStatusHistoryModel[]> {
+    return await this.registrationStatusHistoryModel.findAll({
+      where: { registrationId },
+      order: [['changedAt', 'ASC']]
+    });
+  }
+
+  /**
+   * Get registrations that require manual review
+   * Requirements: 6.3
+   */
+  async getRegistrationsRequiringReview(): Promise<RegistrationRecordModel[]> {
+    return await this.registrationRecordModel.findAll({
+      where: {
+        status: {
+          [Op.in]: [RegistrationStatus.UNDER_REVIEW, RegistrationStatus.DOCUMENTS_UPLOADED]
+        }
+      },
+      include: [
+        { model: this.institutionModel },
+        { model: this.userModel },
+        { model: this.registrationStatusHistoryModel }
+      ],
+      order: [['createdAt', 'ASC']] // Oldest first for review queue
+    });
+  }
+
+  /**
+   * Enhanced updateRegistrationStatus method with better audit trail
+   * Requirements: 6.1, 6.2
+   */
+  async updateRegistrationStatusWithAudit(
+    registrationId: number,
+    newStatus: RegistrationStatus,
+    changedBy: string,
+    notes?: string,
+    transaction?: Transaction
+  ): Promise<RegistrationStatusHistoryModel> {
+    const registration = await this.registrationRecordModel.findByPk(registrationId, { transaction });
+    
+    if (!registration) {
+      throw new BadRequestException('Registration record not found');
+    }
+
+    const previousStatus = registration.status;
+
+    // Update registration status
+    await registration.update({ status: newStatus }, { transaction });
+
+    // Create detailed status history entry
+    const historyEntry = await this.registrationStatusHistoryModel.create({
+      registrationId,
+      previousStatus,
+      newStatus,
+      changedAt: new Date(),
+      changedBy,
+      notes: notes || `Status changed from ${previousStatus} to ${newStatus}`
+    }, { transaction });
+
+    return historyEntry;
+  }
+
+  /**
    * Hash password for storage
    */
   async hashPassword(password: string): Promise<string> {
     return await hash(password, this.saltOrRounds);
+  }
+
+  /**
+   * Completes the registration process atomically
+   * Creates institution and admin user records with proper relationships
+   * Requirements: 5.1, 5.2, 5.3, 5.4, 5.5
+   */
+  async completeRegistration(
+    registrationId: number,
+    registrationData: CompleteRegistrationData
+  ): Promise<RegistrationResult> {
+    this.logger.log(`Starting registration completion for registration ID: ${registrationId}`);
+    const transaction = await this.sequelize.transaction();
+    
+    try {
+      // Verify registration exists and is ready for completion
+      const registration = await this.registrationRecordModel.findByPk(registrationId, {
+        transaction
+      });
+
+      if (!registration) {
+        this.logger.warn(`Registration not found: ${registrationId}`);
+        throw new BadRequestException('Registration record not found');
+      }
+
+      // Verify all steps are completed
+      if (!registration.profileInfoCompleted || 
+          !registration.institutionDetailsCompleted || 
+          !registration.documentsUploaded || 
+          !registration.adminCredentialsCompleted) {
+        this.logger.warn(`Registration ${registrationId} is not ready for completion`);
+        throw new BadRequestException('Registration is not ready for completion. All steps must be completed first.');
+      }
+
+      // Verify current status allows completion
+      if (registration.status !== RegistrationStatus.ADMIN_CREDENTIALS_SET) {
+        this.logger.warn(`Registration ${registrationId} has invalid status: ${registration.status}`);
+        throw new BadRequestException(`Registration cannot be completed from status: ${registration.status}`);
+      }
+
+      // Find or create job title
+      const jobTitle = await this.findOrCreateJobTitle(registrationData.profileInfo.jobTitle);
+      this.logger.debug(`Job title resolved: ${jobTitle.title} (ID: ${jobTitle.id})`);
+
+      // Hash the admin password
+      const hashedPassword = await this.hashPassword(registrationData.adminCredentials.password);
+
+      // Create institution record
+      const institution = await this.institutionModel.create({
+        name: registrationData.institutionDetails.legalName, // For backward compatibility
+        legalName: registrationData.institutionDetails.legalName,
+        institutionType: registrationData.institutionDetails.institutionType,
+        accreditationNumber: registrationData.institutionDetails.accreditationNumber,
+        streetAddress: registrationData.institutionDetails.streetAddress,
+        city: registrationData.institutionDetails.city,
+        stateProvince: registrationData.institutionDetails.stateProvince,
+        zipPostalCode: registrationData.institutionDetails.zipPostalCode,
+        officialWebsite: registrationData.institutionDetails.officialWebsite,
+        createdById: null // Will be updated after user creation
+      }, { transaction });
+      this.logger.log(`Institution created: ${institution.legalName} (ID: ${institution.id})`);
+
+      // Create admin user record
+      const adminUser = await this.userModel.create({
+        firstName: registrationData.profileInfo.firstName,
+        lastName: registrationData.profileInfo.lastName,
+        email: registrationData.profileInfo.email,
+        username: registrationData.adminCredentials.username,
+        password: hashedPassword,
+        jobTitleId: jobTitle.id,
+        emailVerifiedAt: null, // Will be verified separately
+        phoneVerifiedAt: null
+      }, { transaction });
+      this.logger.log(`Admin user created: ${adminUser.username} (ID: ${adminUser.id})`);
+
+      // Update institution with the created user as creator
+      await institution.update({
+        createdById: adminUser.id
+      }, { transaction });
+
+      // Assign admin role to the user
+      await this.assignAdminRole(adminUser.id, transaction);
+      this.logger.debug(`Admin role assigned to user ${adminUser.id}`);
+
+      // Update registration record with final relationships
+      await registration.update({
+        institutionId: institution.id,
+        adminUserId: adminUser.id,
+        completedAt: new Date()
+      }, { transaction });
+
+      // Update registration status to under review
+      await this.updateRegistrationStatus(
+        registrationId,
+        RegistrationStatus.UNDER_REVIEW,
+        'system',
+        'Registration completed successfully, pending review',
+        transaction
+      );
+
+      // Commit the transaction
+      await transaction.commit();
+      this.logger.log(`Registration ${registrationId} completed successfully. Institution ID: ${institution.id}, User ID: ${adminUser.id}`);
+
+      // Setup two-factor authentication if requested
+      let twoFactorSetup;
+      if (registrationData.adminCredentials.enableTwoFactor) {
+        try {
+          twoFactorSetup = await this.authService.setupTwoFactorAuth(adminUser.id);
+          this.logger.log(`Two-factor authentication setup for user ${adminUser.id}`);
+        } catch (error) {
+          this.logger.error(`Failed to setup two-factor authentication for user ${adminUser.id}:`, error);
+          // Don't fail the registration if 2FA setup fails
+        }
+      }
+
+      return {
+        success: true,
+        institutionId: institution.id,
+        adminUserId: adminUser.id,
+        twoFactorSetup
+      };
+
+    } catch (error: any) {
+      // Rollback transaction on any error
+      await transaction.rollback();
+      this.logger.error(`Registration ${registrationId} failed and was rolled back:`, error);
+      
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      // Handle specific database constraint errors
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        const field = error.errors?.[0]?.path;
+        const message = field === 'email' ? 'Email address is already registered' : 
+                       field === 'username' ? 'Username is already taken' : 
+                       'A unique constraint was violated';
+        
+        this.logger.warn(`Unique constraint violation during registration ${registrationId}: ${field}`);
+        return {
+          success: false,
+          errors: [{ field: field || 'unknown', message }]
+        };
+      }
+
+      // Handle other database errors
+      if (error.name?.startsWith('Sequelize')) {
+        this.logger.error(`Database error during registration ${registrationId}:`, error);
+        return {
+          success: false,
+          errors: [{ field: 'database', message: 'Database operation failed' }]
+        };
+      }
+
+      // Re-throw unexpected errors
+      throw error;
+    }
+  }
+
+  /**
+   * Assigns admin role to a user
+   * Requirements: 5.4
+   */
+  private async assignAdminRole(userId: number, transaction: Transaction): Promise<void> {
+    // Find the admin role (assuming it exists)
+    const adminRole = await this.roleModel.findOne({
+      where: { name: 'admin' },
+      transaction
+    });
+
+    if (!adminRole) {
+      // If admin role doesn't exist, create it
+      const newAdminRole = await this.roleModel.create({
+        name: 'admin'
+      }, { transaction });
+
+      // Associate user with the new admin role
+      await this.userModel.findByPk(userId, { transaction })
+        .then(user => user?.$add('roles', newAdminRole, { transaction }));
+    } else {
+      // Associate user with existing admin role
+      await this.userModel.findByPk(userId, { transaction })
+        .then(user => user?.$add('roles', adminRole, { transaction }));
+    }
+  }
+
+  /**
+   * Sends registration completion notification email
+   * Requirements: 6.5
+   */
+  async sendRegistrationCompletionNotification(
+    registrationId: number
+  ): Promise<void> {
+    const registration = await this.registrationRecordModel.findByPk(registrationId, {
+      include: [
+        { model: this.institutionModel },
+        { model: this.userModel }
+      ]
+    });
+
+    if (!registration || !registration.adminUser || !registration.institution) {
+      throw new BadRequestException('Registration record, user, or institution not found');
+    }
+
+    const { adminUser, institution } = registration;
+
+    if (!adminUser.email) {
+      throw new BadRequestException('Admin user email not found');
+    }
+
+    try {
+      await this.emailService.send({
+        from: process.env['FSMS_MAIL_FROM'] || 'noreply@tahiniwa.com',
+        to: adminUser.email,
+        subject: 'Registration Completed - Under Review',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #333;">Registration Completed Successfully</h2>
+            <p>Dear ${adminUser.firstName} ${adminUser.lastName},</p>
+            <p>Thank you for completing your institution registration with Tahiniwa. Your registration for <strong>${institution.legalName}</strong> has been successfully submitted and is now under review.</p>
+            
+            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+              <h3 style="margin-top: 0; color: #333;">Registration Details:</h3>
+              <ul style="list-style: none; padding: 0;">
+                <li><strong>Institution:</strong> ${institution.legalName}</li>
+                <li><strong>Type:</strong> ${institution.institutionType}</li>
+                <li><strong>Registration ID:</strong> ${registrationId}</li>
+                <li><strong>Status:</strong> Under Review</li>
+              </ul>
+            </div>
+            
+            <p>Our team will review your registration and supporting documents. You will receive an email notification once the review is complete.</p>
+            
+            <p>If you have any questions, please don't hesitate to contact our support team.</p>
+            
+            <p>Best regards,<br>The Tahiniwa Team</p>
+          </div>
+        `
+      });
+    } catch (error) {
+      console.error('Failed to send registration completion notification:', error);
+      // Don't throw error to avoid breaking the registration flow
+    }
+  }
+
+  /**
+   * Sends registration approval notification email
+   * Requirements: 6.5
+   */
+  async sendRegistrationApprovalNotification(
+    registrationId: number
+  ): Promise<void> {
+    const registration = await this.registrationRecordModel.findByPk(registrationId, {
+      include: [
+        { model: this.institutionModel },
+        { model: this.userModel }
+      ]
+    });
+
+    if (!registration || !registration.adminUser || !registration.institution) {
+      throw new BadRequestException('Registration record, user, or institution not found');
+    }
+
+    const { adminUser, institution } = registration;
+
+    if (!adminUser.email) {
+      throw new BadRequestException('Admin user email not found');
+    }
+
+    try {
+      await this.emailService.send({
+        from: process.env['FSMS_MAIL_FROM'] || 'noreply@tahiniwa.com',
+        to: adminUser.email,
+        subject: 'Registration Approved - Welcome to Tahiniwa!',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #28a745;">Registration Approved!</h2>
+            <p>Dear ${adminUser.firstName} ${adminUser.lastName},</p>
+            <p>Congratulations! Your institution registration for <strong>${institution.legalName}</strong> has been approved.</p>
+            
+            <div style="background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #28a745;">
+              <h3 style="margin-top: 0; color: #155724;">Your account is now active!</h3>
+              <p style="margin-bottom: 0; color: #155724;">You can now log in to your admin dashboard and start using Tahiniwa's services.</p>
+            </div>
+            
+            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+              <h3 style="margin-top: 0; color: #333;">Next Steps:</h3>
+              <ol>
+                <li>Log in to your admin dashboard using your credentials</li>
+                <li>Complete your institution profile setup</li>
+                <li>Invite additional users to your institution</li>
+                <li>Explore available features and services</li>
+              </ol>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${process.env['FSMS_APP_URL']}/login" 
+                 style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                Access Your Dashboard
+              </a>
+            </div>
+            
+            <p>If you need any assistance getting started, our support team is here to help.</p>
+            
+            <p>Welcome to Tahiniwa!<br>The Tahiniwa Team</p>
+          </div>
+        `
+      });
+    } catch (error) {
+      console.error('Failed to send registration approval notification:', error);
+      // Don't throw error to avoid breaking the approval flow
+    }
+  }
+
+  /**
+   * Sends registration rejection notification email
+   * Requirements: 6.5
+   */
+  async sendRegistrationRejectionNotification(
+    registrationId: number,
+    rejectionReason?: string
+  ): Promise<void> {
+    const registration = await this.registrationRecordModel.findByPk(registrationId, {
+      include: [
+        { model: this.institutionModel },
+        { model: this.userModel }
+      ]
+    });
+
+    if (!registration || !registration.adminUser || !registration.institution) {
+      throw new BadRequestException('Registration record, user, or institution not found');
+    }
+
+    const { adminUser, institution } = registration;
+
+    if (!adminUser.email) {
+      throw new BadRequestException('Admin user email not found');
+    }
+
+    try {
+      await this.emailService.send({
+        from: process.env['FSMS_MAIL_FROM'] || 'noreply@tahiniwa.com',
+        to: adminUser.email,
+        subject: 'Registration Update Required',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #dc3545;">Registration Requires Updates</h2>
+            <p>Dear ${adminUser.firstName} ${adminUser.lastName},</p>
+            <p>Thank you for your interest in registering <strong>${institution.legalName}</strong> with Tahiniwa.</p>
+            
+            <div style="background-color: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #dc3545;">
+              <h3 style="margin-top: 0; color: #721c24;">Additional Information Required</h3>
+              <p style="color: #721c24;">
+                After reviewing your registration, we need some additional information or documentation before we can proceed.
+              </p>
+              ${rejectionReason ? `
+                <div style="background-color: white; padding: 10px; border-radius: 3px; margin-top: 10px;">
+                  <strong>Details:</strong><br>
+                  ${rejectionReason}
+                </div>
+              ` : ''}
+            </div>
+            
+            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+              <h3 style="margin-top: 0; color: #333;">What to do next:</h3>
+              <ol>
+                <li>Review the feedback provided above</li>
+                <li>Gather any additional required documentation</li>
+                <li>Contact our support team if you have questions</li>
+                <li>Resubmit your registration when ready</li>
+              </ol>
+            </div>
+            
+            <p>Our support team is available to help you through this process. Please don't hesitate to reach out if you need assistance.</p>
+            
+            <p>Thank you for your patience.<br>The Tahiniwa Team</p>
+          </div>
+        `
+      });
+    } catch (error) {
+      console.error('Failed to send registration rejection notification:', error);
+      // Don't throw error to avoid breaking the rejection flow
+    }
+  }
+
+  /**
+   * Enhanced completeRegistration method with email notification
+   * Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 6.5
+   */
+  async completeRegistrationWithNotification(
+    registrationId: number,
+    registrationData: CompleteRegistrationData
+  ): Promise<RegistrationResult> {
+    // Complete the registration using existing method
+    const result = await this.completeRegistration(registrationId, registrationData);
+
+    // Send completion notification if successful
+    if (result.success) {
+      try {
+        await this.sendRegistrationCompletionNotification(registrationId);
+      } catch (error) {
+        console.error('Failed to send completion notification, but registration was successful:', error);
+        // Don't fail the registration if email fails
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Enhanced updateRegistrationStatusWithAudit method with email notifications
+   * Requirements: 6.1, 6.2, 6.5
+   */
+  async updateRegistrationStatusWithNotification(
+    registrationId: number,
+    newStatus: RegistrationStatus,
+    changedBy: string,
+    notes?: string,
+    transaction?: Transaction
+  ): Promise<RegistrationStatusHistoryModel> {
+    // Update status using existing method
+    const historyEntry = await this.updateRegistrationStatusWithAudit(
+      registrationId,
+      newStatus,
+      changedBy,
+      notes,
+      transaction
+    );
+
+    // Send appropriate notification based on status
+    if (newStatus === RegistrationStatus.APPROVED) {
+      try {
+        await this.sendRegistrationApprovalNotification(registrationId);
+      } catch (error) {
+        console.error('Failed to send approval notification:', error);
+      }
+    } else if (newStatus === RegistrationStatus.REJECTED) {
+      try {
+        await this.sendRegistrationRejectionNotification(registrationId, notes);
+      } catch (error) {
+        console.error('Failed to send rejection notification:', error);
+      }
+    }
+
+    return historyEntry;
   }
 }

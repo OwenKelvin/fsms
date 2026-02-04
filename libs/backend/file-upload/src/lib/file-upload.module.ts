@@ -6,7 +6,6 @@ import { FileUploadResolver } from './upload.resolver';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { FileUploadModel } from '@fsms/backend/db';
 import { ImageController } from './upload.controller';
-import process from 'node:process';
 
 @Module({
   imports: [

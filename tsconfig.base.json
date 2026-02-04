@@ -41,6 +41,7 @@
         "libs/backend/services/config-service/src/index.ts"
       ],
       "@fsms/backend/credit-backend": ["libs/backend/credit/src/index.ts"],
+      "@fsms/backend/registration-backend": ["libs/backend/registration/src/index.ts"],
       "@fsms/backend/credit-backend-service": [
         "libs/backend/services/credit-service/src/index.ts"
       ],

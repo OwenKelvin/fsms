@@ -21,6 +21,10 @@ export class UserService extends CrudAbstractService<UserModel> {
     return this.repository.findOne({ where });
   }
 
+  async findById(id: number): Promise<UserModel | null> {
+    return this.repository.findByPk(id);
+  }
+
   async getUserPermissions(email: string) {
     const user = await this.repository.findOne({
       where: { email },

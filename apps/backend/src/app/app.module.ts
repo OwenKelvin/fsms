@@ -34,6 +34,8 @@ import { PaymentModule } from '@fsms/backend/payment-backend';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { ActivityLogModule } from '@fsms/backend/activity-log-backend';
 import { ActivityLogBackendServiceModule } from '@fsms/backend/activity-log-backend-service';
+import { RegistrationModule } from '@fsms/backend/registration-backend';
+
 @Module({
   imports: [
     NestConfigModule.forRoot({ isGlobal: true }),
@@ -71,6 +73,7 @@ import { ActivityLogBackendServiceModule } from '@fsms/backend/activity-log-back
     FileUploadModule,
     MpesaModule,
     ActivityLogBackendServiceModule,
+    RegistrationModule,
   ],
   providers: [],
 })
