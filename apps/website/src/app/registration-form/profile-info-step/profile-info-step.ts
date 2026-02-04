@@ -61,6 +61,7 @@ interface ProfileInfoFormValue {
 export class ProfileInfoStep {
   submitForm = output<IProfileInfoInput>();
   isLoading = input<boolean>(false);
+  fieldErrors = input<Record<string, string[]>>({});
 
   jobTitles = signal([
     { id: 'registrar', label: 'Registrar' },

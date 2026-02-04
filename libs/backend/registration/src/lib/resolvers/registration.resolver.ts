@@ -1,5 +1,5 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { BadRequestException, Body, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ProfileInfoInputDto } from '../dto/profile-info-input.dto';
 import { InstitutionDetailsInputDto } from '../dto/institution-details-input.dto';
 import { AdminCredentialsInputDto } from '../dto/admin-credentials-input.dto';
@@ -20,7 +20,7 @@ export class RegistrationResolver {
    */
   @Mutation(() => RegistrationStepResponseDto)
   async submitProfileInfo(
-    @Body(new ValidationPipe()) input: ProfileInfoInputDto,
+    @Args('input', new ValidationPipe()) input: ProfileInfoInputDto,
     @Args('registrationId', { nullable: true }) registrationId?: number,
   ): Promise<RegistrationStepResponseDto> {
     try {
@@ -63,6 +63,7 @@ export class RegistrationResolver {
         message: 'Profile information submitted successfully',
       };
     } catch (error: any) {
+      console.log(error);
       if (error instanceof BadRequestException) {
         return {
           success: false,
@@ -94,7 +95,7 @@ export class RegistrationResolver {
    */
   @Mutation(() => RegistrationStepResponseDto)
   async submitInstitutionDetails(
-    @Body(new ValidationPipe()) input: InstitutionDetailsInputDto,
+    @Args('input', new ValidationPipe()) input: InstitutionDetailsInputDto,
     @Args('registrationId') registrationId: number,
   ): Promise<RegistrationStepResponseDto> {
     try {
@@ -162,7 +163,7 @@ export class RegistrationResolver {
    */
   @Mutation(() => RegistrationStepResponseDto)
   async submitAdminCredentials(
-    @Body(new ValidationPipe()) input: AdminCredentialsInputDto,
+    @Args('input', new ValidationPipe()) input: AdminCredentialsInputDto,
     @Args('registrationId') registrationId: number,
   ): Promise<RegistrationStepResponseDto> {
     try {
@@ -231,10 +232,10 @@ export class RegistrationResolver {
   @Mutation(() => CompleteRegistrationResponseDto)
   async completeRegistration(
     @Args('registrationId') registrationId: number,
-    @Body('profileInfo', new ValidationPipe()) profileInfo: ProfileInfoInputDto,
-    @Body('institutionDetails', new ValidationPipe())
+    @Args('profileInfo', new ValidationPipe()) profileInfo: ProfileInfoInputDto,
+    @Args('institutionDetails', new ValidationPipe())
     institutionDetails: InstitutionDetailsInputDto,
-    @Body('adminCredentials', new ValidationPipe())
+    @Args('adminCredentials', new ValidationPipe())
     adminCredentials: AdminCredentialsInputDto,
   ): Promise<CompleteRegistrationResponseDto> {
     try {

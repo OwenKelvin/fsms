@@ -236,6 +236,7 @@ export class AdminCredentialsStep {
   submitForm = output<IAdminCredentialsInput>();
   back = output<void>();
   isLoading = input<boolean>(false);
+  fieldErrors = input<Record<string, string[]>>({});
 
   formValue = model<AdminCredentialsFormValue>({
     username: '',

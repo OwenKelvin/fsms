@@ -70,7 +70,19 @@
         <!-- Error Message -->
         @if (error()) {
           <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-sm text-red-600">{{ error() }}</p>
+            <p class="text-sm font-semibold text-red-600 mb-2">{{ error() }}</p>
+            @if (fieldErrors() && getFieldErrorKeys().length > 0) {
+              <ul class="text-xs text-red-600 space-y-1 mt-2">
+                @for (field of getFieldErrorKeys(); track field) {
+                  <li class="font-medium">{{ field }}:</li>
+                  <ul class="ml-4 list-disc">
+                    @for (errorMsg of fieldErrors()[field]; track errorMsg) {
+                      <li>{{ errorMsg }}</li>
+                    }
+                  </ul>
+                }
+              </ul>
+            }
           </div>
         }
 
@@ -87,6 +99,7 @@
               [(formValue)]="profileInfoValue"
               [(isValid)]="profileInfoValid"
               [isLoading]="isLoading()"
+              [fieldErrors]="fieldErrors()"
               (submitForm)="onProfileInfoSubmit($event)"
             />
           }
@@ -95,6 +108,7 @@
               [(formValue)]="institutionDetailsValue"
               [(isValid)]="institutionDetailsValid"
               [isLoading]="isLoading()"
+              [fieldErrors]="fieldErrors()"
               (submitForm)="onInstitutionDetailsSubmit($event)"
               (back)="previousStep()"
             />
@@ -104,6 +118,7 @@
               [(formValue)]="documentsValue"
               [(isValid)]="documentsValid"
               [isLoading]="isLoading()"
+              [fieldErrors]="fieldErrors()"
               (submitForm)="onDocumentsSubmit($event)"
               (back)="previousStep()"
             />
@@ -113,6 +128,7 @@
               [(formValue)]="adminCredentialsValue"
               [(isValid)]="adminCredentialsValid"
               [isLoading]="isLoading()"
+              [fieldErrors]="fieldErrors()"
               (submitForm)="onAdminCredentialsSubmit($event)"
               (back)="previousStep()"
             />

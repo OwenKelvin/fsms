@@ -90,6 +90,7 @@ export default class RegistrationForm {
   registrationId = signal<number | null>(null);
   isLoading = signal(false);
   error = signal<string | null>(null);
+  fieldErrors = signal<Record<string, string[]>>({});
 
   steps = signal<Step[]>([
     {
@@ -210,6 +211,7 @@ export default class RegistrationForm {
   onProfileInfoSubmit(data: IProfileInfoInput) {
     this.isLoading.set(true);
     this.error.set(null);
+    this.fieldErrors.set({});
 
     this.registrationService
       .submitProfileInfo(data, this.registrationId() ?? undefined)
@@ -223,8 +225,15 @@ export default class RegistrationForm {
           this.nextStep();
         },
         error: (err) => {
-          this.error.set(err.message || 'Failed to submit profile information');
           this.isLoading.set(false);
+          
+          // Handle structured validation errors
+          if (err.validationErrors) {
+            this.fieldErrors.set(err.validationErrors);
+            this.error.set('Please fix the validation errors below');
+          } else {
+            this.error.set(err.message || 'Failed to submit profile information');
+          }
           console.error('Profile info submission error:', err);
         },
       });
@@ -239,6 +248,7 @@ export default class RegistrationForm {
 
     this.isLoading.set(true);
     this.error.set(null);
+    this.fieldErrors.set({});
 
     this.registrationService.submitInstitutionDetails(regId, data).subscribe({
       next: (response) => {
@@ -251,8 +261,14 @@ export default class RegistrationForm {
         this.nextStep();
       },
       error: (err) => {
-        this.error.set(err.message || 'Failed to submit institution details');
         this.isLoading.set(false);
+        
+        if (err.validationErrors) {
+          this.fieldErrors.set(err.validationErrors);
+          this.error.set('Please fix the validation errors below');
+        } else {
+          this.error.set(err.message || 'Failed to submit institution details');
+        }
         console.error('Institution details submission error:', err);
       },
     });
@@ -267,6 +283,7 @@ export default class RegistrationForm {
 
     this.isLoading.set(true);
     this.error.set(null);
+    this.fieldErrors.set({});
 
     // Upload accreditation certificate
     const accreditationUpload$ = data.accreditationCertificate
@@ -311,8 +328,14 @@ export default class RegistrationForm {
         error: (err) => {
           if (!hasError) {
             hasError = true;
-            this.error.set(err.message || 'Failed to upload documents');
             this.isLoading.set(false);
+            
+            if (err.validationErrors) {
+              this.fieldErrors.set(err.validationErrors);
+              this.error.set('Please fix the validation errors below');
+            } else {
+              this.error.set(err.message || 'Failed to upload documents');
+            }
             console.error('Document upload error:', err);
           }
         },
@@ -329,6 +352,7 @@ export default class RegistrationForm {
 
     this.isLoading.set(true);
     this.error.set(null);
+    this.fieldErrors.set({});
 
     this.registrationService.submitAdminCredentials(regId, data).subscribe({
       next: (response) => {
@@ -350,8 +374,14 @@ export default class RegistrationForm {
         console.log('Registration completed successfully!', response);
       },
       error: (err) => {
-        this.error.set(err.message || 'Failed to submit admin credentials');
         this.isLoading.set(false);
+        
+        if (err.validationErrors) {
+          this.fieldErrors.set(err.validationErrors);
+          this.error.set('Please fix the validation errors below');
+        } else {
+          this.error.set(err.message || 'Failed to submit admin credentials');
+        }
         console.error('Admin credentials submission error:', err);
       },
     });
@@ -360,5 +390,9 @@ export default class RegistrationForm {
   submitRegistration() {
     // This method is now handled by onAdminCredentialsSubmit
     console.log('Submitting registration:', this.registrationFormData());
+  }
+
+  getFieldErrorKeys(): string[] {
+    return Object.keys(this.fieldErrors());
   }
 }

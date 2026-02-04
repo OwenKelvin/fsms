@@ -59,6 +59,7 @@ export class InstitutionDetailsStep {
   submitForm = output<IInstitutionDetailsInput>();
   back = output<void>();
   isLoading = input<boolean>(false);
+  fieldErrors = input<Record<string, string[]>>({});
 
   institutionTypes = signal([
     { id: 'University', label: 'University' },

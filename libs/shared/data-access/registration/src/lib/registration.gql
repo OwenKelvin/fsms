@@ -1,12 +1,7 @@
-mutation SubmitProfileInfo {
-  submitProfileInfo(
-    input: {
-      firstName: "John"
-      lastName: "Doe"
-      jobTitle: "Principal"
-      email: "john.doe@school.edu"
-    }
-  ) {
+# Registration Mutations
+
+mutation SubmitProfileInfo($input: ProfileInfoInput!, $registrationId: Int) {
+  submitProfileInfo(input: $input, registrationId: $registrationId) {
     success
     registrationId
     message
@@ -17,20 +12,8 @@ mutation SubmitProfileInfo {
   }
 }
 
-mutation SubmitInstitutionDetails {
-  submitInstitutionDetails(
-    registrationId: 123  # Use ID from Step 1
-    input: {
-      legalName: "Springfield High School"
-      institutionType: EDUCATIONAL
-      accreditationNumber: "ACC-2024-12345"
-      streetAddress: "123 Main Street"
-      city: "Springfield"
-      stateProvince: "Illinois"
-      zipPostalCode: "62701"
-      officialWebsite: "https://springfield-hs.edu"
-    }
-  ) {
+mutation SubmitInstitutionDetails($registrationId: Int!, $input: InstitutionDetailsInput!) {
+  submitInstitutionDetails(registrationId: $registrationId, input: $input) {
     success
     registrationId
     message
@@ -41,18 +24,14 @@ mutation SubmitInstitutionDetails {
   }
 }
 
-mutation UploadDocument($file: Upload! ) {
-  uploadRegistrationDocument (
-    file: $file  # File upload from multipart form
-    input: {
-      registrationId: 123
-      documentType: ACCREDITATION_CERTIFICATE
-    }
-  ) {
+mutation UploadDocument($file: Upload!, $input: DocumentUploadInput!) {
+  uploadRegistrationDocument(file: $file, input: $input) {
     success
     documentId
     fileUploadId
+    documentType
     fileName
+    fileSize
     message
     errors {
       field
@@ -61,16 +40,8 @@ mutation UploadDocument($file: Upload! ) {
   }
 }
 
-mutation SubmitAdminCredentials {
-  submitAdminCredentials(
-    registrationId: 123
-    input: {
-      username: "johndoe_admin"
-      password: "SecureP@ssw0rd123"
-      passwordConfirmation: "SecureP@ssw0rd123"
-      enableTwoFactor: true
-    }
-  ) {
+mutation SubmitAdminCredentials($registrationId: Int!, $input: AdminCredentialsInput!) {
+  submitAdminCredentials(registrationId: $registrationId, input: $input) {
     success
     registrationId
     message
@@ -81,31 +52,17 @@ mutation SubmitAdminCredentials {
   }
 }
 
-mutation CompleteRegistration {
+mutation CompleteRegistration(
+  $registrationId: Int!
+  $profileInfo: ProfileInfoInput!
+  $institutionDetails: InstitutionDetailsInput!
+  $adminCredentials: AdminCredentialsInput!
+) {
   completeRegistration(
-    registrationId: 123
-    profileInfo: {
-      firstName: "John"
-      lastName: "Doe"
-      jobTitle: "Principal"
-      email: "john.doe@school.edu"
-    }
-    institutionDetails: {
-      legalName: "Springfield High School"
-      institutionType: EDUCATIONAL
-      accreditationNumber: "ACC-2024-12345"
-      streetAddress: "123 Main Street"
-      city: "Springfield"
-      stateProvince: "Illinois"
-      zipPostalCode: "62701"
-      officialWebsite: "https://springfield-hs.edu"
-    }
-    adminCredentials: {
-      username: "johndoe_admin"
-      password: "SecureP@ssw0rd123"
-      passwordConfirmation: "SecureP@ssw0rd123"
-      enableTwoFactor: true
-    }
+    registrationId: $registrationId
+    profileInfo: $profileInfo
+    institutionDetails: $institutionDetails
+    adminCredentials: $adminCredentials
   ) {
     success
     institutionId
@@ -118,8 +75,10 @@ mutation CompleteRegistration {
   }
 }
 
-query GetRegistrationStatus {
-  getRegistrationStatus(registrationId: 123) {
+# Registration Queries
+
+query GetRegistrationStatus($registrationId: Int!) {
+  getRegistrationStatus(registrationId: $registrationId) {
     id
     status
     profileInfoCompleted
@@ -127,14 +86,94 @@ query GetRegistrationStatus {
     documentsUploaded
     adminCredentialsCompleted
     createdAt
+    updatedAt
     completedAt
+    institutionId
+    adminUserId
   }
 }
 
-query GetRegistrationDetails {
-  getRegistrationDetails(registrationId: 123) {
+query GetRegistrationDetails($registrationId: Int!) {
+  getRegistrationDetails(registrationId: $registrationId) {
     id
     status
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    createdAt
+    updatedAt
+    completedAt
+    institutionId
+    adminUserId
+    institution {
+      id
+      legalName
+      institutionType
+      accreditationNumber
+      streetAddress
+      city
+      stateProvince
+      zipPostalCode
+      officialWebsite
+    }
+    adminUser {
+      id
+      firstName
+      lastName
+      email
+    }
+    statusHistory {
+      id
+      previousStatus
+      newStatus
+      changedAt
+      changedBy
+      notes
+    }
+  }
+}
+
+query GetRegistrations($filter: RegistrationFilterInput) {
+  getRegistrations(filter: $filter) {
+    id
+    status
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    createdAt
+    updatedAt
+    completedAt
+    institutionId
+    adminUserId
+    institution {
+      id
+      legalName
+      institutionType
+    }
+    adminUser {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+query GetRegistrationsRequiringReview {
+  getRegistrationsRequiringReview {
+    id
+    status
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    createdAt
+    updatedAt
+    completedAt
+    institutionId
+    adminUserId
     institution {
       id
       legalName
@@ -147,14 +186,12 @@ query GetRegistrationDetails {
       email
     }
     statusHistory {
+      id
       previousStatus
       newStatus
       changedAt
       changedBy
+      notes
     }
   }
 }
-
-
-
-

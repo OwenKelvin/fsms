@@ -93,45 +93,26 @@ export class RegistrationService {
   }
 
   /**
-   * Validates profile information including email format and uniqueness checks
+   * Validates profile information business rules (email uniqueness)
    * Requirements: 1.1, 1.2, 1.3
+   *
+   * Note: Basic validation (required fields, format, length) is handled by DTO validators
    */
   async validateProfileInfo(
     input: ProfileInfoInput,
   ): Promise<ValidationResult> {
     const errors: ValidationError[] = [];
 
-    // Validate required fields
-    if (!input.firstName?.trim()) {
-      errors.push({ field: 'firstName', message: 'First name is required' });
-    }
-
-    if (!input.lastName?.trim()) {
-      errors.push({ field: 'lastName', message: 'Last name is required' });
-    }
-
-    if (!input.jobTitle?.trim()) {
-      errors.push({ field: 'jobTitle', message: 'Job title is required' });
-    }
-
-    if (!input.email?.trim()) {
-      errors.push({ field: 'email', message: 'Email is required' });
-    } else {
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(input.email)) {
-        errors.push({ field: 'email', message: 'Invalid email format' });
-      } else {
-        // Check email uniqueness
-        const existingUser = await this.userModel.findOne({
-          where: { email: input.email },
+    // Check email uniqueness (business rule validation)
+    if (input.email) {
+      const existingUser = await this.userModel.findOne({
+        where: { email: input.email },
+      });
+      if (existingUser) {
+        errors.push({
+          field: 'email',
+          message: 'Email address is already registered',
         });
-        if (existingUser) {
-          errors.push({
-            field: 'email',
-            message: 'Email address is already registered',
-          });
-        }
       }
     }
 
@@ -174,87 +155,29 @@ export class RegistrationService {
   }
 
   /**
-   * Validates institution details with comprehensive validation
+   * Validates institution details business rules
    * Requirements: 2.1, 2.2, 2.3
+   *
+   * Note: Basic validation (required fields, format, length) is handled by DTO validators
+   * This method can be extended to add business-specific validation like checking
+   * accreditation number uniqueness, verifying institution type eligibility, etc.
    */
   async validateInstitutionDetails(
     input: InstitutionDetailsInput,
   ): Promise<ValidationResult> {
     const errors: ValidationError[] = [];
 
-    // Validate required fields
-    if (!input.legalName?.trim()) {
-      errors.push({ field: 'legalName', message: 'Legal name is required' });
-    } else if (input.legalName.length > 255) {
-      errors.push({
-        field: 'legalName',
-        message: 'Legal name must be 255 characters or less',
-      });
-    }
-
-    if (!input.institutionType) {
-      errors.push({
-        field: 'institutionType',
-        message: 'Institution type is required',
-      });
-    } else if (
-      !Object.values(InstitutionType).includes(input.institutionType)
-    ) {
-      errors.push({
-        field: 'institutionType',
-        message: 'Invalid institution type',
-      });
-    }
-
-    if (!input.accreditationNumber?.trim()) {
-      errors.push({
-        field: 'accreditationNumber',
-        message: 'Accreditation number is required',
-      });
-    } else if (input.accreditationNumber.length > 100) {
-      errors.push({
-        field: 'accreditationNumber',
-        message: 'Accreditation number must be 100 characters or less',
-      });
-    }
-
-    // Validate address fields
-    if (!input.streetAddress?.trim()) {
-      errors.push({
-        field: 'streetAddress',
-        message: 'Street address is required',
-      });
-    }
-
-    if (!input.city?.trim()) {
-      errors.push({ field: 'city', message: 'City is required' });
-    }
-
-    if (!input.stateProvince?.trim()) {
-      errors.push({
-        field: 'stateProvince',
-        message: 'State/Province is required',
-      });
-    }
-
-    if (!input.zipPostalCode?.trim()) {
-      errors.push({
-        field: 'zipPostalCode',
-        message: 'ZIP/Postal code is required',
-      });
-    }
-
-    // Validate optional website URL
-    if (input.officialWebsite?.trim()) {
-      try {
-        new URL(input.officialWebsite);
-      } catch {
-        errors.push({
-          field: 'officialWebsite',
-          message: 'Invalid website URL format',
-        });
-      }
-    }
+    // Add business rule validations here if needed
+    // For example: check if accreditation number is already registered
+    // const existingInstitution = await this.institutionModel.findOne({
+    //   where: { accreditationNumber: input.accreditationNumber },
+    // });
+    // if (existingInstitution) {
+    //   errors.push({
+    //     field: 'accreditationNumber',
+    //     message: 'Accreditation number is already registered',
+    //   });
+    // }
 
     return {
       isValid: errors.length === 0,
@@ -263,19 +186,18 @@ export class RegistrationService {
   }
 
   /**
-   * Validates admin credentials with username uniqueness and password strength
+   * Validates admin credentials business rules (username uniqueness, password strength, password match)
    * Requirements: 4.1, 4.2, 4.3
+   *
+   * Note: Basic validation (required fields, min length) is handled by DTO validators
    */
   async validateAdminCredentials(
     input: AdminCredentialsInput,
   ): Promise<ValidationResult> {
     const errors: ValidationError[] = [];
 
-    // Validate username
-    if (!input.username?.trim()) {
-      errors.push({ field: 'username', message: 'Username is required' });
-    } else {
-      // Check username uniqueness
+    // Check username uniqueness (business rule)
+    if (input.username) {
       const existingUser = await this.userModel.findOne({
         where: { username: input.username },
       });
@@ -287,25 +209,20 @@ export class RegistrationService {
       }
     }
 
-    // Validate password strength
-    if (!input.password) {
-      errors.push({ field: 'password', message: 'Password is required' });
-    } else {
+    // Validate password strength (business rule)
+    if (input.password) {
       const passwordErrors = this.validatePasswordStrength(input.password);
       errors.push(...passwordErrors);
     }
 
-    // Validate password confirmation
-    if (!input.passwordConfirmation) {
-      errors.push({
-        field: 'passwordConfirmation',
-        message: 'Password confirmation is required',
-      });
-    } else if (input.password !== input.passwordConfirmation) {
-      errors.push({
-        field: 'passwordConfirmation',
-        message: 'Password confirmation does not match',
-      });
+    // Validate password confirmation match (business rule)
+    if (input.password && input.passwordConfirmation) {
+      if (input.password !== input.passwordConfirmation) {
+        errors.push({
+          field: 'passwordConfirmation',
+          message: 'Password confirmation does not match',
+        });
+      }
     }
 
     return {
@@ -317,16 +234,11 @@ export class RegistrationService {
   /**
    * Validates password strength according to requirements
    * Requirements: 4.2
+   *
+   * Note: Minimum length validation is handled by DTO validators
    */
   private validatePasswordStrength(password: string): ValidationError[] {
     const errors: ValidationError[] = [];
-
-    if (password.length < 8) {
-      errors.push({
-        field: 'password',
-        message: 'Password must be at least 8 characters long',
-      });
-    }
 
     if (!/[a-z]/.test(password)) {
       errors.push({
@@ -461,6 +373,7 @@ export class RegistrationService {
    * Creates a new registration record
    */
   async createRegistrationRecord(): Promise<RegistrationRecordModel> {
+
     return await this.registrationRecordModel.create({
       status: RegistrationStatus.PENDING,
       profileInfoCompleted: false,

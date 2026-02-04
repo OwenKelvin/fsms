@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { from, map, Observable } from 'rxjs';
+import { catchError, from, map, Observable, throwError } from 'rxjs';
 
 import {
   CompleteRegistration,
@@ -24,6 +24,19 @@ import {
   IInstitutionDetailsInput,
   IProfileInfoInput,
 } from '@fsms/data-access/core';
+import { parseValidationErrors } from './utils/error-parser';
+
+export interface RegistrationError {
+  field: string;
+  message: string;
+}
+
+export interface RegistrationResponse<T = any> {
+  success: boolean;
+  data?: T;
+  errors?: Record<string, string[]>;
+  message?: string;
+}
 
 @Injectable()
 export class RegistrationService {
@@ -36,19 +49,38 @@ export class RegistrationService {
     input: IProfileInfoInput,
     registrationId?: number,
   ): Observable<ISubmitProfileInfoMutation['submitProfileInfo']> {
-    return from(
-      this.apollo.mutate<ISubmitProfileInfoMutation>({
+    return this.apollo
+      .mutate<ISubmitProfileInfoMutation>({
         mutation: SubmitProfileInfo,
         variables: { input, registrationId },
-      }),
-    ).pipe(
-      map((result) => {
-        if (!result.data?.submitProfileInfo) {
-          throw new Error('Failed to submit profile information');
-        }
-        return result.data.submitProfileInfo;
-      }),
-    );
+      })
+      .pipe(
+        map((result) => {
+          if (!result.data?.submitProfileInfo) {
+            throw new Error('Failed to submit profile information');
+          }
+          return result.data.submitProfileInfo;
+        }),
+        catchError((error) => {
+          // Parse validation errors from GraphQL error extensions
+          if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+            const gqlError = error.graphQLErrors[0];
+            if (
+              gqlError.extensions?.originalError?.message &&
+              Array.isArray(gqlError.extensions.originalError.message)
+            ) {
+              const errorMessages = gqlError.extensions.originalError.message;
+              const parsedErrors = parseValidationErrors(errorMessages);
+              
+              // Create a custom error with parsed errors
+              const customError: any = new Error('Validation failed');
+              customError.validationErrors = parsedErrors;
+              return throwError(() => customError);
+            }
+          }
+          return throwError(() => error);
+        }),
+      );
   }
 
   /**
@@ -58,19 +90,36 @@ export class RegistrationService {
     registrationId: number,
     input: IInstitutionDetailsInput,
   ): Observable<ISubmitInstitutionDetailsMutation['submitInstitutionDetails']> {
-    return from(
-      this.apollo.mutate<ISubmitInstitutionDetailsMutation>({
+    return this.apollo
+      .mutate<ISubmitInstitutionDetailsMutation>({
         mutation: SubmitInstitutionDetails,
         variables: { registrationId, input },
-      }),
-    ).pipe(
-      map((result) => {
-        if (!result.data?.submitInstitutionDetails) {
-          throw new Error('Failed to submit institution details');
-        }
-        return result.data.submitInstitutionDetails;
-      }),
-    );
+      })
+      .pipe(
+        map((result) => {
+          if (!result.data?.submitInstitutionDetails) {
+            throw new Error('Failed to submit institution details');
+          }
+          return result.data.submitInstitutionDetails;
+        }),
+        catchError((error) => {
+          if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+            const gqlError = error.graphQLErrors[0];
+            if (
+              gqlError.extensions?.originalError?.message &&
+              Array.isArray(gqlError.extensions.originalError.message)
+            ) {
+              const errorMessages = gqlError.extensions.originalError.message;
+              const parsedErrors = parseValidationErrors(errorMessages);
+              
+              const customError: any = new Error('Validation failed');
+              customError.validationErrors = parsedErrors;
+              return throwError(() => customError);
+            }
+          }
+          return throwError(() => error);
+        }),
+      );
   }
 
   /**
@@ -80,19 +129,36 @@ export class RegistrationService {
     file: File,
     input: IDocumentUploadInput,
   ): Observable<IUploadDocumentMutation['uploadRegistrationDocument']> {
-    return from(
-      this.apollo.mutate<IUploadDocumentMutation>({
+    return this.apollo
+      .mutate<IUploadDocumentMutation>({
         mutation: UploadDocument,
         variables: { file, input },
-      }),
-    ).pipe(
-      map((result) => {
-        if (!result.data?.uploadRegistrationDocument) {
-          throw new Error('Failed to upload document');
-        }
-        return result.data.uploadRegistrationDocument;
-      }),
-    );
+      })
+      .pipe(
+        map((result) => {
+          if (!result.data?.uploadRegistrationDocument) {
+            throw new Error('Failed to upload document');
+          }
+          return result.data.uploadRegistrationDocument;
+        }),
+        catchError((error) => {
+          if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+            const gqlError = error.graphQLErrors[0];
+            if (
+              gqlError.extensions?.originalError?.message &&
+              Array.isArray(gqlError.extensions.originalError.message)
+            ) {
+              const errorMessages = gqlError.extensions.originalError.message;
+              const parsedErrors = parseValidationErrors(errorMessages);
+              
+              const customError: any = new Error('Validation failed');
+              customError.validationErrors = parsedErrors;
+              return throwError(() => customError);
+            }
+          }
+          return throwError(() => error);
+        }),
+      );
   }
 
   /**
@@ -102,19 +168,36 @@ export class RegistrationService {
     registrationId: number,
     input: IAdminCredentialsInput,
   ): Observable<ISubmitAdminCredentialsMutation['submitAdminCredentials']> {
-    return from(
-      this.apollo.mutate<ISubmitAdminCredentialsMutation>({
+    return this.apollo
+      .mutate<ISubmitAdminCredentialsMutation>({
         mutation: SubmitAdminCredentials,
         variables: { registrationId, input },
-      }),
-    ).pipe(
-      map((result) => {
-        if (!result.data?.submitAdminCredentials) {
-          throw new Error('Failed to submit admin credentials');
-        }
-        return result.data.submitAdminCredentials;
-      }),
-    );
+      })
+      .pipe(
+        map((result) => {
+          if (!result.data?.submitAdminCredentials) {
+            throw new Error('Failed to submit admin credentials');
+          }
+          return result.data.submitAdminCredentials;
+        }),
+        catchError((error) => {
+          if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+            const gqlError = error.graphQLErrors[0];
+            if (
+              gqlError.extensions?.originalError?.message &&
+              Array.isArray(gqlError.extensions.originalError.message)
+            ) {
+              const errorMessages = gqlError.extensions.originalError.message;
+              const parsedErrors = parseValidationErrors(errorMessages);
+              
+              const customError: any = new Error('Validation failed');
+              customError.validationErrors = parsedErrors;
+              return throwError(() => customError);
+            }
+          }
+          return throwError(() => error);
+        }),
+      );
   }
 
   /**

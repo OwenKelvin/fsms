@@ -225,6 +225,7 @@ export class DocumentsStep {
   submitForm = output<DocumentsFormValue>();
   back = output<void>();
   isLoading = input<boolean>(false);
+  fieldErrors = input<Record<string, string[]>>({});
 
   accreditationFile = signal<File | null>(null);
   licenseFile = signal<File | null>(null);

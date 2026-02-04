@@ -1,31 +1,18 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
-export type MakeEmpty<
-  T extends { [key: string]: unknown },
-  K extends keyof T,
-> = { [_ in K]?: never };
-export type Incremental<T> =
-  | T
-  | {
-      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
-    };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
-  Upload: { input: any; output: any };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  Upload: { input: any; output: any; }
 };
 
 export type IAccessToken = {
@@ -47,7 +34,7 @@ export enum IActivityLogType {
   Error = 'ERROR',
   Info = 'INFO',
   Success = 'SUCCESS',
-  Warning = 'WARNING',
+  Warning = 'WARNING'
 }
 
 export type IActivityLogUserModel = {
@@ -84,7 +71,7 @@ export type IChoiceModel = {
 export enum IChoiceType {
   CheckBox = 'CheckBox',
   Input = 'Input',
-  Radio = 'Radio',
+  Radio = 'Radio'
 }
 
 export type ICompleteRegistrationResponse = {
@@ -105,7 +92,7 @@ export type IConfigModel = {
 
 export enum IConfigType {
   Exam = 'EXAM',
-  ExamPaper = 'EXAM_PAPER',
+  ExamPaper = 'EXAM_PAPER'
 }
 
 export type ICountriesLanguagesInput = {
@@ -405,7 +392,7 @@ export type ICreditModel = {
 };
 
 export enum ICurrencyModel {
-  Kes = 'KES',
+  Kes = 'KES'
 }
 
 export type IDeleteSuccessResponse = {
@@ -415,7 +402,7 @@ export type IDeleteSuccessResponse = {
 
 export enum IDocumentType {
   AccreditationCertificate = 'ACCREDITATION_CERTIFICATE',
-  OperatingLicense = 'OPERATING_LICENSE',
+  OperatingLicense = 'OPERATING_LICENSE'
 }
 
 export type IDocumentUploadInput = {
@@ -547,7 +534,7 @@ export enum IInstitutionType {
   Educational = 'EDUCATIONAL',
   Government = 'GOVERNMENT',
   Healthcare = 'HEALTHCARE',
-  NonProfit = 'NON_PROFIT',
+  NonProfit = 'NON_PROFIT'
 }
 
 export type IInstructionModel = {
@@ -670,14 +657,17 @@ export type IMutation = {
   verifyEmail?: Maybe<ISuccessResponse>;
 };
 
+
 export type IMutationAssignExamineeGroupToExamPaperArgs = {
   params?: InputMaybe<IAssignExamineeToExamPaperInput>;
 };
+
 
 export type IMutationAssignRoleToUserArgs = {
   roles?: InputMaybe<Array<InputMaybe<ISelectCategory>>>;
   userId?: InputMaybe<Scalars['Int']['input']>;
 };
+
 
 export type IMutationChangePasswordArgs = {
   oldPassword?: InputMaybe<Scalars['String']['input']>;
@@ -685,11 +675,13 @@ export type IMutationChangePasswordArgs = {
   passwordConfirmation: Scalars['String']['input'];
 };
 
+
 export type IMutationChangePasswordUsingResetTokenArgs = {
   password: Scalars['String']['input'];
   passwordConfirmation: Scalars['String']['input'];
   token: Scalars['String']['input'];
 };
+
 
 export type IMutationCompleteRegistrationArgs = {
   adminCredentials: IAdminCredentialsInput;
@@ -698,101 +690,126 @@ export type IMutationCompleteRegistrationArgs = {
   registrationId: Scalars['Int']['input'];
 };
 
+
 export type IMutationContinueWithGoogleArgs = {
   token: Scalars['String']['input'];
 };
+
 
 export type IMutationCreateActivityLogArgs = {
   params?: InputMaybe<ICreateActivityLogInput>;
 };
 
+
 export type IMutationCreateChoiceArgs = {
   params?: InputMaybe<ICreateChoiceInput>;
 };
+
 
 export type IMutationCreateConfigArgs = {
   params: ICreateConfigInput;
 };
 
+
 export type IMutationCreateCreditArgs = {
   params?: InputMaybe<ICreateCreditInput>;
 };
+
 
 export type IMutationCreateExamArgs = {
   params: ICreateExamInput;
 };
 
+
 export type IMutationCreateExamPaperArgs = {
   params: ICreateExamPaperInput;
 };
+
 
 export type IMutationCreateExamineeArgs = {
   params?: InputMaybe<ICreateExamineeInput>;
 };
 
+
 export type IMutationCreateExamineeGroupArgs = {
   params?: InputMaybe<ICreateExamineeGroupInput>;
 };
+
 
 export type IMutationCreateInstitutionArgs = {
   params?: InputMaybe<ICreateInstitutionInput>;
 };
 
+
 export type IMutationCreateInstructionArgs = {
   params?: InputMaybe<ICreateInstructionInput>;
 };
+
 
 export type IMutationCreateNotificationArgs = {
   params?: InputMaybe<ICreateNotificationInput>;
 };
 
+
 export type IMutationCreateOtpArgs = {
   name: Scalars['String']['input'];
 };
+
 
 export type IMutationCreatePasswordResetArgs = {
   name: Scalars['String']['input'];
 };
 
+
 export type IMutationCreatePaymentArgs = {
   params?: InputMaybe<ICreatePaymentInput>;
 };
+
 
 export type IMutationCreatePermissionArgs = {
   name: Scalars['String']['input'];
 };
 
+
 export type IMutationCreatePlanArgs = {
   params?: InputMaybe<ICreatePlanInput>;
 };
+
 
 export type IMutationCreatePlanInfoArgs = {
   params?: InputMaybe<ICreatePlanInfoInput>;
 };
 
+
 export type IMutationCreateQuestionArgs = {
   params?: InputMaybe<ICreateQuestionInput>;
 };
+
 
 export type IMutationCreateQuoteArgs = {
   params?: InputMaybe<ICreateQuoteInput>;
 };
 
+
 export type IMutationCreateRoleArgs = {
   name: Scalars['String']['input'];
 };
+
 
 export type IMutationCreateSettingArgs = {
   params?: InputMaybe<ICreateSettingInput>;
 };
 
+
 export type IMutationCreateTagArgs = {
   params?: InputMaybe<ICreateTagInput>;
 };
 
+
 export type IMutationCreateTransactionArgs = {
   params?: InputMaybe<ICreateTransactionInput>;
 };
+
 
 export type IMutationCreateUserArgs = {
   email: Scalars['String']['input'];
@@ -802,127 +819,158 @@ export type IMutationCreateUserArgs = {
   phone?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 export type IMutationDeleteActivityLogArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteChoiceArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteConfigArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteCreditArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteExamArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteExamPaperArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteExamineeArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteExamineeGroupArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteInstitutionArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteInstructionArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteNotificationArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteOtpArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeletePasswordResetArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeletePaymentArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeletePermissionArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeletePlanArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeletePlanInfoArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteQuestionArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteQuoteArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteRoleArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteSettingArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationDeleteTagArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteTransactionArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IMutationDeleteUserArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationGivePermissionsToRoleArgs = {
   permissions?: InputMaybe<Array<InputMaybe<ISelectCategory>>>;
   roleId?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
 export type IMutationLoginWithPasswordArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
 
+
 export type IMutationLoginWithResetPasswordTokenArgs = {
   token: Scalars['String']['input'];
 };
+
 
 export type IMutationLoginWithTokenArgs = {
   token: Scalars['String']['input'];
 };
 
+
 export type IMutationMarkNotificationAsReadArgs = {
   notifications: Array<InputMaybe<ISelectCategory>>;
 };
 
+
 export type IMutationPublishExamPaperArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IMutationRegisterArgs = {
   acceptTerms: Scalars['Boolean']['input'];
@@ -933,183 +981,221 @@ export type IMutationRegisterArgs = {
   passwordConfirmation: Scalars['String']['input'];
 };
 
+
 export type IMutationRequestAccessTokenArgs = {
   refreshToken: Scalars['String']['input'];
 };
+
 
 export type IMutationRequestMpesaStkArgs = {
   phoneNumber: Scalars['String']['input'];
   quoteId: Scalars['Int']['input'];
 };
 
+
 export type IMutationSendPasswordResetLinkEmailArgs = {
   email: Scalars['String']['input'];
 };
+
 
 export type IMutationSendPasswordResetOtpEmailArgs = {
   email: Scalars['String']['input'];
 };
 
+
 export type IMutationSignInWithGoogleArgs = {
   token: Scalars['String']['input'];
 };
 
+
 export type IMutationSignupGoogleUserArgs = {
   token: Scalars['String']['input'];
 };
+
 
 export type IMutationSubmitAdminCredentialsArgs = {
   input: IAdminCredentialsInput;
   registrationId: Scalars['Int']['input'];
 };
 
+
 export type IMutationSubmitInstitutionDetailsArgs = {
   input: IInstitutionDetailsInput;
   registrationId: Scalars['Int']['input'];
 };
+
 
 export type IMutationSubmitProfileInfoArgs = {
   input: IProfileInfoInput;
   registrationId?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
 export type IMutationUpdateActivityLogArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateActivityLogInput>;
 };
+
 
 export type IMutationUpdateChoiceArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateChoiceInput>;
 };
 
+
 export type IMutationUpdateConfigArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateConfigInput>;
 };
+
 
 export type IMutationUpdateCreditArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateCreditInput>;
 };
 
+
 export type IMutationUpdateExamArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateExamInput>;
 };
+
 
 export type IMutationUpdateExamPaperArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateExamPaperInput>;
 };
 
+
 export type IMutationUpdateExamineeArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateExamineeInput>;
 };
+
 
 export type IMutationUpdateExamineeGroupArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateExamineeGroupInput>;
 };
 
+
 export type IMutationUpdateInstitutionArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateInstitutionInput>;
 };
+
 
 export type IMutationUpdateInstructionArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateInstructionInput>;
 };
 
+
 export type IMutationUpdateNotificationArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateNotificationInput>;
 };
+
 
 export type IMutationUpdateOtpArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateOtpInput>;
 };
 
+
 export type IMutationUpdatePasswordResetArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdatePasswordResetInput>;
 };
+
 
 export type IMutationUpdatePaymentArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdatePaymentInput>;
 };
 
+
 export type IMutationUpdatePermissionArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdatePermissionInput>;
 };
+
 
 export type IMutationUpdatePlanArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdatePlanInput>;
 };
 
+
 export type IMutationUpdatePlanInfoArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdatePlanInfoInput>;
 };
+
 
 export type IMutationUpdateQuestionArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateQuestionInput>;
 };
 
+
 export type IMutationUpdateQuoteArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateQuoteInput>;
 };
+
 
 export type IMutationUpdateRoleArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateRoleInput>;
 };
 
+
 export type IMutationUpdateSettingArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateSettingInput>;
 };
+
 
 export type IMutationUpdateTagArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateTagInput>;
 };
 
+
 export type IMutationUpdateTransactionArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateTransactionInput>;
 };
+
 
 export type IMutationUpdateUserArgs = {
   id: Scalars['Int']['input'];
   params?: InputMaybe<IUpdateUserInput>;
 };
 
+
 export type IMutationUploadRegistrationDocumentArgs = {
   file: Scalars['Upload']['input'];
   input: IDocumentUploadInput;
 };
 
+
 export type IMutationUploadSingleFileArgs = {
   file: Scalars['Upload']['input'];
 };
+
 
 export type IMutationValidateOtpArgs = {
   identifier: Scalars['String']['input'];
   token: Scalars['String']['input'];
 };
 
+
 export type IMutationValidatePasswordResetTokenArgs = {
   token?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 export type IMutationVerifyEmailArgs = {
   token: Scalars['String']['input'];
@@ -1441,225 +1527,281 @@ export type IQuery = {
   users: IPaginatedUser;
 };
 
+
 export type IQueryActivityLogArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryActivityLogsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryAuthenticatedUserActivityLogsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryAuthenticatedUserNotificationsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryChoiceArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryChoicesArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryConfigArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryConfigsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryCreditArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryCreditsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryExamArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryExamPaperArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryExamPapersArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryExamineeArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryExamineeGroupArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryExamineeGroupsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryExamineesArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryExamsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryFileUploadsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryGetRegistrationDetailsArgs = {
   registrationId: Scalars['Int']['input'];
 };
 
+
 export type IQueryGetRegistrationStatusArgs = {
   registrationId: Scalars['Int']['input'];
 };
+
 
 export type IQueryGetRegistrationsArgs = {
   filter?: InputMaybe<IRegistrationFilterInput>;
 };
 
+
 export type IQueryInstitutionArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryInstitutionsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryInstructionArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryInstructionsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryMpesaTransactionStatusArgs = {
   transactionRef: Scalars['String']['input'];
 };
+
 
 export type IQueryNotificationArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryNotificationsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryOtpArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryOtpsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryPasswordResetArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryPasswordResetsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryPaymentArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryPaymentsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryPermissionArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryPermissionsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryPlanArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryPlanInfoArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type IQueryPlanInfosArgs = {
   query?: InputMaybe<IQueryParams>;
 };
 
+
 export type IQueryPlansArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryQuestionArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryQuestionsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryQuoteArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryQuotesArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryRoleArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryRolesArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQuerySettingArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQuerySettingsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryTagArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryTagsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryTransactionArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryTransactionsArgs = {
   query?: InputMaybe<IQueryParams>;
 };
+
 
 export type IQueryUserArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type IQueryUserRolesArgs = {
   userId?: InputMaybe<Scalars['Int']['input']>;
 };
+
 
 export type IQueryUsersArgs = {
   query?: InputMaybe<IQueryParams>;
@@ -1671,7 +1813,7 @@ export enum IQueryOperatorEnum {
   Equals = 'EQUALS',
   GreaterThan = 'GREATER_THAN',
   In = 'IN',
-  LessThan = 'LESS_THAN',
+  LessThan = 'LESS_THAN'
 }
 
 export type IQueryParams = {
@@ -1760,7 +1902,7 @@ export enum IRegistrationStatus {
   Pending = 'PENDING',
   ProfileInfoCollected = 'PROFILE_INFO_COLLECTED',
   Rejected = 'REJECTED',
-  UnderReview = 'UNDER_REVIEW',
+  UnderReview = 'UNDER_REVIEW'
 }
 
 export type IRegistrationStatusHistory = {
@@ -1819,7 +1961,7 @@ export type ISettingModel = {
 
 export enum ISortByEnum {
   Asc = 'ASC',
-  Desc = 'DESC',
+  Desc = 'DESC'
 }
 
 export type ISubscription = {
@@ -1831,13 +1973,16 @@ export type ISubscription = {
   resetPasswordNotification?: Maybe<ISuccessResponse>;
 };
 
+
 export type ISubscriptionMpesaPaymentReceivedArgs = {
   quoteId: Scalars['Int']['input'];
 };
 
+
 export type ISubscriptionRefreshedAccessTokenArgs = {
   refreshToken: Scalars['String']['input'];
 };
+
 
 export type ISubscriptionResetPasswordNotificationArgs = {
   notificationKey?: InputMaybe<Scalars['String']['input']>;
@@ -1867,7 +2012,7 @@ export type ITransactionModel = {
 export enum ITransactionTypeEnum {
   Exam = 'exam',
   Promotion = 'promotion',
-  Purchase = 'purchase',
+  Purchase = 'purchase'
 }
 
 export type IUpdateActivityLogInput = {
