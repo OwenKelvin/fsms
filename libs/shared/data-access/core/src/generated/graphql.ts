@@ -25,9 +25,9 @@ export type IActivityLogModel = {
   action: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   description: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   type?: Maybe<IActivityLogType>;
-  userId: Scalars['Int']['output'];
+  userId: Scalars['ID']['output'];
 };
 
 export enum IActivityLogType {
@@ -42,9 +42,9 @@ export type IActivityLogUserModel = {
   action: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   description: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   type?: Maybe<IActivityLogType>;
-  userId: Scalars['Int']['output'];
+  userId: Scalars['ID']['output'];
 };
 
 export type IAdminCredentialsInput = {
@@ -55,17 +55,17 @@ export type IAdminCredentialsInput = {
 };
 
 export type IAssignExamineeToExamPaperInput = {
-  examPaperId: Scalars['Int']['input'];
+  examPaperId: Scalars['ID']['input'];
   examineeGroups: Array<ISelectCategory>;
 };
 
 export type IChoiceModel = {
   __typename?: 'ChoiceModel';
   description: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   isCorrectChoice?: Maybe<Scalars['Boolean']['output']>;
   question: IQuestionModel;
-  questionId: Scalars['Int']['output'];
+  questionId: Scalars['ID']['output'];
 };
 
 export enum IChoiceType {
@@ -76,16 +76,16 @@ export enum IChoiceType {
 
 export type ICompleteRegistrationResponse = {
   __typename?: 'CompleteRegistrationResponse';
-  adminUserId?: Maybe<Scalars['Int']['output']>;
+  adminUserId?: Maybe<Scalars['ID']['output']>;
   errors?: Maybe<Array<IValidationError>>;
-  institutionId?: Maybe<Scalars['Int']['output']>;
+  institutionId?: Maybe<Scalars['ID']['output']>;
   message?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
 };
 
 export type IConfigModel = {
   __typename?: 'ConfigModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   type?: Maybe<IConfigType>;
 };
@@ -96,8 +96,8 @@ export enum IConfigType {
 }
 
 export type ICountriesLanguagesInput = {
-  countryId: Scalars['Int']['input'];
-  languageId: Scalars['Int']['input'];
+  countryId: Scalars['ID']['input'];
+  languageId: Scalars['ID']['input'];
 };
 
 export type ICreateActivityLogInput = {
@@ -152,7 +152,7 @@ export type ICreateExamInput = {
 
 export type ICreateExamPaperInput = {
   configs: Array<InputMaybe<IExamConfigInput>>;
-  examId: Scalars['Int']['input'];
+  examId: Scalars['ID']['input'];
   name: Scalars['String']['input'];
   paperDate?: InputMaybe<Scalars['String']['input']>;
   tags: Array<InputMaybe<IExamTagInput>>;
@@ -193,7 +193,7 @@ export type ICreateExamineeSuccessResponse = {
 };
 
 export type ICreateGroupExamineeInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   otherDetails?: InputMaybe<IExamineeOtherDetailsInput>;
   uniqueIdentifier?: InputMaybe<Scalars['String']['input']>;
 };
@@ -218,7 +218,7 @@ export type ICreateInstitutionSuccessResponse = {
 
 export type ICreateInstructionInput = {
   description: Scalars['String']['input'];
-  examPaperId: Scalars['Int']['input'];
+  examPaperId: Scalars['ID']['input'];
 };
 
 export type ICreateInstructionSuccessResponse = {
@@ -280,7 +280,7 @@ export type ICreatePermissionSuccessResponse = {
 
 export type ICreatePlanInfoInput = {
   description: Scalars['String']['input'];
-  planId: Scalars['Int']['input'];
+  planId: Scalars['ID']['input'];
 };
 
 export type ICreatePlanInfoPlanInput = {
@@ -312,7 +312,7 @@ export type ICreateQuestionInput = {
   choices: Array<InputMaybe<ICreateChoiceInput>>;
   correctChoiceExplanation?: InputMaybe<Scalars['String']['input']>;
   description: Scalars['String']['input'];
-  examPaperId: Scalars['Int']['input'];
+  examPaperId: Scalars['ID']['input'];
   tags: Array<InputMaybe<IQuestionTagInput>>;
 };
 
@@ -324,7 +324,7 @@ export type ICreateQuestionSuccessResponse = {
 
 export type ICreateQuoteInput = {
   creditAmount: Scalars['Int']['input'];
-  planId: Scalars['Int']['input'];
+  planId: Scalars['ID']['input'];
 };
 
 export type ICreateQuoteSuccessResponse = {
@@ -388,7 +388,7 @@ export type ICreateUserSuccessResponse = {
 export type ICreditModel = {
   __typename?: 'CreditModel';
   balance: Scalars['Int']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
 };
 
 export enum ICurrencyModel {
@@ -407,31 +407,31 @@ export enum IDocumentType {
 
 export type IDocumentUploadInput = {
   documentType: IDocumentType;
-  registrationId: Scalars['Int']['input'];
+  registrationId: Scalars['ID']['input'];
 };
 
 export type IDocumentUploadResponse = {
   __typename?: 'DocumentUploadResponse';
-  documentId?: Maybe<Scalars['Int']['output']>;
+  documentId?: Maybe<Scalars['ID']['output']>;
   documentType?: Maybe<IDocumentType>;
   errors?: Maybe<Array<IValidationError>>;
   fileName?: Maybe<Scalars['String']['output']>;
   fileSize?: Maybe<Scalars['Int']['output']>;
-  fileUploadId?: Maybe<Scalars['Int']['output']>;
+  fileUploadId?: Maybe<Scalars['ID']['output']>;
   message?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
 };
 
 export type IExamConfig = {
   __typename?: 'ExamConfig';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   selected?: Maybe<Scalars['Boolean']['output']>;
   value?: Maybe<Scalars['String']['output']>;
 };
 
 export type IExamConfigInput = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   selected: Scalars['Boolean']['input'];
   value?: InputMaybe<Scalars['String']['input']>;
 };
@@ -442,7 +442,7 @@ export type IExamModel = {
   createdAt: Scalars['String']['output'];
   endDate?: Maybe<Scalars['String']['output']>;
   examPapers?: Maybe<Array<Maybe<IExamPaperModel>>>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   startDate?: Maybe<Scalars['String']['output']>;
   tags: Array<Maybe<ITagModel>>;
@@ -453,9 +453,9 @@ export type IExamPaperModel = {
   configs: Array<Maybe<IExamConfig>>;
   createdAt: Scalars['String']['output'];
   exam?: Maybe<IExamModel>;
-  examId: Scalars['Int']['output'];
+  examId: Scalars['ID']['output'];
   examineeGroups?: Maybe<Array<Maybe<IExamineeGroupModel>>>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   paperDate?: Maybe<Scalars['String']['output']>;
   publishedAt?: Maybe<Scalars['String']['output']>;
@@ -463,20 +463,20 @@ export type IExamPaperModel = {
 };
 
 export type IExamTagInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type IExamineeGroupModel = {
   __typename?: 'ExamineeGroupModel';
   examinees?: Maybe<Array<Maybe<IExamineeModel>>>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
 
 export type IExamineeModel = {
   __typename?: 'ExamineeModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   otherDetails?: Maybe<IExamineeOtherDetails>;
   uniqueIdentifier: Scalars['String']['output'];
 };
@@ -494,7 +494,7 @@ export type IExamineeOtherDetailsInput = {
 
 export type IFileUploadModel = {
   __typename?: 'FileUploadModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   mimetype?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   originalName?: Maybe<Scalars['String']['output']>;
@@ -518,7 +518,7 @@ export type IInstitutionModel = {
   accreditationNumber?: Maybe<Scalars['String']['output']>;
   city?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   institutionType?: Maybe<Scalars['String']['output']>;
   legalName?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
@@ -540,7 +540,7 @@ export enum IInstitutionType {
 export type IInstructionModel = {
   __typename?: 'InstructionModel';
   description: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
 };
 
 export type ILoginResponse = {
@@ -665,7 +665,7 @@ export type IMutationAssignExamineeGroupToExamPaperArgs = {
 
 export type IMutationAssignRoleToUserArgs = {
   roles?: InputMaybe<Array<InputMaybe<ISelectCategory>>>;
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -687,7 +687,7 @@ export type IMutationCompleteRegistrationArgs = {
   adminCredentials: IAdminCredentialsInput;
   institutionDetails: IInstitutionDetailsInput;
   profileInfo: IProfileInfoInput;
-  registrationId: Scalars['Int']['input'];
+  registrationId: Scalars['ID']['input'];
 };
 
 
@@ -821,128 +821,128 @@ export type IMutationCreateUserArgs = {
 
 
 export type IMutationDeleteActivityLogArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteChoiceArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteConfigArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteCreditArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteExamArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteExamPaperArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteExamineeArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteExamineeGroupArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteInstitutionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteInstructionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteNotificationArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteOtpArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeletePasswordResetArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeletePaymentArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeletePermissionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeletePlanArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeletePlanInfoArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteQuestionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteQuoteArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteRoleArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteSettingArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteTagArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteTransactionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationDeleteUserArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IMutationGivePermissionsToRoleArgs = {
   permissions?: InputMaybe<Array<InputMaybe<ISelectCategory>>>;
-  roleId?: InputMaybe<Scalars['Int']['input']>;
+  roleId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -968,7 +968,7 @@ export type IMutationMarkNotificationAsReadArgs = {
 
 
 export type IMutationPublishExamPaperArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -989,7 +989,7 @@ export type IMutationRequestAccessTokenArgs = {
 
 export type IMutationRequestMpesaStkArgs = {
   phoneNumber: Scalars['String']['input'];
-  quoteId: Scalars['Int']['input'];
+  quoteId: Scalars['ID']['input'];
 };
 
 
@@ -1015,162 +1015,162 @@ export type IMutationSignupGoogleUserArgs = {
 
 export type IMutationSubmitAdminCredentialsArgs = {
   input: IAdminCredentialsInput;
-  registrationId: Scalars['Int']['input'];
+  registrationId: Scalars['ID']['input'];
 };
 
 
 export type IMutationSubmitInstitutionDetailsArgs = {
   input: IInstitutionDetailsInput;
-  registrationId: Scalars['Int']['input'];
+  registrationId: Scalars['ID']['input'];
 };
 
 
 export type IMutationSubmitProfileInfoArgs = {
   input: IProfileInfoInput;
-  registrationId?: InputMaybe<Scalars['Int']['input']>;
+  registrationId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
 export type IMutationUpdateActivityLogArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateActivityLogInput>;
 };
 
 
 export type IMutationUpdateChoiceArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateChoiceInput>;
 };
 
 
 export type IMutationUpdateConfigArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateConfigInput>;
 };
 
 
 export type IMutationUpdateCreditArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateCreditInput>;
 };
 
 
 export type IMutationUpdateExamArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateExamInput>;
 };
 
 
 export type IMutationUpdateExamPaperArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateExamPaperInput>;
 };
 
 
 export type IMutationUpdateExamineeArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateExamineeInput>;
 };
 
 
 export type IMutationUpdateExamineeGroupArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateExamineeGroupInput>;
 };
 
 
 export type IMutationUpdateInstitutionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateInstitutionInput>;
 };
 
 
 export type IMutationUpdateInstructionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateInstructionInput>;
 };
 
 
 export type IMutationUpdateNotificationArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateNotificationInput>;
 };
 
 
 export type IMutationUpdateOtpArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateOtpInput>;
 };
 
 
 export type IMutationUpdatePasswordResetArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdatePasswordResetInput>;
 };
 
 
 export type IMutationUpdatePaymentArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdatePaymentInput>;
 };
 
 
 export type IMutationUpdatePermissionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdatePermissionInput>;
 };
 
 
 export type IMutationUpdatePlanArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdatePlanInput>;
 };
 
 
 export type IMutationUpdatePlanInfoArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdatePlanInfoInput>;
 };
 
 
 export type IMutationUpdateQuestionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateQuestionInput>;
 };
 
 
 export type IMutationUpdateQuoteArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateQuoteInput>;
 };
 
 
 export type IMutationUpdateRoleArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateRoleInput>;
 };
 
 
 export type IMutationUpdateSettingArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateSettingInput>;
 };
 
 
 export type IMutationUpdateTagArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateTagInput>;
 };
 
 
 export type IMutationUpdateTransactionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateTransactionInput>;
 };
 
 
 export type IMutationUpdateUserArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
   params?: InputMaybe<IUpdateUserInput>;
 };
 
@@ -1222,7 +1222,7 @@ export type INotificationModel = {
   __typename?: 'NotificationModel';
   createdAt: Scalars['String']['output'];
   description: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   title: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
 };
@@ -1238,7 +1238,7 @@ export type INotificationUserModel = {
   __typename?: 'NotificationUserModel';
   createdAt: Scalars['String']['output'];
   description: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   isRead: Scalars['Boolean']['output'];
   title: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
@@ -1246,7 +1246,7 @@ export type INotificationUserModel = {
 
 export type IOtpModel = {
   __typename?: 'OtpModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
 
@@ -1425,33 +1425,33 @@ export type IPagination = {
 
 export type IPasswordResetModel = {
   __typename?: 'PasswordResetModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
 
 export type IPaymentModel = {
   __typename?: 'PaymentModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
 
 export type IPermissionModel = {
   __typename?: 'PermissionModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
 
 export type IPlanInfoModel = {
   __typename?: 'PlanInfoModel';
   description: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
-  planId: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  planId: Scalars['ID']['output'];
 };
 
 export type IPlanModel = {
   __typename?: 'PlanModel';
   costPerCreditInKES: Scalars['Float']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   planInfos: Array<Maybe<IPlanInfoModel>>;
   tagLine: Scalars['String']['output'];
@@ -1529,7 +1529,7 @@ export type IQuery = {
 
 
 export type IQueryActivityLogArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1549,7 +1549,7 @@ export type IQueryAuthenticatedUserNotificationsArgs = {
 
 
 export type IQueryChoiceArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1559,7 +1559,7 @@ export type IQueryChoicesArgs = {
 
 
 export type IQueryConfigArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1569,7 +1569,7 @@ export type IQueryConfigsArgs = {
 
 
 export type IQueryCreditArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1579,12 +1579,12 @@ export type IQueryCreditsArgs = {
 
 
 export type IQueryExamArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IQueryExamPaperArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1594,12 +1594,12 @@ export type IQueryExamPapersArgs = {
 
 
 export type IQueryExamineeArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IQueryExamineeGroupArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1624,12 +1624,12 @@ export type IQueryFileUploadsArgs = {
 
 
 export type IQueryGetRegistrationDetailsArgs = {
-  registrationId: Scalars['Int']['input'];
+  registrationId: Scalars['ID']['input'];
 };
 
 
 export type IQueryGetRegistrationStatusArgs = {
-  registrationId: Scalars['Int']['input'];
+  registrationId: Scalars['ID']['input'];
 };
 
 
@@ -1639,7 +1639,7 @@ export type IQueryGetRegistrationsArgs = {
 
 
 export type IQueryInstitutionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1649,7 +1649,7 @@ export type IQueryInstitutionsArgs = {
 
 
 export type IQueryInstructionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1664,7 +1664,7 @@ export type IQueryMpesaTransactionStatusArgs = {
 
 
 export type IQueryNotificationArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1674,7 +1674,7 @@ export type IQueryNotificationsArgs = {
 
 
 export type IQueryOtpArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1684,7 +1684,7 @@ export type IQueryOtpsArgs = {
 
 
 export type IQueryPasswordResetArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1694,7 +1694,7 @@ export type IQueryPasswordResetsArgs = {
 
 
 export type IQueryPaymentArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1704,7 +1704,7 @@ export type IQueryPaymentsArgs = {
 
 
 export type IQueryPermissionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1714,12 +1714,12 @@ export type IQueryPermissionsArgs = {
 
 
 export type IQueryPlanArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IQueryPlanInfoArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1734,7 +1734,7 @@ export type IQueryPlansArgs = {
 
 
 export type IQueryQuestionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1744,7 +1744,7 @@ export type IQueryQuestionsArgs = {
 
 
 export type IQueryQuoteArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1754,7 +1754,7 @@ export type IQueryQuotesArgs = {
 
 
 export type IQueryRoleArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1764,7 +1764,7 @@ export type IQueryRolesArgs = {
 
 
 export type IQuerySettingArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1774,7 +1774,7 @@ export type IQuerySettingsArgs = {
 
 
 export type IQueryTagArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1784,7 +1784,7 @@ export type IQueryTagsArgs = {
 
 
 export type IQueryTransactionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1794,12 +1794,12 @@ export type IQueryTransactionsArgs = {
 
 
 export type IQueryUserArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type IQueryUserRolesArgs = {
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -1840,13 +1840,13 @@ export type IQuestionModel = {
   correctChoiceExplanation?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   exam: IExamModel;
-  examPaperId: Scalars['Int']['output'];
-  id: Scalars['Int']['output'];
+  examPaperId: Scalars['ID']['output'];
+  id: Scalars['ID']['output'];
   tags: Array<Maybe<ITagModel>>;
 };
 
 export type IQuestionTagInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -1858,8 +1858,8 @@ export type IQuoteModel = {
   currency: ICurrencyModel;
   expireAt?: Maybe<Scalars['String']['output']>;
   feeCost: Scalars['Float']['output'];
-  id: Scalars['Int']['output'];
-  planId: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  planId: Scalars['ID']['output'];
   taxCost: Scalars['Float']['output'];
   totalCost?: Maybe<Scalars['Float']['output']>;
 };
@@ -1873,14 +1873,14 @@ export type IRegistrationDetailsResponse = {
   __typename?: 'RegistrationDetailsResponse';
   adminCredentialsCompleted: Scalars['Boolean']['output'];
   adminUser?: Maybe<IUserModel>;
-  adminUserId?: Maybe<Scalars['Int']['output']>;
+  adminUserId?: Maybe<Scalars['ID']['output']>;
   completedAt?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   documentsUploaded: Scalars['Boolean']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   institution?: Maybe<IInstitutionModel>;
   institutionDetailsCompleted: Scalars['Boolean']['output'];
-  institutionId?: Maybe<Scalars['Int']['output']>;
+  institutionId?: Maybe<Scalars['ID']['output']>;
   profileInfoCompleted: Scalars['Boolean']['output'];
   status: IRegistrationStatus;
   statusHistory: Array<IRegistrationStatusHistory>;
@@ -1909,7 +1909,7 @@ export type IRegistrationStatusHistory = {
   __typename?: 'RegistrationStatusHistory';
   changedAt: Scalars['String']['output'];
   changedBy?: Maybe<Scalars['String']['output']>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   newStatus: IRegistrationStatus;
   notes?: Maybe<Scalars['String']['output']>;
   previousStatus: IRegistrationStatus;
@@ -1918,13 +1918,13 @@ export type IRegistrationStatusHistory = {
 export type IRegistrationStatusResponse = {
   __typename?: 'RegistrationStatusResponse';
   adminCredentialsCompleted: Scalars['Boolean']['output'];
-  adminUserId?: Maybe<Scalars['Int']['output']>;
+  adminUserId?: Maybe<Scalars['ID']['output']>;
   completedAt?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   documentsUploaded: Scalars['Boolean']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   institutionDetailsCompleted: Scalars['Boolean']['output'];
-  institutionId?: Maybe<Scalars['Int']['output']>;
+  institutionId?: Maybe<Scalars['ID']['output']>;
   profileInfoCompleted: Scalars['Boolean']['output'];
   status: IRegistrationStatus;
   updatedAt: Scalars['String']['output'];
@@ -1934,13 +1934,13 @@ export type IRegistrationStepResponse = {
   __typename?: 'RegistrationStepResponse';
   errors?: Maybe<Array<IValidationError>>;
   message?: Maybe<Scalars['String']['output']>;
-  registrationId?: Maybe<Scalars['Int']['output']>;
+  registrationId?: Maybe<Scalars['ID']['output']>;
   success: Scalars['Boolean']['output'];
 };
 
 export type IRoleModel = {
   __typename?: 'RoleModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   permissions?: Maybe<Array<Maybe<IPermissionModel>>>;
 };
@@ -1955,7 +1955,7 @@ export type ISelectCategoryString = {
 
 export type ISettingModel = {
   __typename?: 'SettingModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
 
@@ -1975,7 +1975,7 @@ export type ISubscription = {
 
 
 export type ISubscriptionMpesaPaymentReceivedArgs = {
-  quoteId: Scalars['Int']['input'];
+  quoteId: Scalars['ID']['input'];
 };
 
 
@@ -1996,7 +1996,7 @@ export type ISuccessResponse = {
 
 export type ITagModel = {
   __typename?: 'TagModel';
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
 
@@ -2005,7 +2005,7 @@ export type ITransactionModel = {
   amount: Scalars['Float']['output'];
   balanceAfterTransaction: Scalars['Float']['output'];
   description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   type?: Maybe<ITransactionTypeEnum>;
 };
 
@@ -2041,7 +2041,7 @@ export type IUpdateExamInput = {
 };
 
 export type IUpdateExamPaperInput = {
-  examId: Scalars['Int']['input'];
+  examId: Scalars['ID']['input'];
   name: Scalars['String']['input'];
 };
 
@@ -2069,7 +2069,7 @@ export type IUpdateInstitutionInput = {
 
 export type IUpdateInstructionInput = {
   description: Scalars['String']['input'];
-  examPaperId: Scalars['Int']['input'];
+  examPaperId: Scalars['ID']['input'];
 };
 
 export type IUpdateNotificationInput = {
@@ -2095,7 +2095,7 @@ export type IUpdatePermissionInput = {
 
 export type IUpdatePlanInfoInput = {
   description?: InputMaybe<Scalars['String']['input']>;
-  planId?: InputMaybe<Scalars['Int']['input']>;
+  planId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type IUpdatePlanInput = {
@@ -2110,12 +2110,12 @@ export type IUpdateQuestionInput = {
   choiceType: IChoiceType;
   correctChoiceExplanation?: InputMaybe<Scalars['String']['input']>;
   description: Scalars['String']['input'];
-  examPaperId: Scalars['Int']['input'];
+  examPaperId: Scalars['ID']['input'];
 };
 
 export type IUpdateQuoteInput = {
   paymentAmount: Scalars['Float']['input'];
-  planId: Scalars['Int']['input'];
+  planId: Scalars['ID']['input'];
 };
 
 export type IUpdateRoleInput = {
@@ -2154,7 +2154,7 @@ export type IUserModel = {
   email: Scalars['String']['output'];
   emailVerifiedAt?: Maybe<Scalars['String']['output']>;
   firstName: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
   lastName: Scalars['String']['output'];
   phone?: Maybe<Scalars['String']['output']>;
   phoneVerifiedAt?: Maybe<Scalars['String']['output']>;

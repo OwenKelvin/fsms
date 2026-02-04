@@ -3,14 +3,14 @@ import * as Types from '@fsms/data-access/core';
 import { gql } from '@apollo/client';
 export type ISubmitProfileInfoMutationVariables = Types.Exact<{
   input: Types.IProfileInfoInput;
-  registrationId?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  registrationId?: Types.InputMaybe<Types.Scalars['ID']['input']>;
 }>;
 
 
 export type ISubmitProfileInfoMutation = { submitProfileInfo: { success: boolean, registrationId?: string | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type ISubmitInstitutionDetailsMutationVariables = Types.Exact<{
-  registrationId: Types.Scalars['Int']['input'];
+  registrationId: Types.Scalars['ID']['input'];
   input: Types.IInstitutionDetailsInput;
 }>;
 
@@ -26,7 +26,7 @@ export type IUploadDocumentMutationVariables = Types.Exact<{
 export type IUploadDocumentMutation = { uploadRegistrationDocument: { success: boolean, documentId?: string | null, fileUploadId?: string | null, documentType?: Types.IDocumentType | null, fileName?: string | null, fileSize?: number | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type ISubmitAdminCredentialsMutationVariables = Types.Exact<{
-  registrationId: Types.Scalars['Int']['input'];
+  registrationId: Types.Scalars['ID']['input'];
   input: Types.IAdminCredentialsInput;
 }>;
 
@@ -34,7 +34,7 @@ export type ISubmitAdminCredentialsMutationVariables = Types.Exact<{
 export type ISubmitAdminCredentialsMutation = { submitAdminCredentials: { success: boolean, registrationId?: string | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type ICompleteRegistrationMutationVariables = Types.Exact<{
-  registrationId: Types.Scalars['Int']['input'];
+  registrationId: Types.Scalars['ID']['input'];
   profileInfo: Types.IProfileInfoInput;
   institutionDetails: Types.IInstitutionDetailsInput;
   adminCredentials: Types.IAdminCredentialsInput;
@@ -44,14 +44,14 @@ export type ICompleteRegistrationMutationVariables = Types.Exact<{
 export type ICompleteRegistrationMutation = { completeRegistration: { success: boolean, institutionId?: string | null, adminUserId?: string | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type IGetRegistrationStatusQueryVariables = Types.Exact<{
-  registrationId: Types.Scalars['Int']['input'];
+  registrationId: Types.Scalars['ID']['input'];
 }>;
 
 
 export type IGetRegistrationStatusQuery = { getRegistrationStatus?: { id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null } | null };
 
 export type IGetRegistrationDetailsQueryVariables = Types.Exact<{
-  registrationId: Types.Scalars['Int']['input'];
+  registrationId: Types.Scalars['ID']['input'];
 }>;
 
 
@@ -71,7 +71,7 @@ export type IGetRegistrationsRequiringReviewQuery = { getRegistrationsRequiringR
 
 
 export const SubmitProfileInfo = gql`
-    mutation SubmitProfileInfo($input: ProfileInfoInput!, $registrationId: Int) {
+    mutation SubmitProfileInfo($input: ProfileInfoInput!, $registrationId: ID) {
   submitProfileInfo(input: $input, registrationId: $registrationId) {
     success
     registrationId
@@ -84,7 +84,7 @@ export const SubmitProfileInfo = gql`
 }
     `;
 export const SubmitInstitutionDetails = gql`
-    mutation SubmitInstitutionDetails($registrationId: Int!, $input: InstitutionDetailsInput!) {
+    mutation SubmitInstitutionDetails($registrationId: ID!, $input: InstitutionDetailsInput!) {
   submitInstitutionDetails(registrationId: $registrationId, input: $input) {
     success
     registrationId
@@ -114,7 +114,7 @@ export const UploadDocument = gql`
 }
     `;
 export const SubmitAdminCredentials = gql`
-    mutation SubmitAdminCredentials($registrationId: Int!, $input: AdminCredentialsInput!) {
+    mutation SubmitAdminCredentials($registrationId: ID!, $input: AdminCredentialsInput!) {
   submitAdminCredentials(registrationId: $registrationId, input: $input) {
     success
     registrationId
@@ -127,7 +127,7 @@ export const SubmitAdminCredentials = gql`
 }
     `;
 export const CompleteRegistration = gql`
-    mutation CompleteRegistration($registrationId: Int!, $profileInfo: ProfileInfoInput!, $institutionDetails: InstitutionDetailsInput!, $adminCredentials: AdminCredentialsInput!) {
+    mutation CompleteRegistration($registrationId: ID!, $profileInfo: ProfileInfoInput!, $institutionDetails: InstitutionDetailsInput!, $adminCredentials: AdminCredentialsInput!) {
   completeRegistration(
     registrationId: $registrationId
     profileInfo: $profileInfo
@@ -146,7 +146,7 @@ export const CompleteRegistration = gql`
 }
     `;
 export const GetRegistrationStatus = gql`
-    query GetRegistrationStatus($registrationId: Int!) {
+    query GetRegistrationStatus($registrationId: ID!) {
   getRegistrationStatus(registrationId: $registrationId) {
     id
     status
@@ -163,7 +163,7 @@ export const GetRegistrationStatus = gql`
 }
     `;
 export const GetRegistrationDetails = gql`
-    query GetRegistrationDetails($registrationId: Int!) {
+    query GetRegistrationDetails($registrationId: ID!) {
   getRegistrationDetails(registrationId: $registrationId) {
     id
     status

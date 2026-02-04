@@ -1,6 +1,6 @@
 # Registration Mutations
 
-mutation SubmitProfileInfo($input: ProfileInfoInput!, $registrationId: Int) {
+mutation SubmitProfileInfo($input: ProfileInfoInput!, $registrationId: ID) {
   submitProfileInfo(input: $input, registrationId: $registrationId) {
     success
     registrationId
@@ -12,7 +12,7 @@ mutation SubmitProfileInfo($input: ProfileInfoInput!, $registrationId: Int) {
   }
 }
 
-mutation SubmitInstitutionDetails($registrationId: Int!, $input: InstitutionDetailsInput!) {
+mutation SubmitInstitutionDetails($registrationId: ID!, $input: InstitutionDetailsInput!) {
   submitInstitutionDetails(registrationId: $registrationId, input: $input) {
     success
     registrationId
@@ -40,7 +40,7 @@ mutation UploadDocument($file: Upload!, $input: DocumentUploadInput!) {
   }
 }
 
-mutation SubmitAdminCredentials($registrationId: Int!, $input: AdminCredentialsInput!) {
+mutation SubmitAdminCredentials($registrationId: ID!, $input: AdminCredentialsInput!) {
   submitAdminCredentials(registrationId: $registrationId, input: $input) {
     success
     registrationId
@@ -53,7 +53,7 @@ mutation SubmitAdminCredentials($registrationId: Int!, $input: AdminCredentialsI
 }
 
 mutation CompleteRegistration(
-  $registrationId: Int!
+  $registrationId: ID!
   $profileInfo: ProfileInfoInput!
   $institutionDetails: InstitutionDetailsInput!
   $adminCredentials: AdminCredentialsInput!
@@ -77,7 +77,7 @@ mutation CompleteRegistration(
 
 # Registration Queries
 
-query GetRegistrationStatus($registrationId: Int!) {
+query GetRegistrationStatus($registrationId: ID!) {
   getRegistrationStatus(registrationId: $registrationId) {
     id
     status
@@ -93,7 +93,7 @@ query GetRegistrationStatus($registrationId: Int!) {
   }
 }
 
-query GetRegistrationDetails($registrationId: Int!) {
+query GetRegistrationDetails($registrationId: ID!) {
   getRegistrationDetails(registrationId: $registrationId) {
     id
     status
