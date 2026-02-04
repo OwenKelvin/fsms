@@ -31,7 +31,7 @@ interface DocumentsFormValue {
     }),
   ],
   template: `
-    <form (submit)="handleSubmit()">
+    <form (submit)="handleSubmit($event)">
       <!-- Page Header -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold mb-2">Verification Documents</h1>
@@ -261,7 +261,8 @@ export class DocumentsStep {
     }
   }
 
-  async handleSubmit() {
+  async handleSubmit(event: Event) {
+    event.preventDefault();
     await submit(this.documentsForm, async () => {
       const formData = this.documentsForm().value();
       this.submitForm.emit(formData);

@@ -109,7 +109,8 @@ export class InstitutionDetailsStep {
 
   isValid = model<boolean>();
 
-  async handleSubmit() {
+  async handleSubmit(event: Event) {
+    event.preventDefault();
     await submit(this.institutionDetailsForm, async () => {
       const formData = this.institutionDetailsForm().value();
       // Map institutionType to the enum format expected by the API

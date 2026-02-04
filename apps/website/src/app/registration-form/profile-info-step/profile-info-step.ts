@@ -91,7 +91,8 @@ export class ProfileInfoStep {
 
   isValid = model<boolean>(false);
 
-  async handleSubmit() {
+  async handleSubmit(event: Event) {
+    event.preventDefault();
     await submit(this.profileInfoForm, async () => {
       const formData = this.profileInfoForm().value();
       this.submitForm.emit(formData);

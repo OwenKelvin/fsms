@@ -45,7 +45,7 @@ interface AdminCredentialsFormValue {
     }),
   ],
   template: `
-    <form (submit)="handleSubmit()">
+    <form (submit)="handleSubmit($event)">
       <!-- Page Header -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold mb-2">Admin Credentials</h1>
@@ -293,7 +293,8 @@ export class AdminCredentialsStep {
 
   isValid = model<boolean>();
 
-  async handleSubmit() {
+  async handleSubmit(event: Event) {
+    event.preventDefault();
     await submit(this.adminCredentialsForm, async () => {
       const formData = this.adminCredentialsForm().value();
       // Map to API format
