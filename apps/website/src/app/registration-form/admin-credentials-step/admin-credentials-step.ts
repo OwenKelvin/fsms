@@ -1,4 +1,4 @@
-import { Component, computed, model, output } from '@angular/core';
+import { Component, computed, input, model, output } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideCheckCircle,
@@ -7,11 +7,12 @@ import {
   lucideShieldCheck,
   lucideUser,
 } from '@ng-icons/lucide';
-import { form, FormField, minLength, required, validate } from '@angular/forms/signals';
+import { form, FormField, minLength, required, submit, validate } from '@angular/forms/signals';
 import { HlmLabel } from '@fsms/ui/label';
 import { HlmInput } from '@fsms/ui/input';
 import { HlmButton } from '@fsms/ui/button';
 import { HlmError, HlmFormControl, HlmHint, HlmPrefix } from '@fsms/ui/form-field';
+import { IAdminCredentialsInput } from '@fsms/data-access/core';
 
 interface AdminCredentialsFormValue {
   username: string;
@@ -44,7 +45,7 @@ interface AdminCredentialsFormValue {
     }),
   ],
   template: `
-    <div>
+    <form (submit)="handleSubmit()">
       <!-- Page Header -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold mb-2">Admin Credentials</h1>
@@ -215,22 +216,27 @@ interface AdminCredentialsFormValue {
 
           <button
             hlmBtn
-            type="button"
-            (click)="submitted.emit()"
-            [disabled]="!adminCredentialsForm().valid()"
+            type="submit"
+            [disabled]="!adminCredentialsForm().valid() || isLoading()"
             class="flex items-center gap-2"
           >
-            Submit Registration
-            <ng-icon name="lucideCheckCircle" size="18" />
+            @if (isLoading()) {
+              Submitting...
+            } @else {
+              Submit Registration
+              <ng-icon name="lucideCheckCircle" size="18" />
+            }
           </button>
         </div>
       </div>
-    </div>
+    </form>
   `,
 })
 export class AdminCredentialsStep {
-  submitted = output<void>();
+  submitForm = output<IAdminCredentialsInput>();
   back = output<void>();
+  isLoading = input<boolean>(false);
+
   formValue = model<AdminCredentialsFormValue>({
     username: '',
     password: '',
@@ -286,4 +292,19 @@ export class AdminCredentialsStep {
   });
 
   isValid = model<boolean>();
+
+  async handleSubmit() {
+    await submit(this.adminCredentialsForm, async () => {
+      const formData = this.adminCredentialsForm().value();
+      // Map to API format
+      const apiData: IAdminCredentialsInput = {
+        username: formData.username,
+        password: formData.password,
+        passwordConfirmation: formData.confirmPassword,
+        enableTwoFactor: formData.enableTwoFactor,
+      };
+      this.submitForm.emit(apiData);
+      return undefined;
+    });
+  }
 }

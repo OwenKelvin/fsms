@@ -1,4 +1,4 @@
-import { Component, effect, model, output, signal } from '@angular/core';
+import { Component, effect, input, model, output, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideAward,
@@ -9,7 +9,7 @@ import {
 } from '@ng-icons/lucide';
 import { NgClass } from '@angular/common';
 import { HlmButton } from '@fsms/ui/button';
-import { form, required } from '@angular/forms/signals';
+import { form, required, submit } from '@angular/forms/signals';
 import { HlmError } from '@fsms/ui/form-field';
 
 interface DocumentsFormValue {
@@ -31,7 +31,7 @@ interface DocumentsFormValue {
     }),
   ],
   template: `
-    <div>
+    <form (submit)="handleSubmit()">
       <!-- Page Header -->
       <div class="mb-8">
         <h1 class="text-3xl font-bold mb-2">Verification Documents</h1>
@@ -205,22 +205,26 @@ interface DocumentsFormValue {
 
           <button
             hlmBtn
-            type="button"
-            (click)="next.emit()"
-            [disabled]="!documentsForm().valid()"
+            type="submit"
+            [disabled]="!documentsForm().valid() || isLoading()"
             class="flex items-center gap-2"
           >
-            Save & Continue
-            <ng-icon name="lucideChevronRight" size="18" />
+            @if (isLoading()) {
+              Uploading...
+            } @else {
+              Save & Continue
+              <ng-icon name="lucideChevronRight" size="18" />
+            }
           </button>
         </div>
       </div>
-    </div>
+    </form>
   `,
 })
 export class DocumentsStep {
-  next = output<void>();
+  submitForm = output<DocumentsFormValue>();
   back = output<void>();
+  isLoading = input<boolean>(false);
 
   accreditationFile = signal<File | null>(null);
   licenseFile = signal<File | null>(null);
@@ -255,5 +259,13 @@ export class DocumentsStep {
         this.documentsForm.operatingLicense().value.set(file);
       }
     }
+  }
+
+  async handleSubmit() {
+    await submit(this.documentsForm, async () => {
+      const formData = this.documentsForm().value();
+      this.submitForm.emit(formData);
+      return undefined;
+    });
   }
 }

@@ -1,5 +1,5 @@
-import { Component, model, output, signal } from '@angular/core';
-import { form, FormField, required } from '@angular/forms/signals';
+import { Component, input, model, output, signal } from '@angular/core';
+import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HlmButton } from '@fsms/ui/button';
 import { HlmInput } from '@fsms/ui/input';
 import { HlmLabel } from '@fsms/ui/label';
@@ -9,6 +9,7 @@ import { HlmIcon } from '@fsms/ui/icon';
 import { HlmError, HlmFormControl, HlmFormField, HlmHint, HlmPrefix } from '@fsms/ui/form-field';
 import { HlmSelect, HlmSelectContent, HlmSelectOption, HlmSelectTrigger, HlmSelectValue } from '@fsms/ui/select';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
+import { IInstitutionDetailsInput } from '@fsms/data-access/core';
 
 interface InstitutionDetailsFormValue {
   legalName: string;
@@ -55,8 +56,10 @@ interface InstitutionDetailsFormValue {
   templateUrl: 'institution-details-step.html',
 })
 export class InstitutionDetailsStep {
-  next = output<void>();
+  submitForm = output<IInstitutionDetailsInput>();
   back = output<void>();
+  isLoading = input<boolean>(false);
+
   institutionTypes = signal([
     { id: 'University', label: 'University' },
     { id: 'College', label: 'College' },
@@ -105,4 +108,17 @@ export class InstitutionDetailsStep {
   );
 
   isValid = model<boolean>();
+
+  async handleSubmit() {
+    await submit(this.institutionDetailsForm, async () => {
+      const formData = this.institutionDetailsForm().value();
+      // Map institutionType to the enum format expected by the API
+      const apiData: IInstitutionDetailsInput = {
+        ...formData,
+        institutionType: formData.institutionType as any, // Type assertion for enum
+      };
+      this.submitForm.emit(apiData);
+      return undefined;
+    });
+  }
 }

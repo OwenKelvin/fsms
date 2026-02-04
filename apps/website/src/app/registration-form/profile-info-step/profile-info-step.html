@@ -1,4 +1,4 @@
-<form (submit)="onSubmit($event)">
+<form (submit)="handleSubmit()">
   <!-- Page Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold mb-2">Profile Information</h1>
@@ -9,7 +9,7 @@
   </div>
 
   <!-- Form -->
-  <form class="space-y-4">
+  <div class="space-y-4">
     <!-- First Name & Last Name -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-8">
       <hlm-form-field>
@@ -129,14 +129,17 @@
         <button
           hlmBtn
           type="submit"
-          (click)="next.emit()"
-          [disabled]="!profileInfoForm().valid()"
+          [disabled]="!profileInfoForm().valid() || isLoading()"
           class="flex items-center gap-2"
         >
-          Save & Continue
-          <ng-icon hlmIcon name="lucideChevronRight" size="base" />
+          @if (isLoading()) {
+            Processing...
+          } @else {
+            Save & Continue
+            <ng-icon hlmIcon name="lucideChevronRight" size="base" />
+          }
         </button>
       </div>
     </div>
-  </form>
+  </div>
 </form>

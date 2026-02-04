@@ -1,7 +1,7 @@
-import { Component, model, output, signal } from '@angular/core';
+import { Component, input, model, output, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronRight, lucideMail, lucideUser } from '@ng-icons/lucide';
-import { email, form, FormField, required } from '@angular/forms/signals';
+import { email, form, FormField, required, submit } from '@angular/forms/signals';
 import { BrnSelect, BrnSelectImports } from '@spartan-ng/brain/select';
 
 import { HlmButton } from '@fsms/ui/button';
@@ -22,6 +22,7 @@ import {
   HlmSelectValue,
 } from '@fsms/ui/select';
 import { HlmIcon } from '@fsms/ui/icon';
+import { IProfileInfoInput } from '@fsms/data-access/core';
 
 interface ProfileInfoFormValue {
   firstName: string;
@@ -58,7 +59,8 @@ interface ProfileInfoFormValue {
   templateUrl: './profile-info-step.html',
 })
 export class ProfileInfoStep {
-  next = output<void>();
+  submitForm = output<IProfileInfoInput>();
+  isLoading = input<boolean>(false);
 
   jobTitles = signal([
     { id: 'registrar', label: 'Registrar' },
@@ -89,10 +91,11 @@ export class ProfileInfoStep {
 
   isValid = model<boolean>(false);
 
-  onSubmit($event: Event) {
-    $event.preventDefault();
-    if (this.profileInfoForm().valid()) {
-      this.next.emit();
-    }
+  async handleSubmit() {
+    await submit(this.profileInfoForm, async () => {
+      const formData = this.profileInfoForm().value();
+      this.submitForm.emit(formData);
+      return undefined;
+    });
   }
 }

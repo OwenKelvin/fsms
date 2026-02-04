@@ -1,4 +1,4 @@
-<div>
+<form (submit)="handleSubmit()">
   <!-- Page Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold mb-2">Institution Details</h1>
@@ -228,14 +228,17 @@
 
       <button
         hlmBtn
-        type="button"
-        (click)="next.emit()"
-        [disabled]="!institutionDetailsForm().valid()"
+        type="submit"
+        [disabled]="!institutionDetailsForm().valid() || isLoading()"
         class="flex items-center gap-2"
       >
-        Save & Continue
-        <ng-icon hlmIcon name="lucideChevronRight" size="base" />
+        @if (isLoading()) {
+          Processing...
+        } @else {
+          Save & Continue
+          <ng-icon hlmIcon name="lucideChevronRight" size="base" />
+        }
       </button>
     </div>
   </div>
-</div>
+</form>

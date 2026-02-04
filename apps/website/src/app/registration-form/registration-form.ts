@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBuilding2,
@@ -13,6 +13,13 @@ import { InstitutionDetailsStep } from './institution-details-step/institution-d
 import { DocumentsStep } from './documents-step/documents-step';
 import { AdminCredentialsStep } from './admin-credentials-step/admin-credentials-step';
 import { Header } from '../header/header';
+import { RegistrationService } from '@fsms/data-access/registration';
+import {
+  IAdminCredentialsInput,
+  IDocumentType,
+  IInstitutionDetailsInput,
+  IProfileInfoInput,
+} from '@fsms/data-access/core';
 
 interface Step {
   id: string;
@@ -65,6 +72,7 @@ interface AdminCredentialsFormValue {
     Header,
   ],
   providers: [
+    RegistrationService,
     provideIcons({
       lucideCheck,
       lucideUser,
@@ -76,7 +84,12 @@ interface AdminCredentialsFormValue {
   templateUrl: './registration-form.html',
 })
 export default class RegistrationForm {
+  private registrationService = inject(RegistrationService);
+
   currentStep = signal(0);
+  registrationId = signal<number | null>(null);
+  isLoading = signal(false);
+  error = signal<string | null>(null);
 
   steps = signal<Step[]>([
     {
@@ -191,12 +204,161 @@ export default class RegistrationForm {
 
   saveAndExit() {
     console.log('Saving and exiting:', this.registrationFormData());
+    // TODO: Implement save draft functionality
+  }
+
+  onProfileInfoSubmit(data: IProfileInfoInput) {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.registrationService
+      .submitProfileInfo(data, this.registrationId() ?? undefined)
+      .subscribe({
+        next: (response) => {
+          if (response.registrationId) {
+            this.registrationId.set(response.registrationId);
+          }
+          this.profileInfoValue.set(data);
+          this.isLoading.set(false);
+          this.nextStep();
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Failed to submit profile information');
+          this.isLoading.set(false);
+          console.error('Profile info submission error:', err);
+        },
+      });
+  }
+
+  onInstitutionDetailsSubmit(data: IInstitutionDetailsInput) {
+    const regId = this.registrationId();
+    if (!regId) {
+      this.error.set('Registration ID not found. Please start from step 1.');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.registrationService.submitInstitutionDetails(regId, data).subscribe({
+      next: (response) => {
+        // Map the API response back to form value format
+        this.institutionDetailsValue.set({
+          ...data,
+          officialWebsite: data.officialWebsite || '',
+        });
+        this.isLoading.set(false);
+        this.nextStep();
+      },
+      error: (err) => {
+        this.error.set(err.message || 'Failed to submit institution details');
+        this.isLoading.set(false);
+        console.error('Institution details submission error:', err);
+      },
+    });
+  }
+
+  onDocumentsSubmit(data: DocumentsFormValue) {
+    const regId = this.registrationId();
+    if (!regId) {
+      this.error.set('Registration ID not found. Please start from step 1.');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    // Upload accreditation certificate
+    const accreditationUpload$ = data.accreditationCertificate
+      ? this.registrationService.uploadDocument(data.accreditationCertificate, {
+          registrationId: regId,
+          documentType: IDocumentType.AccreditationCertificate,
+        })
+      : null;
+
+    // Upload operating license
+    const licenseUpload$ = data.operatingLicense
+      ? this.registrationService.uploadDocument(data.operatingLicense, {
+          registrationId: regId,
+          documentType: IDocumentType.OperatingLicense,
+        })
+      : null;
+
+    // Upload both documents
+    const uploads = [accreditationUpload$, licenseUpload$].filter(Boolean);
+
+    if (uploads.length === 0) {
+      this.error.set('Please upload at least one document');
+      this.isLoading.set(false);
+      return;
+    }
+
+    // Use a simple counter to track uploads
+    let completed = 0;
+    const total = uploads.length;
+    let hasError = false;
+
+    uploads.forEach((upload$) => {
+      upload$!.subscribe({
+        next: () => {
+          completed++;
+          if (completed === total && !hasError) {
+            this.documentsValue.set(data);
+            this.isLoading.set(false);
+            this.nextStep();
+          }
+        },
+        error: (err) => {
+          if (!hasError) {
+            hasError = true;
+            this.error.set(err.message || 'Failed to upload documents');
+            this.isLoading.set(false);
+            console.error('Document upload error:', err);
+          }
+        },
+      });
+    });
+  }
+
+  onAdminCredentialsSubmit(data: IAdminCredentialsInput) {
+    const regId = this.registrationId();
+    if (!regId) {
+      this.error.set('Registration ID not found. Please start from step 1.');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.registrationService.submitAdminCredentials(regId, data).subscribe({
+      next: (response) => {
+        // Map back to form value format
+        this.adminCredentialsValue.set({
+          username: data.username,
+          password: data.password,
+          confirmPassword: data.passwordConfirmation,
+          enableTwoFactor: data.enableTwoFactor || true,
+        });
+        this.isLoading.set(false);
+        // Mark the last step as completed
+        this.steps.update((steps) => {
+          const newSteps = [...steps];
+          newSteps[this.currentStep()].completed = true;
+          return newSteps;
+        });
+        // TODO: Navigate to success page or show success message
+        console.log('Registration completed successfully!', response);
+      },
+      error: (err) => {
+        this.error.set(err.message || 'Failed to submit admin credentials');
+        this.isLoading.set(false);
+        console.error('Admin credentials submission error:', err);
+      },
+    });
   }
 
   submitRegistration() {
-    if (this.currentStepValid()) {
-      console.log('Submitting registration:', this.registrationFormData());
-      // Handle submission
-    }
+    // This method is now handled by onAdminCredentialsSubmit
+    console.log('Submitting registration:', this.registrationFormData());
   }
 }

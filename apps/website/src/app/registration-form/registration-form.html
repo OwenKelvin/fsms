@@ -67,19 +67,35 @@
     <!-- Main Content -->
     <main class="flex-1 p-8 md:p-12">
       <div class="max-w-3xl">
+        <!-- Error Message -->
+        @if (error()) {
+          <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p class="text-sm text-red-600">{{ error() }}</p>
+          </div>
+        }
+
+        <!-- Loading Overlay -->
+        @if (isLoading()) {
+          <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p class="text-sm text-blue-600">Processing... Please wait.</p>
+          </div>
+        }
+
         @switch (currentStep()) {
           @case (0) {
             <app-profile-info-step
               [(formValue)]="profileInfoValue"
               [(isValid)]="profileInfoValid"
-              (next)="saveAndContinue()"
+              [isLoading]="isLoading()"
+              (submitForm)="onProfileInfoSubmit($event)"
             />
           }
           @case (1) {
             <app-institution-details-step
               [(formValue)]="institutionDetailsValue"
               [(isValid)]="institutionDetailsValid"
-              (next)="saveAndContinue()"
+              [isLoading]="isLoading()"
+              (submitForm)="onInstitutionDetailsSubmit($event)"
               (back)="previousStep()"
             />
           }
@@ -87,7 +103,8 @@
             <app-documents-step
               [(formValue)]="documentsValue"
               [(isValid)]="documentsValid"
-              (next)="saveAndContinue()"
+              [isLoading]="isLoading()"
+              (submitForm)="onDocumentsSubmit($event)"
               (back)="previousStep()"
             />
           }
@@ -95,7 +112,8 @@
             <app-admin-credentials-step
               [(formValue)]="adminCredentialsValue"
               [(isValid)]="adminCredentialsValid"
-              (submit)="submitRegistration()"
+              [isLoading]="isLoading()"
+              (submitForm)="onAdminCredentialsSubmit($event)"
               (back)="previousStep()"
             />
           }

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { ApolloClient } from '@apollo/client';
+import { Apollo } from 'apollo-angular';
 import { from, map, Observable } from 'rxjs';
 
 import {
@@ -27,7 +27,7 @@ import {
 
 @Injectable()
 export class RegistrationService {
-  private apollo = inject(ApolloClient);
+  private apollo = inject(Apollo);
 
   /**
    * Submit profile information for registration (Step 1)
