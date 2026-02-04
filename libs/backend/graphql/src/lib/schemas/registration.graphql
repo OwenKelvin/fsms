@@ -1,0 +1,192 @@
+# Registration Types
+
+enum RegistrationStatus {
+  PENDING
+  PROFILE_INFO_COLLECTED
+  INSTITUTION_DETAILS_COLLECTED
+  DOCUMENTS_UPLOADED
+  ADMIN_CREDENTIALS_SET
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum InstitutionType {
+  EDUCATIONAL
+  HEALTHCARE
+  CORPORATE
+  GOVERNMENT
+  NON_PROFIT
+}
+
+enum DocumentType {
+  ACCREDITATION_CERTIFICATE
+  OPERATING_LICENSE
+}
+
+# Status History Type
+type RegistrationStatusHistory {
+  id: Int!
+  previousStatus: RegistrationStatus!
+  newStatus: RegistrationStatus!
+  changedAt: String!
+  changedBy: String
+  notes: String
+}
+
+# Registration Status Response
+type RegistrationStatusResponse {
+  id: Int!
+  status: RegistrationStatus!
+  profileInfoCompleted: Boolean!
+  institutionDetailsCompleted: Boolean!
+  documentsUploaded: Boolean!
+  adminCredentialsCompleted: Boolean!
+  createdAt: String!
+  updatedAt: String!
+  completedAt: String
+  institutionId: Int
+  adminUserId: Int
+}
+
+# Registration Details Response (includes related data)
+type RegistrationDetailsResponse {
+  id: Int!
+  status: RegistrationStatus!
+  profileInfoCompleted: Boolean!
+  institutionDetailsCompleted: Boolean!
+  documentsUploaded: Boolean!
+  adminCredentialsCompleted: Boolean!
+  createdAt: String!
+  updatedAt: String!
+  completedAt: String
+  institutionId: Int
+  adminUserId: Int
+  institution: InstitutionModel
+  adminUser: UserModel
+  statusHistory: [RegistrationStatusHistory!]!
+}
+
+# Input Types
+
+input ProfileInfoInput {
+  firstName: String!
+  lastName: String!
+  jobTitle: String!
+  email: String!
+}
+
+input InstitutionDetailsInput {
+  legalName: String!
+  institutionType: InstitutionType!
+  accreditationNumber: String!
+  streetAddress: String!
+  city: String!
+  stateProvince: String!
+  zipPostalCode: String!
+  officialWebsite: String
+}
+
+input AdminCredentialsInput {
+  username: String!
+  password: String!
+  passwordConfirmation: String!
+  enableTwoFactor: Boolean
+}
+
+input DocumentUploadInput {
+  registrationId: Int!
+  documentType: DocumentType!
+}
+
+input RegistrationFilterInput {
+  status: RegistrationStatus
+  statuses: [RegistrationStatus!]
+  startDate: String
+  endDate: String
+}
+
+# Response Types
+
+type ValidationError {
+  field: String!
+  message: String!
+}
+
+type RegistrationStepResponse {
+  success: Boolean!
+  registrationId: Int
+  message: String
+  errors: [ValidationError!]
+}
+
+type CompleteRegistrationResponse {
+  success: Boolean!
+  institutionId: Int
+  adminUserId: Int
+  message: String
+  errors: [ValidationError!]
+}
+
+type DocumentUploadResponse {
+  success: Boolean!
+  documentId: Int
+  fileUploadId: Int
+  documentType: DocumentType
+  fileName: String
+  fileSize: Int
+  message: String
+  errors: [ValidationError!]
+}
+
+# Queries
+
+extend type Query {
+  # Get registration status by ID
+  getRegistrationStatus(registrationId: Int!): RegistrationStatusResponse
+
+  # Get detailed registration information by ID
+  getRegistrationDetails(registrationId: Int!): RegistrationDetailsResponse
+
+  # Get registrations with filtering capabilities
+  getRegistrations(filter: RegistrationFilterInput): [RegistrationDetailsResponse!]!
+
+  # Get registrations that require manual review
+  getRegistrationsRequiringReview: [RegistrationDetailsResponse!]!
+}
+
+# Mutations
+
+extend type Mutation {
+  # Submit profile information for registration
+  submitProfileInfo(
+    input: ProfileInfoInput!
+    registrationId: Int
+  ): RegistrationStepResponse!
+
+  # Submit institution details for registration
+  submitInstitutionDetails(
+    registrationId: Int!
+    input: InstitutionDetailsInput!
+  ): RegistrationStepResponse!
+
+  # Submit admin credentials for registration
+  submitAdminCredentials(
+    registrationId: Int!
+    input: AdminCredentialsInput!
+  ): RegistrationStepResponse!
+
+  # Complete the registration process atomically
+  completeRegistration(
+    registrationId: Int!
+    profileInfo: ProfileInfoInput!
+    institutionDetails: InstitutionDetailsInput!
+    adminCredentials: AdminCredentialsInput!
+  ): CompleteRegistrationResponse!
+
+  # Upload a registration document
+  uploadRegistrationDocument(
+    file: Upload!
+    input: DocumentUploadInput!
+  ): DocumentUploadResponse!
+}
