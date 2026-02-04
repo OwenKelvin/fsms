@@ -1,0 +1,160 @@
+mutation SubmitProfileInfo {
+  submitProfileInfo(
+    input: {
+      firstName: "John"
+      lastName: "Doe"
+      jobTitle: "Principal"
+      email: "john.doe@school.edu"
+    }
+  ) {
+    success
+    registrationId
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation SubmitInstitutionDetails {
+  submitInstitutionDetails(
+    registrationId: 123  # Use ID from Step 1
+    input: {
+      legalName: "Springfield High School"
+      institutionType: EDUCATIONAL
+      accreditationNumber: "ACC-2024-12345"
+      streetAddress: "123 Main Street"
+      city: "Springfield"
+      stateProvince: "Illinois"
+      zipPostalCode: "62701"
+      officialWebsite: "https://springfield-hs.edu"
+    }
+  ) {
+    success
+    registrationId
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation UploadDocument($file: Upload! ) {
+  uploadRegistrationDocument (
+    file: $file  # File upload from multipart form
+    input: {
+      registrationId: 123
+      documentType: ACCREDITATION_CERTIFICATE
+    }
+  ) {
+    success
+    documentId
+    fileUploadId
+    fileName
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation SubmitAdminCredentials {
+  submitAdminCredentials(
+    registrationId: 123
+    input: {
+      username: "johndoe_admin"
+      password: "SecureP@ssw0rd123"
+      passwordConfirmation: "SecureP@ssw0rd123"
+      enableTwoFactor: true
+    }
+  ) {
+    success
+    registrationId
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation CompleteRegistration {
+  completeRegistration(
+    registrationId: 123
+    profileInfo: {
+      firstName: "John"
+      lastName: "Doe"
+      jobTitle: "Principal"
+      email: "john.doe@school.edu"
+    }
+    institutionDetails: {
+      legalName: "Springfield High School"
+      institutionType: EDUCATIONAL
+      accreditationNumber: "ACC-2024-12345"
+      streetAddress: "123 Main Street"
+      city: "Springfield"
+      stateProvince: "Illinois"
+      zipPostalCode: "62701"
+      officialWebsite: "https://springfield-hs.edu"
+    }
+    adminCredentials: {
+      username: "johndoe_admin"
+      password: "SecureP@ssw0rd123"
+      passwordConfirmation: "SecureP@ssw0rd123"
+      enableTwoFactor: true
+    }
+  ) {
+    success
+    institutionId
+    adminUserId
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+query GetRegistrationStatus {
+  getRegistrationStatus(registrationId: 123) {
+    id
+    status
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    createdAt
+    completedAt
+  }
+}
+
+query GetRegistrationDetails {
+  getRegistrationDetails(registrationId: 123) {
+    id
+    status
+    institution {
+      id
+      legalName
+      institutionType
+    }
+    adminUser {
+      id
+      firstName
+      lastName
+      email
+    }
+    statusHistory {
+      previousStatus
+      newStatus
+      changedAt
+      changedBy
+    }
+  }
+}
+
+
+
+

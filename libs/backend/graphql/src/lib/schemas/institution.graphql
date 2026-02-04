@@ -1,14 +1,40 @@
 type InstitutionModel {
   id: Int!
   name: String!
+  legalName: String
+  institutionType: String
+  accreditationNumber: String
+  streetAddress: String
+  city: String
+  stateProvince: String
+  zipPostalCode: String
+  officialWebsite: String
+  createdAt: String
+  updatedAt: String
 }
 
 input CreateInstitutionInput {
   name: String
+  legalName: String
+  institutionType: String
+  accreditationNumber: String
+  streetAddress: String
+  city: String
+  stateProvince: String
+  zipPostalCode: String
+  officialWebsite: String
 }
 
 input UpdateInstitutionInput {
   name: String
+  legalName: String
+  institutionType: String
+  accreditationNumber: String
+  streetAddress: String
+  city: String
+  stateProvince: String
+  zipPostalCode: String
+  officialWebsite: String
 }
 
 type PaginatedInstitution {
