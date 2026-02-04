@@ -3,7 +3,6 @@ import { UserModel } from '@fsms/backend/db';
 import { DoesntExist } from '@fsms/backend/validators';
 
 export class CreateUserInputDto {
-
   @IsString()
   @IsNotEmpty()
   firstName = '';
@@ -14,10 +13,20 @@ export class CreateUserInputDto {
 
   @IsNotEmpty()
   @IsEmail()
-  @DoesntExist(UserModel, 'email', {isAdmin: false}, {message: 'Email already taken'})
+  @DoesntExist(
+    UserModel,
+    'email',
+    { isAdmin: false },
+    { message: 'Email already taken' },
+  )
   email = '';
 
   @IsPhoneNumber()
-  @DoesntExist(UserModel, 'phone', {isAdmin: true}, {message: 'Phone already taken'})
+  @DoesntExist(
+    UserModel,
+    'phone',
+    { isAdmin: true },
+    { message: 'Phone already taken' },
+  )
   phone = '';
 }

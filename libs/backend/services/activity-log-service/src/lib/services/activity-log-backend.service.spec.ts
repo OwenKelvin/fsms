@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ActivityLogBackendService } from './activity-log-backend.service';
 import {
-  QueryOperatorEnum,
   ActivityLogModel,
+  QueryOperatorEnum,
   SortByDirectionEnum,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';

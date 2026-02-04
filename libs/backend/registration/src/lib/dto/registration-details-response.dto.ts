@@ -1,5 +1,9 @@
-import { ObjectType, Field } from '@nestjs/graphql';
-import { RegistrationStatus, InstitutionModel, UserModel } from '@fsms/backend/db';
+import { Field, ObjectType } from '@nestjs/graphql';
+import {
+  InstitutionModel,
+  RegistrationStatus,
+  UserModel,
+} from '@fsms/backend/db';
 
 @ObjectType()
 export class RegistrationStatusHistoryDto {

@@ -1,13 +1,19 @@
-import { Injectable, BadRequestException, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { FileUploadService, BufferedFile, UploadedFileMetadata } from '@fsms/backend/file-upload';
-import { 
-  RegistrationDocumentModel, 
-  DocumentType, 
+import { BufferedFile, FileUploadService } from '@fsms/backend/file-upload';
+import {
+  DocumentType,
   DocumentVerificationStatus,
   FileUploadModel,
+  RegistrationDocumentModel,
   RegistrationRecordModel,
-  RegistrationStatus
+  RegistrationStatus,
 } from '@fsms/backend/db';
 import { Transaction } from 'sequelize';
 import { EmailService } from '@fsms/backend/email-service';
@@ -40,11 +46,11 @@ export class DocumentService {
 
   constructor(
     private readonly fileUploadService: FileUploadService,
-    @InjectModel(RegistrationDocumentModel) 
+    @InjectModel(RegistrationDocumentModel)
     private readonly registrationDocumentModel: typeof RegistrationDocumentModel,
-    @InjectModel(FileUploadModel) 
+    @InjectModel(FileUploadModel)
     private readonly fileUploadModel: typeof FileUploadModel,
-    @InjectModel(RegistrationRecordModel) 
+    @InjectModel(RegistrationRecordModel)
     private readonly registrationRecordModel: typeof RegistrationRecordModel,
     private readonly emailService: EmailService,
   ) {
@@ -59,21 +65,32 @@ export class DocumentService {
     file: BufferedFile,
     documentType: DocumentType,
     registrationId: number,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<DocumentUploadResult> {
-    this.logger.log(`Uploading document for registration ${registrationId}, type: ${documentType}`);
-    
+    this.logger.log(
+      `Uploading document for registration ${registrationId}, type: ${documentType}`,
+    );
+
     // Validate document type and file
-    const validation = await this.validateDocumentType(file.mimetype, documentType);
+    const validation = await this.validateDocumentType(
+      file.mimetype,
+      documentType,
+    );
     if (!validation.isValid) {
-      this.logger.warn(`Document validation failed for registration ${registrationId}: ${validation.errors.join(', ')}`);
-      throw new BadRequestException(`Document validation failed: ${validation.errors.join(', ')}`);
+      this.logger.warn(
+        `Document validation failed for registration ${registrationId}: ${validation.errors.join(', ')}`,
+      );
+      throw new BadRequestException(
+        `Document validation failed: ${validation.errors.join(', ')}`,
+      );
     }
 
     // Validate file size (10MB limit)
     const maxSize = 10 * 1024 * 1024; // 10MB in bytes
     if (file.size > maxSize) {
-      this.logger.warn(`File size exceeds limit for registration ${registrationId}: ${file.size} bytes`);
+      this.logger.warn(
+        `File size exceeds limit for registration ${registrationId}: ${file.size} bytes`,
+      );
       throw new BadRequestException('File size exceeds 10MB limit');
     }
 
@@ -83,23 +100,28 @@ export class DocumentService {
       this.logger.debug(`File uploaded to storage: ${fileName}`);
 
       // Create file upload record
-      const fileUploadRecord = await this.fileUploadModel.create({
-        name: fileName,
-        encoding: file.encoding,
-        size: file.size,
-        mimetype: file.mimetype,
-        originalName: file.originalName
-      }, { transaction });
+      const fileUploadRecord = await this.fileUploadModel.create(
+        {
+          name: fileName,
+          encoding: file.encoding,
+          size: file.size,
+          mimetype: file.mimetype,
+          originalName: file.originalName,
+        },
+        { transaction },
+      );
 
       // Link document to registration
       const registrationDocument = await this.linkDocumentToRegistration(
         fileUploadRecord.id,
         registrationId,
         documentType,
-        transaction
+        transaction,
       );
 
-      this.logger.log(`Document uploaded successfully for registration ${registrationId}: Document ID ${registrationDocument.id}`);
+      this.logger.log(
+        `Document uploaded successfully for registration ${registrationId}: Document ID ${registrationDocument.id}`,
+      );
 
       return {
         documentId: registrationDocument.id,
@@ -107,14 +129,20 @@ export class DocumentService {
         documentType,
         fileName,
         fileSize: file.size,
-        uploadedAt: registrationDocument.uploadedAt
+        uploadedAt: registrationDocument.uploadedAt,
       };
     } catch (error) {
-      this.logger.error(`Error uploading document for registration ${registrationId}:`, error);
+      this.logger.error(
+        `Error uploading document for registration ${registrationId}:`,
+        error,
+      );
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new HttpException('Error uploading document', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error uploading document',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -122,7 +150,10 @@ export class DocumentService {
    * Validates document type and file format
    * Requirements: 3.2, 3.4
    */
-  async validateDocumentType(mimetype: string, documentType: DocumentType): Promise<DocumentValidationResult> {
+  async validateDocumentType(
+    mimetype: string,
+    documentType: DocumentType,
+  ): Promise<DocumentValidationResult> {
     const errors: string[] = [];
 
     // Validate document type
@@ -134,8 +165,8 @@ export class DocumentService {
     const allowedMimeTypes = [
       'application/pdf',
       'image/jpeg',
-      'image/jpg', 
-      'image/png'
+      'image/jpg',
+      'image/png',
     ];
 
     if (!allowedMimeTypes.includes(mimetype.toLowerCase())) {
@@ -152,7 +183,7 @@ export class DocumentService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -164,37 +195,43 @@ export class DocumentService {
     fileUploadId: number,
     registrationId: number,
     documentType: DocumentType,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<RegistrationDocumentModel> {
     // Check if document of this type already exists for this registration
     const existingDocument = await this.registrationDocumentModel.findOne({
       where: {
         registrationId,
-        documentType
+        documentType,
       },
-      transaction
+      transaction,
     });
 
     if (existingDocument) {
       // Update existing document with new file
-      await existingDocument.update({
-        fileUploadId,
-        verificationStatus: DocumentVerificationStatus.PENDING,
-        uploadedAt: new Date(),
-        verifiedAt: null,
-        verifiedBy: null
-      }, { transaction });
+      await existingDocument.update(
+        {
+          fileUploadId,
+          verificationStatus: DocumentVerificationStatus.PENDING,
+          uploadedAt: new Date(),
+          verifiedAt: null,
+          verifiedBy: null,
+        },
+        { transaction },
+      );
 
       return existingDocument;
     } else {
       // Create new document record
-      return await this.registrationDocumentModel.create({
-        documentType,
-        verificationStatus: DocumentVerificationStatus.PENDING,
-        fileUploadId,
-        registrationId,
-        uploadedAt: new Date()
-      }, { transaction });
+      return await this.registrationDocumentModel.create(
+        {
+          documentType,
+          verificationStatus: DocumentVerificationStatus.PENDING,
+          fileUploadId,
+          registrationId,
+          uploadedAt: new Date(),
+        },
+        { transaction },
+      );
     }
   }
 
@@ -203,14 +240,14 @@ export class DocumentService {
    */
   async getDocumentUrl(documentId: number): Promise<string> {
     const document = await this.registrationDocumentModel.findByPk(documentId, {
-      include: [{ model: this.fileUploadModel }]
+      include: [{ model: this.fileUploadModel }],
     });
 
     if (!document || !document.fileUpload) {
       throw new BadRequestException('Document not found');
     }
 
-    // For now, return the file name - in a real implementation, 
+    // For now, return the file name - in a real implementation,
     // this would generate a signed URL from MinIO
     return document.fileUpload.name || '';
   }
@@ -218,10 +255,13 @@ export class DocumentService {
   /**
    * Deletes a document and its associated file
    */
-  async deleteDocument(documentId: number, transaction?: Transaction): Promise<void> {
+  async deleteDocument(
+    documentId: number,
+    transaction?: Transaction,
+  ): Promise<void> {
     const document = await this.registrationDocumentModel.findByPk(documentId, {
       include: [{ model: this.fileUploadModel }],
-      transaction
+      transaction,
     });
 
     if (!document) {
@@ -242,18 +282,23 @@ export class DocumentService {
       // Delete document record
       await document.destroy({ transaction });
     } catch (error) {
-      throw new HttpException('Error deleting document', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error deleting document',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   /**
    * Gets all documents for a registration
    */
-  async getRegistrationDocuments(registrationId: number): Promise<RegistrationDocumentModel[]> {
+  async getRegistrationDocuments(
+    registrationId: number,
+  ): Promise<RegistrationDocumentModel[]> {
     return await this.registrationDocumentModel.findAll({
       where: { registrationId },
       include: [{ model: this.fileUploadModel }],
-      order: [['uploadedAt', 'DESC']]
+      order: [['uploadedAt', 'DESC']],
     });
   }
 
@@ -264,19 +309,24 @@ export class DocumentService {
     documentId: number,
     status: DocumentVerificationStatus,
     verifiedBy?: string,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<void> {
-    const document = await this.registrationDocumentModel.findByPk(documentId, { transaction });
-    
+    const document = await this.registrationDocumentModel.findByPk(documentId, {
+      transaction,
+    });
+
     if (!document) {
       throw new BadRequestException('Document not found');
     }
 
-    await document.update({
-      verificationStatus: status,
-      verifiedAt: new Date(),
-      verifiedBy
-    }, { transaction });
+    await document.update(
+      {
+        verificationStatus: status,
+        verifiedAt: new Date(),
+        verifiedBy,
+      },
+      { transaction },
+    );
   }
 
   /**
@@ -285,17 +335,17 @@ export class DocumentService {
   async areAllDocumentsUploaded(registrationId: number): Promise<boolean> {
     const requiredDocumentTypes = [
       DocumentType.ACCREDITATION_CERTIFICATE,
-      DocumentType.OPERATING_LICENSE
+      DocumentType.OPERATING_LICENSE,
     ];
 
     const uploadedDocuments = await this.registrationDocumentModel.findAll({
       where: { registrationId },
-      attributes: ['documentType']
+      attributes: ['documentType'],
     });
 
-    const uploadedTypes = uploadedDocuments.map(doc => doc.documentType);
-    
-    return requiredDocumentTypes.every(type => uploadedTypes.includes(type));
+    const uploadedTypes = uploadedDocuments.map((doc) => doc.documentType);
+
+    return requiredDocumentTypes.every((type) => uploadedTypes.includes(type));
   }
 
   /**
@@ -305,11 +355,11 @@ export class DocumentService {
   async flagDocumentForReview(
     documentId: number,
     flagReason: string,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<DocumentReviewFlag> {
     const document = await this.registrationDocumentModel.findByPk(documentId, {
       include: [{ model: this.fileUploadModel }],
-      transaction
+      transaction,
     });
 
     if (!document) {
@@ -317,24 +367,33 @@ export class DocumentService {
     }
 
     // Update document status to require manual review
-    await document.update({
-      verificationStatus: DocumentVerificationStatus.PENDING,
-      verifiedAt: null,
-      verifiedBy: null
-    }, { transaction });
+    await document.update(
+      {
+        verificationStatus: DocumentVerificationStatus.PENDING,
+        verifiedAt: null,
+        verifiedBy: null,
+      },
+      { transaction },
+    );
 
     const reviewFlag: DocumentReviewFlag = {
       documentId,
       flagReason,
       flaggedAt: new Date(),
-      requiresManualReview: true
+      requiresManualReview: true,
     };
 
     // Send notification to admins about pending review
     try {
-      await this.notifyAdminsOfPendingReview(document.registrationId, reviewFlag);
+      await this.notifyAdminsOfPendingReview(
+        document.registrationId,
+        reviewFlag,
+      );
     } catch (error) {
-      console.error('Failed to notify admins of pending document review:', error);
+      console.error(
+        'Failed to notify admins of pending document review:',
+        error,
+      );
       // Don't fail the flagging process if notification fails
     }
 
@@ -347,11 +406,11 @@ export class DocumentService {
    */
   async performAutomaticDocumentReview(
     documentId: number,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<DocumentReviewFlag[]> {
     const document = await this.registrationDocumentModel.findByPk(documentId, {
       include: [{ model: this.fileUploadModel }],
-      transaction
+      transaction,
     });
 
     if (!document || !document.fileUpload) {
@@ -361,21 +420,26 @@ export class DocumentService {
     const flags: DocumentReviewFlag[] = [];
 
     // Flag 1: Check file size - very small files might be suspicious
-    if (document.fileUpload.size && document.fileUpload.size < 50 * 1024) { // Less than 50KB
+    if (document.fileUpload.size && document.fileUpload.size < 50 * 1024) {
+      // Less than 50KB
       const flag = await this.flagDocumentForReview(
         documentId,
         'Document file size is unusually small and may require verification',
-        transaction
+        transaction,
       );
       flags.push(flag);
     }
 
     // Flag 2: Check file size - very large files might need review
-    if (document.fileUpload.size && document.fileUpload.size > 8 * 1024 * 1024) { // Greater than 8MB
+    if (
+      document.fileUpload.size &&
+      document.fileUpload.size > 8 * 1024 * 1024
+    ) {
+      // Greater than 8MB
       const flag = await this.flagDocumentForReview(
         documentId,
         'Document file size is very large and may require manual review',
-        transaction
+        transaction,
       );
       flags.push(flag);
     }
@@ -383,25 +447,33 @@ export class DocumentService {
     // Flag 3: Check file name patterns that might indicate issues
     const fileName = document.fileUpload.originalName?.toLowerCase() || '';
     const suspiciousPatterns = [
-      'test', 'sample', 'example', 'dummy', 'fake', 'temp', 'temporary'
+      'test',
+      'sample',
+      'example',
+      'dummy',
+      'fake',
+      'temp',
+      'temporary',
     ];
 
-    if (suspiciousPatterns.some(pattern => fileName.includes(pattern))) {
+    if (suspiciousPatterns.some((pattern) => fileName.includes(pattern))) {
       const flag = await this.flagDocumentForReview(
         documentId,
         'Document filename contains patterns that may indicate test or placeholder content',
-        transaction
+        transaction,
       );
       flags.push(flag);
     }
 
     // Flag 4: Check for image files when PDF is expected for certain document types
-    if (document.documentType === DocumentType.ACCREDITATION_CERTIFICATE && 
-        document.fileUpload.mimetype !== 'application/pdf') {
+    if (
+      document.documentType === DocumentType.ACCREDITATION_CERTIFICATE &&
+      document.fileUpload.mimetype !== 'application/pdf'
+    ) {
       const flag = await this.flagDocumentForReview(
         documentId,
         'Accreditation certificate submitted as image file instead of PDF - may require verification',
-        transaction
+        transaction,
       );
       flags.push(flag);
     }
@@ -412,17 +484,17 @@ export class DocumentService {
         registrationId: document.registrationId,
         documentType: document.documentType,
         uploadedAt: {
-          $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) // Last 24 hours
-        }
+          $gte: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
+        },
       },
-      transaction
+      transaction,
     });
 
     if (recentUploads > 3) {
       const flag = await this.flagDocumentForReview(
         documentId,
         'Multiple uploads of the same document type in short timeframe - may indicate issues',
-        transaction
+        transaction,
       );
       flags.push(flag);
     }
@@ -436,32 +508,39 @@ export class DocumentService {
    */
   async notifyAdminsOfPendingReview(
     registrationId: number,
-    reviewFlag: DocumentReviewFlag
+    reviewFlag: DocumentReviewFlag,
   ): Promise<void> {
     try {
       // Get registration details
-      const registration = await this.registrationRecordModel.findByPk(registrationId, {
-        include: [
-          { model: this.registrationDocumentModel },
-          // Note: Institution and User models would be included here if available
-        ]
-      });
+      const registration = await this.registrationRecordModel.findByPk(
+        registrationId,
+        {
+          include: [
+            { model: this.registrationDocumentModel },
+            // Note: Institution and User models would be included here if available
+          ],
+        },
+      );
 
       if (!registration) {
         throw new BadRequestException('Registration not found');
       }
 
       // Get the flagged document
-      const document = await this.registrationDocumentModel.findByPk(reviewFlag.documentId, {
-        include: [{ model: this.fileUploadModel }]
-      });
+      const document = await this.registrationDocumentModel.findByPk(
+        reviewFlag.documentId,
+        {
+          include: [{ model: this.fileUploadModel }],
+        },
+      );
 
       if (!document) {
         throw new BadRequestException('Flagged document not found');
       }
 
       // Send email to admin team (using environment variable for admin email)
-      const adminEmail = process.env['FSMS_ADMIN_EMAIL'] || 'admin@tahiniwa.com';
+      const adminEmail =
+        process.env['FSMS_ADMIN_EMAIL'] || 'admin@tahiniwa.com';
 
       await this.emailService.send({
         from: process.env['FSMS_MAIL_FROM'] || 'noreply@tahiniwa.com',
@@ -471,7 +550,7 @@ export class DocumentService {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #dc3545;">Document Review Required</h2>
             <p>A document has been flagged for manual review in the registration system.</p>
-            
+
             <div style="background-color: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #dc3545;">
               <h3 style="margin-top: 0; color: #721c24;">Review Details</h3>
               <ul style="color: #721c24; margin: 0; padding-left: 20px;">
@@ -483,7 +562,7 @@ export class DocumentService {
                 <li><strong>Flagged At:</strong> ${reviewFlag.flaggedAt.toISOString()}</li>
               </ul>
             </div>
-            
+
             <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
               <h3 style="margin-top: 0; color: #333;">Next Steps:</h3>
               <ol>
@@ -493,20 +572,23 @@ export class DocumentService {
                 <li>Approve, reject, or request resubmission as appropriate</li>
               </ol>
             </div>
-            
+
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env['FSMS_APP_URL']}/admin/registrations/${registrationId}" 
+              <a href="${process.env['FSMS_APP_URL']}/admin/registrations/${registrationId}"
                  style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                 Review Registration
               </a>
             </div>
-            
+
             <p>This is an automated notification from the Tahiniwa registration system.</p>
           </div>
-        `
+        `,
       });
     } catch (error) {
-      console.error('Failed to send admin notification for document review:', error);
+      console.error(
+        'Failed to send admin notification for document review:',
+        error,
+      );
       // Don't throw error to avoid breaking the flagging process
     }
   }
@@ -520,32 +602,38 @@ export class DocumentService {
     status: DocumentVerificationStatus,
     reviewedBy: string,
     reviewNotes?: string,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<void> {
-    const document = await this.registrationDocumentModel.findByPk(documentId, { transaction });
-    
+    const document = await this.registrationDocumentModel.findByPk(documentId, {
+      transaction,
+    });
+
     if (!document) {
       throw new BadRequestException('Document not found');
     }
 
     // Update document verification status
-    await document.update({
-      verificationStatus: status,
-      verifiedAt: new Date(),
-      verifiedBy: reviewedBy
-    }, { transaction });
+    await document.update(
+      {
+        verificationStatus: status,
+        verifiedAt: new Date(),
+        verifiedBy: reviewedBy,
+      },
+      { transaction },
+    );
 
     // If document is rejected or requires resubmission, flag the registration for review
-    if (status === DocumentVerificationStatus.REJECTED || 
-        status === DocumentVerificationStatus.REQUIRES_RESUBMISSION) {
-      
+    if (
+      status === DocumentVerificationStatus.REJECTED ||
+      status === DocumentVerificationStatus.REQUIRES_RESUBMISSION
+    ) {
       // Update registration status to under review
       await this.registrationRecordModel.update(
         { status: RegistrationStatus.UNDER_REVIEW },
-        { 
+        {
           where: { id: document.registrationId },
-          transaction 
-        }
+          transaction,
+        },
       );
 
       // Send notification about document issues
@@ -554,7 +642,7 @@ export class DocumentService {
           document.registrationId,
           documentId,
           status,
-          reviewNotes
+          reviewNotes,
         );
       } catch (error) {
         console.error('Failed to notify applicant of document issues:', error);
@@ -570,15 +658,19 @@ export class DocumentService {
     registrationId: number,
     documentId: number,
     status: DocumentVerificationStatus,
-    reviewNotes?: string
+    reviewNotes?: string,
   ): Promise<void> {
     try {
       // This would typically fetch the registration with user details
       // For now, we'll send a generic notification to the admin email
       // In a real implementation, this would get the applicant's email from the registration
-      
-      const adminEmail = process.env['FSMS_ADMIN_EMAIL'] || 'admin@tahiniwa.com';
-      const statusText = status === DocumentVerificationStatus.REJECTED ? 'rejected' : 'requires resubmission';
+
+      const adminEmail =
+        process.env['FSMS_ADMIN_EMAIL'] || 'admin@tahiniwa.com';
+      const statusText =
+        status === DocumentVerificationStatus.REJECTED
+          ? 'rejected'
+          : 'requires resubmission';
 
       await this.emailService.send({
         from: process.env['FSMS_MAIL_FROM'] || 'noreply@tahiniwa.com',
@@ -588,7 +680,7 @@ export class DocumentService {
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #dc3545;">Document Review Update</h2>
             <p>Your submitted document has been reviewed and ${statusText}.</p>
-            
+
             <div style="background-color: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #dc3545;">
               <h3 style="margin-top: 0; color: #721c24;">Review Results</h3>
               <ul style="color: #721c24; margin: 0; padding-left: 20px;">
@@ -598,19 +690,23 @@ export class DocumentService {
                 ${reviewNotes ? `<li><strong>Review Notes:</strong> ${reviewNotes}</li>` : ''}
               </ul>
             </div>
-            
-            ${status === DocumentVerificationStatus.REQUIRES_RESUBMISSION ? `
+
+            ${
+              status === DocumentVerificationStatus.REQUIRES_RESUBMISSION
+                ? `
               <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #ffc107;">
                 <h3 style="margin-top: 0; color: #856404;">Action Required</h3>
                 <p style="color: #856404; margin: 0;">Please resubmit your document with the requested corrections.</p>
               </div>
-            ` : ''}
-            
+            `
+                : ''
+            }
+
             <p>If you have questions about this review, please contact our support team.</p>
-            
+
             <p>Best regards,<br>The Tahiniwa Team</p>
           </div>
-        `
+        `,
       });
     } catch (error) {
       console.error('Failed to notify applicant of document issues:', error);
@@ -625,12 +721,10 @@ export class DocumentService {
   async getDocumentsRequiringReview(): Promise<RegistrationDocumentModel[]> {
     return await this.registrationDocumentModel.findAll({
       where: {
-        verificationStatus: DocumentVerificationStatus.PENDING
+        verificationStatus: DocumentVerificationStatus.PENDING,
       },
-      include: [
-        { model: this.fileUploadModel }
-      ],
-      order: [['uploadedAt', 'ASC']] // Oldest first for review queue
+      include: [{ model: this.fileUploadModel }],
+      order: [['uploadedAt', 'ASC']], // Oldest first for review queue
     });
   }
 
@@ -642,14 +736,14 @@ export class DocumentService {
     file: BufferedFile,
     documentType: DocumentType,
     registrationId: number,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<DocumentUploadResult & { reviewFlags?: DocumentReviewFlag[] }> {
     // Upload document using existing method
     const uploadResult = await this.uploadRegistrationDocument(
       file,
       documentType,
       registrationId,
-      transaction
+      transaction,
     );
 
     // Perform automatic review flagging
@@ -657,7 +751,7 @@ export class DocumentService {
     try {
       reviewFlags = await this.performAutomaticDocumentReview(
         uploadResult.documentId,
-        transaction
+        transaction,
       );
     } catch (error) {
       console.error('Failed to perform automatic document review:', error);
@@ -666,7 +760,7 @@ export class DocumentService {
 
     return {
       ...uploadResult,
-      reviewFlags: reviewFlags.length > 0 ? reviewFlags : undefined
+      reviewFlags: reviewFlags.length > 0 ? reviewFlags : undefined,
     };
   }
 }

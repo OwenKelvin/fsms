@@ -3,17 +3,20 @@ import { BrnNavigationMenu } from '@spartan-ng/brain/navigation-menu';
 import { classes } from '@fsms/ui/utils';
 
 @Directive({
-	selector: 'nav[hlmNavigationMenu]',
-	hostDirectives: [
-		{
-			directive: BrnNavigationMenu,
-			inputs: ['value', 'delayDuration', 'skipDelayDuration', 'orientation'],
-			outputs: ['valueChange'],
-		},
-	],
+  selector: 'nav[hlmNavigationMenu]',
+  hostDirectives: [
+    {
+      directive: BrnNavigationMenu,
+      inputs: ['value', 'delayDuration', 'skipDelayDuration', 'orientation'],
+      outputs: ['valueChange'],
+    },
+  ],
 })
 export class HlmNavigationMenu {
-	constructor() {
-		classes(() => 'group/navigation-menu relative flex max-w-max flex-1 items-center justify-center');
-	}
+  constructor() {
+    classes(
+      () =>
+        'group/navigation-menu relative flex max-w-max flex-1 items-center justify-center',
+    );
+  }
 }

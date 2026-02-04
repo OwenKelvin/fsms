@@ -28,10 +28,10 @@ import {
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
 import {
-  IQueryParam,
   ExamineeGroupModel,
-  QueryOperatorEnum,
   ExamineeModel,
+  IQueryParam,
+  QueryOperatorEnum,
   UserModel,
 } from '@fsms/backend/db';
 import { UpdateExamineeGroupInputDto } from '../dto/update-examinee-group-input.dto';

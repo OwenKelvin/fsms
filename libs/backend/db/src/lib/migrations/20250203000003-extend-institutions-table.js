@@ -12,7 +12,13 @@ module.exports = {
     });
 
     await queryInterface.addColumn('institutions', 'institution_type', {
-      type: DataTypes.ENUM('educational', 'healthcare', 'corporate', 'government', 'non_profit'),
+      type: DataTypes.ENUM(
+        'educational',
+        'healthcare',
+        'corporate',
+        'government',
+        'non_profit',
+      ),
       allowNull: true, // Initially nullable for existing records
     });
 

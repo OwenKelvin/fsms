@@ -89,6 +89,7 @@ export class AuthEventsListenerService {
       await this.institutionService.allocateFreeCredits(institution.id);
     }
   }
+
   @OnEvent('auth.verified')
   async addAuthVerifiedActivity($event: AuthEvent) {
     const activity = await this.activityLogService.create({
@@ -110,6 +111,7 @@ export class AuthEventsListenerService {
     });
     await activity.$set('users', [$event.user.id]);
   }
+
   @OnEvent('auth.continue-with-google')
   async addAuthLoginActivity($event: AuthEvent) {
     const activity = await this.activityLogService.create({

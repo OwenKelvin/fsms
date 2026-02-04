@@ -41,18 +41,22 @@ export class ActivityLogUserResolver {
   id(@Parent() activityLogUserModel: ActivityLogUserModel) {
     return activityLogUserModel?.activityLog.id;
   }
+
   @ResolveField()
   action(@Parent() activityLogUserModel: ActivityLogUserModel) {
     return activityLogUserModel?.activityLog.action;
   }
+
   @ResolveField()
   description(@Parent() activityLogUserModel: ActivityLogUserModel) {
     return activityLogUserModel?.activityLog.description;
   }
+
   @ResolveField()
   createdAt(@Parent() activityLogUserModel: ActivityLogUserModel) {
     return activityLogUserModel?.activityLog.createdAt;
   }
+
   @ResolveField()
   type(@Parent() activityLogUserModel: ActivityLogUserModel) {
     return activityLogUserModel?.activityLog.type;

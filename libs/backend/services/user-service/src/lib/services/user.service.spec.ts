@@ -14,7 +14,7 @@ const modelRepositoryMock = {
   create: jest.fn(),
   update: jest.fn(),
   destroy: jest.fn(),
-  bulkCreate: jest.fn()
+  bulkCreate: jest.fn(),
 };
 
 describe('UserService', () => {
@@ -26,13 +26,12 @@ describe('UserService', () => {
         UserService,
         {
           provide: getModelToken(UserModel),
-          useValue: modelRepositoryMock
-        }
-      ]
+          useValue: modelRepositoryMock,
+        },
+      ],
     }).compile();
 
     service = module.get<UserService>(UserService);
-
   });
 
   it('should be defined', () => {
@@ -43,7 +42,7 @@ describe('UserService', () => {
     it('should call findAndCountAll with correct parameters', async () => {
       modelRepositoryMock.findAndCountAll.mockReturnValue({
         rows: [],
-        count: 0
+        count: 0,
       });
       const query = {
         currentPage: 2,
@@ -51,9 +50,19 @@ describe('UserService', () => {
         sortBy: 'id',
         sortByDirection: SortByDirectionEnum.DESC,
         filters: [
-          { operator: QueryOperatorEnum.Contains, field: 'lastName', value: 'a', values: [] },
-          { operator: QueryOperatorEnum.Equals, field: 'id', value: '1', values: [] },
-        ]
+          {
+            operator: QueryOperatorEnum.Contains,
+            field: 'lastName',
+            value: 'a',
+            values: [],
+          },
+          {
+            operator: QueryOperatorEnum.Equals,
+            field: 'id',
+            value: '1',
+            values: [],
+          },
+        ],
       };
       await service.findAll(query);
       expect(modelRepositoryMock.findAndCountAll).toHaveBeenCalledWith(
@@ -64,8 +73,8 @@ describe('UserService', () => {
           where: {
             id: '1',
             lastName: { [Op.iLike]: '%a%' },
-          }
-        })
+          },
+        }),
       );
     });
   });
@@ -75,8 +84,8 @@ describe('UserService', () => {
       await service.findById(1);
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: 1 }
-        })
+          where: { id: 1 },
+        }),
       );
     });
 
@@ -89,7 +98,7 @@ describe('UserService', () => {
   describe('create', () => {
     it('should call create with correct parameters', async () => {
       modelRepositoryMock.create.mockReturnValue({
-        save: () => jest.fn()
+        save: () => jest.fn(),
       });
       const params = { name: 'Test' };
       await service.create(params);
@@ -100,14 +109,14 @@ describe('UserService', () => {
   describe('update', () => {
     it('should call findOne and update with correct parameters', async () => {
       modelRepositoryMock.findOne.mockReturnValue({
-        update: modelRepositoryMock.update
+        update: modelRepositoryMock.update,
       });
       const params = { name: 'Updated Test' };
       await service.update({ params, id: 1 });
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: 1 }
-        })
+          where: { id: 1 },
+        }),
       );
       expect(modelRepositoryMock.update).toHaveBeenCalledWith(params);
     });
@@ -118,8 +127,8 @@ describe('UserService', () => {
       await service.deleteById(1);
       expect(modelRepositoryMock.destroy).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: 1 }
-        })
+          where: { id: 1 },
+        }),
       );
     });
 
@@ -142,8 +151,8 @@ describe('UserService', () => {
       await service.findByEmail('test@email.com');
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { email: 'test@email.com' }
-        })
+          where: { email: 'test@email.com' },
+        }),
       );
     });
   });

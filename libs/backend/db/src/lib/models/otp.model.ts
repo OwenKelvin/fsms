@@ -9,17 +9,17 @@ import { Column, Model, Table } from 'sequelize-typescript';
 })
 export class OtpModel extends Model {
   @Column
-  identifier?: string
+  identifier?: string;
 
   @Column
-  token?:string
+  token?: string;
 
   @Column
-  validity?: number
+  validity?: number;
 
   @Column
-  usage?: string
+  usage?: string;
 
   @Column
-  valid?: boolean
+  valid?: boolean;
 }

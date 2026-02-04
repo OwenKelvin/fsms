@@ -1,11 +1,11 @@
 import {
+  BelongsTo,
   BelongsToMany,
   Column,
   ForeignKey,
+  HasMany,
   Model,
   Table,
-  BelongsTo,
-  HasMany,
 } from 'sequelize-typescript';
 import { TagModel } from './tag.model';
 import { DataTypes } from 'sequelize';

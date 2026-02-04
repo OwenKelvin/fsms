@@ -1,4 +1,11 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { FileUploadModel } from './file-upload.model';
 
 export enum DocumentType {
@@ -28,7 +35,12 @@ export class RegistrationDocumentModel extends Model {
   documentType!: DocumentType;
 
   @Column({
-    type: DataType.ENUM('pending', 'approved', 'rejected', 'requires_resubmission'),
+    type: DataType.ENUM(
+      'pending',
+      'approved',
+      'rejected',
+      'requires_resubmission',
+    ),
     allowNull: false,
     defaultValue: DocumentVerificationStatus.PENDING,
   })

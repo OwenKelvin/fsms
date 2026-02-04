@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PermissionService } from './permission.service';
-import { PermissionModel, QueryOperatorEnum, SortByDirectionEnum } from '@fsms/backend/db';
+import {
+  PermissionModel,
+  QueryOperatorEnum,
+  SortByDirectionEnum,
+} from '@fsms/backend/db';
 import { Op } from 'sequelize';
 import { getModelToken } from '@nestjs/sequelize';
 
@@ -10,7 +14,7 @@ const modelRepositoryMock = {
   create: jest.fn(),
   update: jest.fn(),
   destroy: jest.fn(),
-  bulkCreate: jest.fn()
+  bulkCreate: jest.fn(),
 };
 
 describe('PermissionService', () => {
@@ -22,13 +26,12 @@ describe('PermissionService', () => {
         PermissionService,
         {
           provide: getModelToken(PermissionModel),
-          useValue: modelRepositoryMock
-        }
-      ]
+          useValue: modelRepositoryMock,
+        },
+      ],
     }).compile();
 
     service = module.get<PermissionService>(PermissionService);
-
   });
 
   it('should be defined', () => {
@@ -39,7 +42,7 @@ describe('PermissionService', () => {
     it('should call findAndCountAll with correct parameters', async () => {
       modelRepositoryMock.findAndCountAll.mockReturnValue({
         rows: [],
-        count: 0
+        count: 0,
       });
       const query = {
         currentPage: 2,
@@ -47,9 +50,19 @@ describe('PermissionService', () => {
         sortBy: 'id',
         sortByDirection: SortByDirectionEnum.DESC,
         filters: [
-          { operator: QueryOperatorEnum.Contains, field: 'lastName', value: 'a', values: [] },
-          { operator: QueryOperatorEnum.Equals, field: 'id', value: '1', values: [] },
-        ]
+          {
+            operator: QueryOperatorEnum.Contains,
+            field: 'lastName',
+            value: 'a',
+            values: [],
+          },
+          {
+            operator: QueryOperatorEnum.Equals,
+            field: 'id',
+            value: '1',
+            values: [],
+          },
+        ],
       };
       await service.findAll(query);
       expect(modelRepositoryMock.findAndCountAll).toHaveBeenCalledWith(
@@ -60,8 +73,8 @@ describe('PermissionService', () => {
           where: {
             id: '1',
             lastName: { [Op.iLike]: '%a%' },
-          }
-        })
+          },
+        }),
       );
     });
   });
@@ -71,8 +84,8 @@ describe('PermissionService', () => {
       await service.findById(1);
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: 1 }
-        })
+          where: { id: 1 },
+        }),
       );
     });
 
@@ -85,7 +98,7 @@ describe('PermissionService', () => {
   describe('create', () => {
     it('should call create with correct parameters', async () => {
       modelRepositoryMock.create.mockReturnValue({
-        save: () => jest.fn()
+        save: () => jest.fn(),
       });
       const params = { name: 'Test' };
       await service.create(params);
@@ -96,14 +109,14 @@ describe('PermissionService', () => {
   describe('update', () => {
     it('should call findOne and update with correct parameters', async () => {
       modelRepositoryMock.findOne.mockReturnValue({
-        update: modelRepositoryMock.update
+        update: modelRepositoryMock.update,
       });
       const params = { name: 'Updated Test' };
       await service.update({ params, id: 1 });
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: 1 }
-        })
+          where: { id: 1 },
+        }),
       );
       expect(modelRepositoryMock.update).toHaveBeenCalledWith(params);
     });
@@ -114,8 +127,8 @@ describe('PermissionService', () => {
       await service.deleteById(1);
       expect(modelRepositoryMock.destroy).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: 1 }
-        })
+          where: { id: 1 },
+        }),
       );
     });
 

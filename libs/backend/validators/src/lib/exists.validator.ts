@@ -3,13 +3,12 @@ import {
   ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
-  ValidatorConstraintInterface
+  ValidatorConstraintInterface,
 } from 'class-validator';
 import { ModelType } from 'sequelize-typescript';
 
 @ValidatorConstraint({ name: 'Exists', async: true })
 export class ExistsConstraint implements ValidatorConstraintInterface {
-
   async validate(value: number | null, args: ValidationArguments) {
     const [model, field] = args.constraints;
 
@@ -27,18 +26,24 @@ export class ExistsConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export function Exists(model: ModelType<{ id: number }, {
-  id: number
-}>, field = 'id', validationOptions?: ValidationOptions) {
-
+export function Exists(
+  model: ModelType<
+    { id: number },
+    {
+      id: number;
+    }
+  >,
+  field = 'id',
+  validationOptions?: ValidationOptions,
+) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return function(object: any, propertyName: string) {
+  return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       constraints: [model, field],
-      validator: ExistsConstraint
+      validator: ExistsConstraint,
     });
   };
 }

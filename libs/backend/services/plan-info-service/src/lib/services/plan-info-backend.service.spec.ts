@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PlanInfoBackendService } from './plan-info-backend.service';
 import {
-  QueryOperatorEnum,
   PlanInfoModel,
+  QueryOperatorEnum,
   SortByDirectionEnum,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';

@@ -18,7 +18,7 @@ describe('UserResolver', () => {
         UserResolver,
         {
           provide: I18nService,
-          useValue: {}
+          useValue: {},
         },
         {
           provide: UserService,
@@ -46,8 +46,15 @@ describe('UserResolver', () => {
 
   describe('createUser', () => {
     it('should create a user and emit event', async () => {
-      const createUserInput: CreateUserInputDto = { firstName: 'john', lastName: 'Doe' } as CreateUserInputDto;
-      const createdUser = { id: 1, firstName: 'john', lastName: 'Doe' } as UserModel;
+      const createUserInput: CreateUserInputDto = {
+        firstName: 'john',
+        lastName: 'Doe',
+      } as CreateUserInputDto;
+      const createdUser = {
+        id: 1,
+        firstName: 'john',
+        lastName: 'Doe',
+      } as UserModel;
       jest.spyOn(userService, 'create').mockResolvedValueOnce(createdUser);
 
       const result = await resolver.createUser(createUserInput);
@@ -57,7 +64,10 @@ describe('UserResolver', () => {
         data: createdUser,
       });
       expect(userService.create).toHaveBeenCalledWith(createUserInput);
-      expect(eventEmitter.emit).toHaveBeenCalledWith('user.created', expect.any(UserCreatedEvent));
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        'user.created',
+        expect.any(UserCreatedEvent),
+      );
     });
   });
 });

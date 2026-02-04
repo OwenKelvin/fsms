@@ -16,11 +16,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import {
-  IQueryParam,
-  NotificationModel,
-  UserModel,
-} from '@fsms/backend/db';
+import { IQueryParam, NotificationModel, UserModel } from '@fsms/backend/db';
 import { UpdateNotificationInputDto } from '../dto/update-notification-input.dto';
 import { NotificationUpdatedEvent } from '../events/notification-updated.event';
 import { DeleteNotificationInputDto } from '../dto/delete-notification-input.dto';

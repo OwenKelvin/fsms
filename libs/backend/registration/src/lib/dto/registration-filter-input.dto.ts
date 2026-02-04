@@ -1,4 +1,4 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { IsArray, IsDateString, IsEnum, IsOptional } from 'class-validator';
 import { RegistrationStatus } from '@fsms/backend/db';
 
@@ -12,7 +12,10 @@ export class RegistrationFilterInputDto {
   @Field(() => [String], { nullable: true })
   @IsOptional()
   @IsArray()
-  @IsEnum(RegistrationStatus, { each: true, message: 'Invalid registration status in array' })
+  @IsEnum(RegistrationStatus, {
+    each: true,
+    message: 'Invalid registration status in array',
+  })
   statuses?: RegistrationStatus[];
 
   @Field({ nullable: true })

@@ -25,7 +25,7 @@ import { OtpDeletedEvent } from '../events/otp-deleted.event';
 export class OtpResolver {
   constructor(
     private otpService: OtpBackendService,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @Query(() => OtpModel)

@@ -1,4 +1,4 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
 import { DocumentType } from '@fsms/backend/db';
 

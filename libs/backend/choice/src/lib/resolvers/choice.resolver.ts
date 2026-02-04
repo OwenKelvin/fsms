@@ -15,7 +15,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import { IQueryParam, ChoiceModel } from '@fsms/backend/db';
+import { ChoiceModel, IQueryParam } from '@fsms/backend/db';
 import { UpdateChoiceInputDto } from '../dto/update-choice-input.dto';
 import { ChoiceUpdatedEvent } from '../events/choice-updated.event';
 import { DeleteChoiceInputDto } from '../dto/delete-choice-input.dto';

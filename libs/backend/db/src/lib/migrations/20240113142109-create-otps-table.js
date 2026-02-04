@@ -14,20 +14,20 @@ module.exports = {
       },
       identifier: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       token: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       validity: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
       },
       valid: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
       },
       usage: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       createdAt: {
         field: 'created_at',

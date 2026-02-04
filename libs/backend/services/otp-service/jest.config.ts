@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'otp-backend-service',
   preset: '../../../../jest.preset.js',

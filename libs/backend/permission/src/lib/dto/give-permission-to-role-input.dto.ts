@@ -15,14 +15,12 @@ export class GivePermissionToRoleInputDto {
   @IsNotEmpty()
   @Exists(PermissionModel, 'id', {
     message: (validationArguments) =>
-      `Permission with id  ${validationArguments.value}" not found`
+      `Permission with id  ${validationArguments.value}" not found`,
   })
   roleId = 0;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => PermissionModel)
-
   permissions: PermissionModel[] = [];
-
 }

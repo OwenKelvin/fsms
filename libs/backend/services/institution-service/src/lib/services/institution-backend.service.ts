@@ -2,8 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CrudAbstractService } from '@fsms/backend/crud-abstract';
 import { InstitutionModel, InstitutionUserModel } from '@fsms/backend/db';
 import { InjectModel } from '@nestjs/sequelize';
-import { SettingBackendService } from '@fsms/backend/setting-backend-service';
-import { SettingEnum } from '@fsms/backend/setting-backend-service';
+import {
+  SettingBackendService,
+  SettingEnum,
+} from '@fsms/backend/setting-backend-service';
 import { TransactionBackendService } from '@fsms/backend/transaction-backend-service';
 import { Sequelize } from 'sequelize-typescript';
 import { CreditBackendService } from '@fsms/backend/credit-backend-service';

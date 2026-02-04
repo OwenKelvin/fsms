@@ -29,12 +29,15 @@ export class FileUploadService extends CrudAbstractService<FileUploadModel> {
   ) {
     // Support PDF, JPEG, and PNG files
     const allowedTypes = ['jpeg', 'jpg', 'png', 'pdf'];
-    const isAllowedType = allowedTypes.some(type => 
-      file.mimetype.toLowerCase().includes(type)
+    const isAllowedType = allowedTypes.some((type) =>
+      file.mimetype.toLowerCase().includes(type),
     );
-    
+
     if (!isAllowedType) {
-      throw new HttpException('File type not supported. Only PDF, JPG, and PNG files are allowed.', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'File type not supported. Only PDF, JPG, and PNG files are allowed.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const temp_filename = Date.now().toString();
     const hashedFileName = crypto

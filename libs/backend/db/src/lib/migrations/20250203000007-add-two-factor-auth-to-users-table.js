@@ -25,5 +25,5 @@ module.exports = {
     await queryInterface.removeColumn('users', 'two_factor_backup_codes');
     await queryInterface.removeColumn('users', 'two_factor_secret');
     await queryInterface.removeColumn('users', 'two_factor_enabled');
-  }
+  },
 };

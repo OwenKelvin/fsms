@@ -9,9 +9,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Exists } from '@fsms/backend/validators';
+import { Exists, IsBefore } from '@fsms/backend/validators';
 import { ConfigModel } from '@fsms/backend/db';
-import { IsBefore } from '@fsms/backend/validators';
 
 class CreateExamTagInput {
   @IsOptional()

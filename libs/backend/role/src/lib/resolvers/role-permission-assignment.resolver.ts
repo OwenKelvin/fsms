@@ -1,7 +1,12 @@
 import { Mutation, Resolver } from '@nestjs/graphql';
 import { Body, UseGuards, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from '@fsms/backend/auth';
-import { PermissionGuard, Permissions, PermissionsEnum, PermissionService } from '@fsms/backend/permission-service';
+import {
+  PermissionGuard,
+  Permissions,
+  PermissionsEnum,
+  PermissionService,
+} from '@fsms/backend/permission-service';
 import { RoleService } from '@fsms/backend/role-service';
 import { GivePermissionToRoleInputDto } from '../dto/give-permission-to-role-input.dto';
 import { PermissionModel, RoleModel, UserModel } from '@fsms/backend/db';
@@ -10,32 +15,31 @@ import { UserService } from '@fsms/backend/user-service';
 
 @Resolver(() => RoleModel)
 export class RolePermissionAssignmentResolver {
-
   constructor(
     private roleService: RoleService,
     private permissionService: PermissionService,
-    private userService: UserService
-    ) {
-  }
+    private userService: UserService,
+  ) {}
 
   @Mutation()
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.GivePermissionToRole)
   async givePermissionsToRole(
-    @Body(new ValidationPipe()) input: GivePermissionToRoleInputDto
+    @Body(new ValidationPipe()) input: GivePermissionToRoleInputDto,
   ) {
-
-    const role = await this.roleService.findById(input.roleId) as RoleModel;
+    const role = (await this.roleService.findById(input.roleId)) as RoleModel;
     await role.$set('permissions', []);
     for (let i = 0; i < input.permissions.length; i++) {
       const permissionId = input.permissions[i].id;
-      const permission = await this.permissionService.findById(permissionId) as PermissionModel;
+      const permission = (await this.permissionService.findById(
+        permissionId,
+      )) as PermissionModel;
       await role.$add('permissions', permission);
     }
 
     return {
       message: 'Successfully given permissions to role',
-      data: role
+      data: role,
     };
   }
 
@@ -43,13 +47,13 @@ export class RolePermissionAssignmentResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.AssignRoleToUser)
   async assignRoleToUser(
-    @Body(new ValidationPipe()) input: AssignRoleToUserInputDto
+    @Body(new ValidationPipe()) input: AssignRoleToUserInputDto,
   ) {
-    const user = await this.userService.findById(input.userId) as UserModel;
+    const user = (await this.userService.findById(input.userId)) as UserModel;
     await user.$set('roles', []);
     for (let i = 0; i < input.roles.length; i++) {
       const roleId = input.roles[i].id;
-      const role = await this.roleService.findById(roleId) as RoleModel;
+      const role = (await this.roleService.findById(roleId)) as RoleModel;
       await user.$add('roles', role);
     }
 

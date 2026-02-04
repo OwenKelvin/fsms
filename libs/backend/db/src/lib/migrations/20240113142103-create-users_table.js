@@ -20,17 +20,17 @@ module.exports = {
       firstName: {
         field: 'first_name',
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       lastName: {
         field: 'last_name',
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       middleName: {
         field: 'middle_name',
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
       },
       email: {
         type: DataTypes.STRING,
@@ -39,7 +39,7 @@ module.exports = {
       },
       phone: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
       },
       emailVerifiedAt: {
         field: 'email_verified_at',

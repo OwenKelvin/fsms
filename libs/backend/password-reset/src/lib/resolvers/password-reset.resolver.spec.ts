@@ -8,7 +8,7 @@ import { PasswordResetResolver } from './password-reset.resolver';
 
 const passwordResetServiceMock = {
   create: jest.fn(),
-}
+};
 
 describe('PasswordResetResolver', () => {
   let resolver: PasswordResetResolver;
@@ -25,7 +25,7 @@ describe('PasswordResetResolver', () => {
         },
         {
           provide: PasswordResetBackendService,
-          useValue: passwordResetServiceMock
+          useValue: passwordResetServiceMock,
         },
         {
           provide: EventEmitter2,
@@ -38,7 +38,7 @@ describe('PasswordResetResolver', () => {
 
     resolver = module.get<PasswordResetResolver>(PasswordResetResolver);
     passwordResetService = module.get<PasswordResetBackendService>(
-      PasswordResetBackendService
+      PasswordResetBackendService,
     );
     eventEmitter = module.get<EventEmitter2>(EventEmitter2);
   });
@@ -56,10 +56,12 @@ describe('PasswordResetResolver', () => {
         id: 1,
         name: 'john',
       };
-      passwordResetServiceMock.create.mockResolvedValueOnce(createdPasswordReset);
+      passwordResetServiceMock.create.mockResolvedValueOnce(
+        createdPasswordReset,
+      );
 
       const result = await resolver.createPasswordReset(
-        createPasswordResetInput
+        createPasswordResetInput,
       );
 
       expect(result).toEqual({
@@ -67,11 +69,11 @@ describe('PasswordResetResolver', () => {
         data: createdPasswordReset,
       });
       expect(passwordResetService.create).toHaveBeenCalledWith(
-        createPasswordResetInput
+        createPasswordResetInput,
       );
       expect(eventEmitter.emit).toHaveBeenCalledWith(
         'password-reset.created',
-        expect.any(PasswordResetCreatedEvent)
+        expect.any(PasswordResetCreatedEvent),
       );
     });
   });

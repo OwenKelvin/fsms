@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/sequelize';
 export class InstructionBackendService extends CrudAbstractService<InstructionModel> {
   constructor(
     @InjectModel(InstructionModel)
-    private instructionModel: typeof InstructionModel
+    private instructionModel: typeof InstructionModel,
   ) {
     super(instructionModel);
   }

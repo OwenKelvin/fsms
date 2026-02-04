@@ -15,7 +15,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import { IQueryParam, InstructionModel, UserModel } from '@fsms/backend/db';
+import { InstructionModel, IQueryParam, UserModel } from '@fsms/backend/db';
 import { UpdateInstructionInputDto } from '../dto/update-instruction-input.dto';
 import { InstructionUpdatedEvent } from '../events/instruction-updated.event';
 import { DeleteInstructionInputDto } from '../dto/delete-instruction-input.dto';

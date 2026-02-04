@@ -5,16 +5,14 @@ import { HlmIcon } from '@fsms/ui/icon';
 import { classes } from '@fsms/ui/utils';
 
 @Component({
-	selector: 'hlm-select-scroll-down',
-	imports: [NgIcon, HlmIcon],
-	providers: [provideIcons({ lucideChevronDown })],
-	changeDetection: ChangeDetectionStrategy.OnPush,
-	template: `
-		<ng-icon hlm size="sm" class="ml-2" name="lucideChevronDown" />
-	`,
+  selector: 'hlm-select-scroll-down',
+  imports: [NgIcon, HlmIcon],
+  providers: [provideIcons({ lucideChevronDown })],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: ` <ng-icon hlm size="sm" class="ml-2" name="lucideChevronDown" /> `,
 })
 export class HlmSelectScrollDown {
-	constructor() {
-		classes(() => 'flex cursor-default items-center justify-center py-1');
-	}
+  constructor() {
+    classes(() => 'flex cursor-default items-center justify-center py-1');
+  }
 }

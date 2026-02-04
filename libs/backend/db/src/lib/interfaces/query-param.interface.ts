@@ -4,12 +4,12 @@ export enum QueryOperatorEnum {
   Contains = 'CONTAINS',
   LessThan = 'LESS_THAN',
   GreaterThan = 'GREATER_THAN',
-  Between = 'BETWEEN'
+  Between = 'BETWEEN',
 }
 
 export enum SortByDirectionEnum {
   ASC = 'ASC',
-  DESC = 'DESC'
+  DESC = 'DESC',
 }
 
 export interface QueryParamsFilter {

@@ -62,7 +62,7 @@ describe('ConfigResolver', () => {
       expect(configService.create).toHaveBeenCalledWith(createConfigInput);
       expect(eventEmitter.emit).toHaveBeenCalledWith(
         'config.created',
-        expect.any(ConfigCreatedEvent)
+        expect.any(ConfigCreatedEvent),
       );
     });
   });

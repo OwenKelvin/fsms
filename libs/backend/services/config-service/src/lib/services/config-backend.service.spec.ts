@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigBackendService } from './config-backend.service';
 import {
-  QueryOperatorEnum,
   ConfigModel,
+  QueryOperatorEnum,
   SortByDirectionEnum,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
@@ -74,7 +74,7 @@ describe('ConfigBackendService', () => {
             id: '1',
             lastName: { [Op.iLike]: '%a%' },
           },
-        })
+        }),
       );
     });
   });
@@ -85,7 +85,7 @@ describe('ConfigBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 
@@ -116,7 +116,7 @@ describe('ConfigBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
       expect(modelRepositoryMock.update).toHaveBeenCalledWith(params);
     });
@@ -128,7 +128,7 @@ describe('ConfigBackendService', () => {
       expect(modelRepositoryMock.destroy).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 

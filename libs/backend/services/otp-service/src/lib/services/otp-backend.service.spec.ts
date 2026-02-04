@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OtpBackendService } from './otp-backend.service';
 import {
-  QueryOperatorEnum,
   OtpModel,
+  QueryOperatorEnum,
   SortByDirectionEnum,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
@@ -74,7 +74,7 @@ describe('OtpBackendService', () => {
             id: '1',
             lastName: { [Op.iLike]: '%a%' },
           },
-        })
+        }),
       );
     });
   });
@@ -85,7 +85,7 @@ describe('OtpBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 
@@ -116,7 +116,7 @@ describe('OtpBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
       expect(modelRepositoryMock.update).toHaveBeenCalledWith(params);
     });
@@ -128,7 +128,7 @@ describe('OtpBackendService', () => {
       expect(modelRepositoryMock.destroy).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 

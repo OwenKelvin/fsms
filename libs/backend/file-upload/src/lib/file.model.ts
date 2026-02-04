@@ -14,6 +14,7 @@ export interface StoredFile extends HasFile, StoredFileMetadata {}
 export interface HasFile {
   file: Buffer | string;
 }
+
 export interface StoredFileMetadata {
   id: string;
   name: string;

@@ -9,7 +9,7 @@ const config: CodegenConfig = {
       config: {
         addExplicitOverride: true,
         typesPrefix: 'I',
-      }
+      },
     },
     'libs/shared/data-access/core/src/generated.schema.json': {
       plugins: ['introspection'],

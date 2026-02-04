@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/sequelize';
 
 export enum OtpUsageEnum {
   PasswordReset = 'password-reset',
-  confirmTransaction = 'confirm-transaction'
+  confirmTransaction = 'confirm-transaction',
 }
 
 @Injectable()
@@ -13,27 +13,44 @@ export class OtpBackendService extends CrudAbstractService<OtpModel> {
   constructor(@InjectModel(OtpModel) private otpModel: typeof OtpModel) {
     super(otpModel);
   }
+
   async generate({
-      identifier,
-      usage = 'confirm-transaction',
-      digits = 4,
-      validity = 10
-    }: { identifier: string, usage: string, digits: number, validity: number }
-  ) {
-    await this.repository.destroy({ where: { identifier, valid: true, usage} });
+    identifier,
+    usage = 'confirm-transaction',
+    digits = 4,
+    validity = 10,
+  }: {
+    identifier: string;
+    usage: string;
+    digits: number;
+    validity: number;
+  }) {
+    await this.repository.destroy({
+      where: { identifier, valid: true, usage },
+    });
 
     const token = this.generatePin(digits);
 
-    return this.repository.create({ valid: true, identifier, token, validity, usage });
+    return this.repository.create({
+      valid: true,
+      identifier,
+      token,
+      validity,
+      usage,
+    });
   }
 
-  async validate(identifier: string, token: string, usage: OtpUsageEnum = OtpUsageEnum.confirmTransaction): Promise<{
+  async validate(
+    identifier: string,
+    token: string,
+    usage: OtpUsageEnum = OtpUsageEnum.confirmTransaction,
+  ): Promise<{
     status: boolean;
     message: string;
   }> {
     const otp = await this.repository.findOne({
       where: { identifier, token, usage },
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
 
     if (!otp) {
@@ -42,7 +59,9 @@ export class OtpBackendService extends CrudAbstractService<OtpModel> {
 
     if (otp.valid) {
       const now = new Date();
-      const validity = new Date(new Date(otp.createdAt).getTime() + Number(otp.validity) * 60000); // Convert validity to milliseconds
+      const validity = new Date(
+        new Date(otp.createdAt).getTime() + Number(otp.validity) * 60000,
+      ); // Convert validity to milliseconds
 
       if (validity < now) {
         otp.valid = false;
@@ -71,4 +90,3 @@ export class OtpBackendService extends CrudAbstractService<OtpModel> {
     return pin;
   }
 }
-

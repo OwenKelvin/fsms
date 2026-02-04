@@ -1,14 +1,14 @@
-import { Module, Logger } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import {
-  UserModel,
+  FileUploadModel,
   InstitutionModel,
   JobTitleModel,
+  RegistrationDocumentModel,
   RegistrationRecordModel,
   RegistrationStatusHistoryModel,
-  RegistrationDocumentModel,
-  FileUploadModel,
-  RoleModel
+  RoleModel,
+  UserModel
 } from '@fsms/backend/db';
 import { FileUploadModule } from '@fsms/backend/file-upload';
 import { EmailModule } from '@fsms/backend/email-service';
@@ -41,17 +41,17 @@ import { DocumentService } from './services/document.service';
       RegistrationStatusHistoryModel,
       RegistrationDocumentModel,
       FileUploadModel,
-      RoleModel
+      RoleModel,
     ]),
     // External service dependencies
-    FileUploadModule,      // For document upload to MinIO
-    EmailModule,           // For notification emails
-    AuthServiceBackendModule  // For two-factor authentication setup
+    FileUploadModule, // For document upload to MinIO
+    EmailModule, // For notification emails
+    AuthServiceBackendModule, // For two-factor authentication setup
   ],
   providers: [
     // Core services
-    RegistrationService,   // Main registration workflow orchestration
-    DocumentService,       // Document upload and review management
+    RegistrationService, // Main registration workflow orchestration
+    DocumentService, // Document upload and review management
 
     // Logger for error handling and debugging
     {
@@ -59,10 +59,7 @@ import { DocumentService } from './services/document.service';
       useValue: new Logger('RegistrationServiceModule'),
     },
   ],
-  exports: [
-    RegistrationService,
-    DocumentService
-  ],
+  exports: [RegistrationService, DocumentService],
 })
 export class RegistrationServiceModule {
   private readonly logger = new Logger(RegistrationServiceModule.name);
@@ -70,6 +67,8 @@ export class RegistrationServiceModule {
   constructor() {
     this.logger.log('RegistrationServiceModule initialized successfully');
     this.logger.log('Services: RegistrationService, DocumentService');
-    this.logger.log('Resolvers: RegistrationResolver, DocumentResolver, RegistrationQueryResolver');
+    this.logger.log(
+      'Resolvers: RegistrationResolver, DocumentResolver, RegistrationQueryResolver',
+    );
   }
 }

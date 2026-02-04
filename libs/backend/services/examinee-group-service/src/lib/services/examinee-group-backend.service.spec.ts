@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExamineeGroupBackendService } from './examinee-group-backend.service';
 import {
-  QueryOperatorEnum,
   ExamineeGroupModel,
-  SortByDirectionEnum,
   ExamineeModel,
+  QueryOperatorEnum,
+  SortByDirectionEnum,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
 import { getModelToken } from '@nestjs/sequelize';

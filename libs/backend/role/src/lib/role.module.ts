@@ -9,12 +9,8 @@ import { UserServiceModule } from '@fsms/backend/user-service';
   imports: [
     RoleServiceBackendModule,
     PermissionServiceBackendModule,
-    UserServiceModule
+    UserServiceModule,
   ],
-  providers: [
-    RoleResolver,
-    RolePermissionAssignmentResolver
-  ],
+  providers: [RoleResolver, RolePermissionAssignmentResolver],
 })
-export class RoleModule {
-}
+export class RoleModule {}

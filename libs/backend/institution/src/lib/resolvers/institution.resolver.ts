@@ -15,7 +15,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import { IQueryParam, InstitutionModel } from '@fsms/backend/db';
+import { InstitutionModel, IQueryParam } from '@fsms/backend/db';
 import { UpdateInstitutionInputDto } from '../dto/update-institution-input.dto';
 import { InstitutionUpdatedEvent } from '../events/institution-updated.event';
 import { DeleteInstitutionInputDto } from '../dto/delete-institution-input.dto';

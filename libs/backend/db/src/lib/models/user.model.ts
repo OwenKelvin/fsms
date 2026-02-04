@@ -1,4 +1,11 @@
-import { BelongsTo, BelongsToMany, Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { RoleModel } from './role.model';
 import { JobTitleModel } from './job-title.model';
 import { DataTypes } from 'sequelize';

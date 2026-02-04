@@ -1,7 +1,6 @@
 import {
   BelongsTo,
   Column,
-  DataType,
   ForeignKey,
   Model,
   Table,
@@ -34,14 +33,20 @@ export class InstitutionModel extends Model {
     validate: {
       len: {
         args: [1, 255],
-        msg: 'Legal name must be between 1 and 255 characters'
-      }
-    }
+        msg: 'Legal name must be between 1 and 255 characters',
+      },
+    },
   })
   legalName?: string;
 
   @Column({
-    type: DataTypes.ENUM('educational', 'healthcare', 'corporate', 'government', 'non_profit'),
+    type: DataTypes.ENUM(
+      'educational',
+      'healthcare',
+      'corporate',
+      'government',
+      'non_profit',
+    ),
     allowNull: true,
   })
   institutionType?: InstitutionType;
@@ -52,9 +57,9 @@ export class InstitutionModel extends Model {
     validate: {
       len: {
         args: [1, 100],
-        msg: 'Accreditation number must be between 1 and 100 characters'
-      }
-    }
+        msg: 'Accreditation number must be between 1 and 100 characters',
+      },
+    },
   })
   accreditationNumber?: string;
 
@@ -88,9 +93,9 @@ export class InstitutionModel extends Model {
     allowNull: true,
     validate: {
       isUrl: {
-        msg: 'Official website must be a valid URL'
-      }
-    }
+        msg: 'Official website must be a valid URL',
+      },
+    },
   })
   officialWebsite?: string;
 

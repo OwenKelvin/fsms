@@ -4,10 +4,10 @@ import { classes } from '@fsms/ui/utils';
 export const hlmLead = 'text-xl text-muted-foreground';
 
 @Directive({
-	selector: '[hlmLead]',
+  selector: '[hlmLead]',
 })
 export class HlmLead {
-	constructor() {
-		classes(() => hlmLead);
-	}
+  constructor() {
+    classes(() => hlmLead);
+  }
 }

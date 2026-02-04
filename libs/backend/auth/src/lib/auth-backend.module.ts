@@ -13,10 +13,10 @@ import { TranslationServiceModule } from '@fsms/backend/translation';
 import { PubSubProviderModule } from '@fsms/backend/util';
 import { SendPasswordResetLinkConsumer } from './consumers/send-password-reset-link.consumer';
 import {
+  SEND_PASSWORD_RESET_LINK_QUEUE,
   SEND_PASSWORD_RESET_OTP_QUEUE,
   SEND_VERIFICATION_LINK_QUEUE,
   SEND_WELCOME_EMAIL_QUEUE,
-  SEND_PASSWORD_RESET_LINK_QUEUE,
 } from './constants/queue.constants';
 import { BullModule } from '@nestjs/bull';
 import { EmailModule } from '@fsms/backend/email-service';

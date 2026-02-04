@@ -25,7 +25,7 @@ import { PasswordResetDeletedEvent } from '../events/password-reset-deleted.even
 export class PasswordResetResolver {
   constructor(
     private passwordResetService: PasswordResetBackendService,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @Query(() => PasswordResetModel)
@@ -45,7 +45,7 @@ export class PasswordResetResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.CreatePasswordReset)
   async createPasswordReset(
-    @Body(new ValidationPipe()) params: CreatePasswordResetInputDto
+    @Body(new ValidationPipe()) params: CreatePasswordResetInputDto,
   ) {
     const passwordReset = await this.passwordResetService.create({
       ...params,
@@ -53,7 +53,7 @@ export class PasswordResetResolver {
 
     this.eventEmitter.emit(
       'password-reset.created',
-      new PasswordResetCreatedEvent(passwordReset)
+      new PasswordResetCreatedEvent(passwordReset),
     );
 
     return {
@@ -66,7 +66,7 @@ export class PasswordResetResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.UpdatePasswordReset)
   async updatePasswordReset(
-    @Body(new ValidationPipe()) params: UpdatePasswordResetInputDto
+    @Body(new ValidationPipe()) params: UpdatePasswordResetInputDto,
   ) {
     const passwordReset = await this.passwordResetService.findById(params.id);
     if (passwordReset) {
@@ -75,7 +75,7 @@ export class PasswordResetResolver {
 
       this.eventEmitter.emit(
         'passwordReset.updated',
-        new PasswordResetUpdatedEvent(passwordReset)
+        new PasswordResetUpdatedEvent(passwordReset),
       );
       return {
         message: 'Successfully created passwordReset',
@@ -89,16 +89,16 @@ export class PasswordResetResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.DeletePasswordReset)
   async deletePasswordReset(
-    @Body(new ValidationPipe()) { id }: DeletePasswordResetInputDto
+    @Body(new ValidationPipe()) { id }: DeletePasswordResetInputDto,
   ) {
     const passwordReset = (await this.passwordResetService.findById(
-      id
+      id,
     )) as PasswordResetModel;
 
     await passwordReset.destroy();
     this.eventEmitter.emit(
       'password-reset.deleted',
-      new PasswordResetDeletedEvent(passwordReset)
+      new PasswordResetDeletedEvent(passwordReset),
     );
 
     return {

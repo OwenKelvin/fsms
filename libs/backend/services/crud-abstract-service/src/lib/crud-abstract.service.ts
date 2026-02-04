@@ -17,9 +17,11 @@ export abstract class CrudAbstractService<T extends Model> {
   protected constructor(repository: Repository<T>) {
     this.repository = repository;
   }
+
   get model() {
     return this.repository;
   }
+
   async findAll(query: IQueryParam, include?: Includeable | Includeable[]) {
     const page = (query?.currentPage ?? 1) - 1;
     const pageSize = query?.pageSize ?? 20;

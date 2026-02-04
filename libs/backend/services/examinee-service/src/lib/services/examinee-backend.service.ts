@@ -10,5 +10,6 @@ export class ExamineeBackendService extends CrudAbstractService<ExamineeModel> {
   ) {
     super(examineeModel);
   }
+
   override globalSearchFields = ['unique_identifier'];
 }

@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'config-backend-service',
   preset: '../../../../jest.preset.js',

@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { InstitutionBackendService } from './institution-backend.service';
 
 import {
-  QueryOperatorEnum,
   InstitutionModel,
-  SortByDirectionEnum,
   InstitutionUserModel,
+  QueryOperatorEnum,
+  SortByDirectionEnum,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
 import { getModelToken } from '@nestjs/sequelize';

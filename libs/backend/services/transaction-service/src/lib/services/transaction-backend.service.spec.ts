@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionBackendService } from './transaction-backend.service';
 import {
   QueryOperatorEnum,
-  TransactionModel,
   SortByDirectionEnum,
+  TransactionModel,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
 import { getModelToken } from '@nestjs/sequelize';

@@ -1,5 +1,12 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
+import { Field, InputType } from '@nestjs/graphql';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  MaxLength,
+} from 'class-validator';
 import { InstitutionType } from '@fsms/backend/db';
 
 @InputType()
@@ -18,7 +25,9 @@ export class InstitutionDetailsInputDto {
   @Field()
   @IsNotEmpty({ message: 'Accreditation number is required' })
   @IsString()
-  @MaxLength(100, { message: 'Accreditation number must be 100 characters or less' })
+  @MaxLength(100, {
+    message: 'Accreditation number must be 100 characters or less',
+  })
   accreditationNumber!: string;
 
   @Field()

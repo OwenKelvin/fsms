@@ -1,14 +1,14 @@
-import { Injectable, BadRequestException, ConflictException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { 
-  UserModel, 
-  InstitutionModel, 
-  JobTitleModel, 
-  RegistrationRecordModel, 
+import {
+  InstitutionModel,
+  InstitutionType,
+  JobTitleModel,
+  RegistrationRecordModel,
   RegistrationStatus,
   RegistrationStatusHistoryModel,
-  InstitutionType,
-  RoleModel 
+  RoleModel,
+  UserModel,
 } from '@fsms/backend/db';
 import { Op, Transaction } from 'sequelize';
 import { hash } from 'bcrypt';
@@ -76,10 +76,14 @@ export class RegistrationService {
 
   constructor(
     @InjectModel(UserModel) private readonly userModel: typeof UserModel,
-    @InjectModel(InstitutionModel) private readonly institutionModel: typeof InstitutionModel,
-    @InjectModel(JobTitleModel) private readonly jobTitleModel: typeof JobTitleModel,
-    @InjectModel(RegistrationRecordModel) private readonly registrationRecordModel: typeof RegistrationRecordModel,
-    @InjectModel(RegistrationStatusHistoryModel) private readonly registrationStatusHistoryModel: typeof RegistrationStatusHistoryModel,
+    @InjectModel(InstitutionModel)
+    private readonly institutionModel: typeof InstitutionModel,
+    @InjectModel(JobTitleModel)
+    private readonly jobTitleModel: typeof JobTitleModel,
+    @InjectModel(RegistrationRecordModel)
+    private readonly registrationRecordModel: typeof RegistrationRecordModel,
+    @InjectModel(RegistrationStatusHistoryModel)
+    private readonly registrationStatusHistoryModel: typeof RegistrationStatusHistoryModel,
     @InjectModel(RoleModel) private readonly roleModel: typeof RoleModel,
     private readonly sequelize: Sequelize,
     private readonly emailService: EmailService,
@@ -92,7 +96,9 @@ export class RegistrationService {
    * Validates profile information including email format and uniqueness checks
    * Requirements: 1.1, 1.2, 1.3
    */
-  async validateProfileInfo(input: ProfileInfoInput): Promise<ValidationResult> {
+  async validateProfileInfo(
+    input: ProfileInfoInput,
+  ): Promise<ValidationResult> {
     const errors: ValidationError[] = [];
 
     // Validate required fields
@@ -118,17 +124,20 @@ export class RegistrationService {
       } else {
         // Check email uniqueness
         const existingUser = await this.userModel.findOne({
-          where: { email: input.email }
+          where: { email: input.email },
         });
         if (existingUser) {
-          errors.push({ field: 'email', message: 'Email address is already registered' });
+          errors.push({
+            field: 'email',
+            message: 'Email address is already registered',
+          });
         }
       }
     }
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -138,7 +147,7 @@ export class RegistrationService {
    */
   async findOrCreateJobTitle(title: string): Promise<JobTitleModel> {
     const trimmedTitle = title.trim();
-    
+
     if (!trimmedTitle) {
       throw new BadRequestException('Job title cannot be empty');
     }
@@ -147,17 +156,17 @@ export class RegistrationService {
     let jobTitle = await this.jobTitleModel.findOne({
       where: {
         title: {
-          [Op.iLike]: trimmedTitle
+          [Op.iLike]: trimmedTitle,
         },
-        isActive: true
-      }
+        isActive: true,
+      },
     });
 
     // Create new job title if not found
     if (!jobTitle) {
       jobTitle = await this.jobTitleModel.create({
         title: trimmedTitle,
-        isActive: true
+        isActive: true,
       });
     }
 
@@ -168,31 +177,53 @@ export class RegistrationService {
    * Validates institution details with comprehensive validation
    * Requirements: 2.1, 2.2, 2.3
    */
-  async validateInstitutionDetails(input: InstitutionDetailsInput): Promise<ValidationResult> {
+  async validateInstitutionDetails(
+    input: InstitutionDetailsInput,
+  ): Promise<ValidationResult> {
     const errors: ValidationError[] = [];
 
     // Validate required fields
     if (!input.legalName?.trim()) {
       errors.push({ field: 'legalName', message: 'Legal name is required' });
     } else if (input.legalName.length > 255) {
-      errors.push({ field: 'legalName', message: 'Legal name must be 255 characters or less' });
+      errors.push({
+        field: 'legalName',
+        message: 'Legal name must be 255 characters or less',
+      });
     }
 
     if (!input.institutionType) {
-      errors.push({ field: 'institutionType', message: 'Institution type is required' });
-    } else if (!Object.values(InstitutionType).includes(input.institutionType)) {
-      errors.push({ field: 'institutionType', message: 'Invalid institution type' });
+      errors.push({
+        field: 'institutionType',
+        message: 'Institution type is required',
+      });
+    } else if (
+      !Object.values(InstitutionType).includes(input.institutionType)
+    ) {
+      errors.push({
+        field: 'institutionType',
+        message: 'Invalid institution type',
+      });
     }
 
     if (!input.accreditationNumber?.trim()) {
-      errors.push({ field: 'accreditationNumber', message: 'Accreditation number is required' });
+      errors.push({
+        field: 'accreditationNumber',
+        message: 'Accreditation number is required',
+      });
     } else if (input.accreditationNumber.length > 100) {
-      errors.push({ field: 'accreditationNumber', message: 'Accreditation number must be 100 characters or less' });
+      errors.push({
+        field: 'accreditationNumber',
+        message: 'Accreditation number must be 100 characters or less',
+      });
     }
 
     // Validate address fields
     if (!input.streetAddress?.trim()) {
-      errors.push({ field: 'streetAddress', message: 'Street address is required' });
+      errors.push({
+        field: 'streetAddress',
+        message: 'Street address is required',
+      });
     }
 
     if (!input.city?.trim()) {
@@ -200,11 +231,17 @@ export class RegistrationService {
     }
 
     if (!input.stateProvince?.trim()) {
-      errors.push({ field: 'stateProvince', message: 'State/Province is required' });
+      errors.push({
+        field: 'stateProvince',
+        message: 'State/Province is required',
+      });
     }
 
     if (!input.zipPostalCode?.trim()) {
-      errors.push({ field: 'zipPostalCode', message: 'ZIP/Postal code is required' });
+      errors.push({
+        field: 'zipPostalCode',
+        message: 'ZIP/Postal code is required',
+      });
     }
 
     // Validate optional website URL
@@ -212,13 +249,16 @@ export class RegistrationService {
       try {
         new URL(input.officialWebsite);
       } catch {
-        errors.push({ field: 'officialWebsite', message: 'Invalid website URL format' });
+        errors.push({
+          field: 'officialWebsite',
+          message: 'Invalid website URL format',
+        });
       }
     }
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -226,7 +266,9 @@ export class RegistrationService {
    * Validates admin credentials with username uniqueness and password strength
    * Requirements: 4.1, 4.2, 4.3
    */
-  async validateAdminCredentials(input: AdminCredentialsInput): Promise<ValidationResult> {
+  async validateAdminCredentials(
+    input: AdminCredentialsInput,
+  ): Promise<ValidationResult> {
     const errors: ValidationError[] = [];
 
     // Validate username
@@ -235,10 +277,13 @@ export class RegistrationService {
     } else {
       // Check username uniqueness
       const existingUser = await this.userModel.findOne({
-        where: { username: input.username }
+        where: { username: input.username },
       });
       if (existingUser) {
-        errors.push({ field: 'username', message: 'Username is already taken' });
+        errors.push({
+          field: 'username',
+          message: 'Username is already taken',
+        });
       }
     }
 
@@ -252,14 +297,20 @@ export class RegistrationService {
 
     // Validate password confirmation
     if (!input.passwordConfirmation) {
-      errors.push({ field: 'passwordConfirmation', message: 'Password confirmation is required' });
+      errors.push({
+        field: 'passwordConfirmation',
+        message: 'Password confirmation is required',
+      });
     } else if (input.password !== input.passwordConfirmation) {
-      errors.push({ field: 'passwordConfirmation', message: 'Password confirmation does not match' });
+      errors.push({
+        field: 'passwordConfirmation',
+        message: 'Password confirmation does not match',
+      });
     }
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -271,23 +322,38 @@ export class RegistrationService {
     const errors: ValidationError[] = [];
 
     if (password.length < 8) {
-      errors.push({ field: 'password', message: 'Password must be at least 8 characters long' });
+      errors.push({
+        field: 'password',
+        message: 'Password must be at least 8 characters long',
+      });
     }
 
     if (!/[a-z]/.test(password)) {
-      errors.push({ field: 'password', message: 'Password must contain at least one lowercase letter' });
+      errors.push({
+        field: 'password',
+        message: 'Password must contain at least one lowercase letter',
+      });
     }
 
     if (!/[A-Z]/.test(password)) {
-      errors.push({ field: 'password', message: 'Password must contain at least one uppercase letter' });
+      errors.push({
+        field: 'password',
+        message: 'Password must contain at least one uppercase letter',
+      });
     }
 
     if (!/\d/.test(password)) {
-      errors.push({ field: 'password', message: 'Password must contain at least one number' });
+      errors.push({
+        field: 'password',
+        message: 'Password must contain at least one number',
+      });
     }
 
     if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      errors.push({ field: 'password', message: 'Password must contain at least one special character' });
+      errors.push({
+        field: 'password',
+        message: 'Password must contain at least one special character',
+      });
     }
 
     return errors;
@@ -298,14 +364,17 @@ export class RegistrationService {
    * Requirements: 1.5, 2.5, 4.5
    */
   async updateRegistrationStatus(
-    registrationId: number, 
+    registrationId: number,
     newStatus: RegistrationStatus,
     changedBy?: string,
     notes?: string,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<void> {
-    const registration = await this.registrationRecordModel.findByPk(registrationId, { transaction });
-    
+    const registration = await this.registrationRecordModel.findByPk(
+      registrationId,
+      { transaction },
+    );
+
     if (!registration) {
       throw new BadRequestException('Registration record not found');
     }
@@ -316,14 +385,17 @@ export class RegistrationService {
     await registration.update({ status: newStatus }, { transaction });
 
     // Create status history entry
-    await this.registrationStatusHistoryModel.create({
-      registrationId,
-      previousStatus,
-      newStatus,
-      changedAt: new Date(),
-      changedBy,
-      notes
-    }, { transaction });
+    await this.registrationStatusHistoryModel.create(
+      {
+        registrationId,
+        previousStatus,
+        newStatus,
+        changedAt: new Date(),
+        changedBy,
+        notes,
+      },
+      { transaction },
+    );
   }
 
   /**
@@ -332,11 +404,18 @@ export class RegistrationService {
    */
   async progressWorkflowState(
     registrationId: number,
-    completedStep: 'profileInfo' | 'institutionDetails' | 'documents' | 'adminCredentials',
-    transaction?: Transaction
+    completedStep:
+      | 'profileInfo'
+      | 'institutionDetails'
+      | 'documents'
+      | 'adminCredentials',
+    transaction?: Transaction,
   ): Promise<void> {
-    const registration = await this.registrationRecordModel.findByPk(registrationId, { transaction });
-    
+    const registration = await this.registrationRecordModel.findByPk(
+      registrationId,
+      { transaction },
+    );
+
     if (!registration) {
       throw new BadRequestException('Registration record not found');
     }
@@ -369,7 +448,13 @@ export class RegistrationService {
     await registration.update(updateData, { transaction });
 
     // Update status
-    await this.updateRegistrationStatus(registrationId, newStatus, 'system', `Completed ${completedStep} step`, transaction);
+    await this.updateRegistrationStatus(
+      registrationId,
+      newStatus,
+      'system',
+      `Completed ${completedStep} step`,
+      transaction,
+    );
   }
 
   /**
@@ -381,20 +466,22 @@ export class RegistrationService {
       profileInfoCompleted: false,
       institutionDetailsCompleted: false,
       documentsUploaded: false,
-      adminCredentialsCompleted: false
+      adminCredentialsCompleted: false,
     });
   }
 
   /**
    * Gets registration status by ID
    */
-  async getRegistrationStatus(registrationId: number): Promise<RegistrationRecordModel | null> {
+  async getRegistrationStatus(
+    registrationId: number,
+  ): Promise<RegistrationRecordModel | null> {
     return await this.registrationRecordModel.findByPk(registrationId, {
       include: [
         { model: this.institutionModel },
         { model: this.userModel },
-        { model: this.registrationStatusHistoryModel }
-      ]
+        { model: this.registrationStatusHistoryModel },
+      ],
     });
   }
 
@@ -402,15 +489,17 @@ export class RegistrationService {
    * Query registrations by status
    * Requirements: 6.4
    */
-  async getRegistrationsByStatus(status: RegistrationStatus): Promise<RegistrationRecordModel[]> {
+  async getRegistrationsByStatus(
+    status: RegistrationStatus,
+  ): Promise<RegistrationRecordModel[]> {
     return await this.registrationRecordModel.findAll({
       where: { status },
       include: [
         { model: this.institutionModel },
         { model: this.userModel },
-        { model: this.registrationStatusHistoryModel }
+        { model: this.registrationStatusHistoryModel },
       ],
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
   }
 
@@ -421,12 +510,12 @@ export class RegistrationService {
   async getRegistrationsByDateRange(
     startDate: Date,
     endDate: Date,
-    status?: RegistrationStatus
+    status?: RegistrationStatus,
   ): Promise<RegistrationRecordModel[]> {
     const whereClause: any = {
       createdAt: {
-        [Op.between]: [startDate, endDate]
-      }
+        [Op.between]: [startDate, endDate],
+      },
     };
 
     if (status) {
@@ -438,9 +527,9 @@ export class RegistrationService {
       include: [
         { model: this.institutionModel },
         { model: this.userModel },
-        { model: this.registrationStatusHistoryModel }
+        { model: this.registrationStatusHistoryModel },
       ],
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
   }
 
@@ -448,19 +537,21 @@ export class RegistrationService {
    * Query registrations with multiple status filters
    * Requirements: 6.4
    */
-  async getRegistrationsByStatuses(statuses: RegistrationStatus[]): Promise<RegistrationRecordModel[]> {
+  async getRegistrationsByStatuses(
+    statuses: RegistrationStatus[],
+  ): Promise<RegistrationRecordModel[]> {
     return await this.registrationRecordModel.findAll({
       where: {
         status: {
-          [Op.in]: statuses
-        }
+          [Op.in]: statuses,
+        },
       },
       include: [
         { model: this.institutionModel },
         { model: this.userModel },
-        { model: this.registrationStatusHistoryModel }
+        { model: this.registrationStatusHistoryModel },
       ],
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
     });
   }
 
@@ -468,10 +559,12 @@ export class RegistrationService {
    * Get registration status history for a specific registration
    * Requirements: 6.1, 6.2
    */
-  async getRegistrationStatusHistory(registrationId: number): Promise<RegistrationStatusHistoryModel[]> {
+  async getRegistrationStatusHistory(
+    registrationId: number,
+  ): Promise<RegistrationStatusHistoryModel[]> {
     return await this.registrationStatusHistoryModel.findAll({
       where: { registrationId },
-      order: [['changedAt', 'ASC']]
+      order: [['changedAt', 'ASC']],
     });
   }
 
@@ -483,15 +576,18 @@ export class RegistrationService {
     return await this.registrationRecordModel.findAll({
       where: {
         status: {
-          [Op.in]: [RegistrationStatus.UNDER_REVIEW, RegistrationStatus.DOCUMENTS_UPLOADED]
-        }
+          [Op.in]: [
+            RegistrationStatus.UNDER_REVIEW,
+            RegistrationStatus.DOCUMENTS_UPLOADED,
+          ],
+        },
       },
       include: [
         { model: this.institutionModel },
         { model: this.userModel },
-        { model: this.registrationStatusHistoryModel }
+        { model: this.registrationStatusHistoryModel },
       ],
-      order: [['createdAt', 'ASC']] // Oldest first for review queue
+      order: [['createdAt', 'ASC']], // Oldest first for review queue
     });
   }
 
@@ -504,10 +600,13 @@ export class RegistrationService {
     newStatus: RegistrationStatus,
     changedBy: string,
     notes?: string,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<RegistrationStatusHistoryModel> {
-    const registration = await this.registrationRecordModel.findByPk(registrationId, { transaction });
-    
+    const registration = await this.registrationRecordModel.findByPk(
+      registrationId,
+      { transaction },
+    );
+
     if (!registration) {
       throw new BadRequestException('Registration record not found');
     }
@@ -518,14 +617,17 @@ export class RegistrationService {
     await registration.update({ status: newStatus }, { transaction });
 
     // Create detailed status history entry
-    const historyEntry = await this.registrationStatusHistoryModel.create({
-      registrationId,
-      previousStatus,
-      newStatus,
-      changedAt: new Date(),
-      changedBy,
-      notes: notes || `Status changed from ${previousStatus} to ${newStatus}`
-    }, { transaction });
+    const historyEntry = await this.registrationStatusHistoryModel.create(
+      {
+        registrationId,
+        previousStatus,
+        newStatus,
+        changedAt: new Date(),
+        changedBy,
+        notes: notes || `Status changed from ${previousStatus} to ${newStatus}`,
+      },
+      { transaction },
+    );
 
     return historyEntry;
   }
@@ -544,16 +646,21 @@ export class RegistrationService {
    */
   async completeRegistration(
     registrationId: number,
-    registrationData: CompleteRegistrationData
+    registrationData: CompleteRegistrationData,
   ): Promise<RegistrationResult> {
-    this.logger.log(`Starting registration completion for registration ID: ${registrationId}`);
+    this.logger.log(
+      `Starting registration completion for registration ID: ${registrationId}`,
+    );
     const transaction = await this.sequelize.transaction();
-    
+
     try {
       // Verify registration exists and is ready for completion
-      const registration = await this.registrationRecordModel.findByPk(registrationId, {
-        transaction
-      });
+      const registration = await this.registrationRecordModel.findByPk(
+        registrationId,
+        {
+          transaction,
+        },
+      );
 
       if (!registration) {
         this.logger.warn(`Registration not found: ${registrationId}`);
@@ -561,70 +668,103 @@ export class RegistrationService {
       }
 
       // Verify all steps are completed
-      if (!registration.profileInfoCompleted || 
-          !registration.institutionDetailsCompleted || 
-          !registration.documentsUploaded || 
-          !registration.adminCredentialsCompleted) {
-        this.logger.warn(`Registration ${registrationId} is not ready for completion`);
-        throw new BadRequestException('Registration is not ready for completion. All steps must be completed first.');
+      if (
+        !registration.profileInfoCompleted ||
+        !registration.institutionDetailsCompleted ||
+        !registration.documentsUploaded ||
+        !registration.adminCredentialsCompleted
+      ) {
+        this.logger.warn(
+          `Registration ${registrationId} is not ready for completion`,
+        );
+        throw new BadRequestException(
+          'Registration is not ready for completion. All steps must be completed first.',
+        );
       }
 
       // Verify current status allows completion
       if (registration.status !== RegistrationStatus.ADMIN_CREDENTIALS_SET) {
-        this.logger.warn(`Registration ${registrationId} has invalid status: ${registration.status}`);
-        throw new BadRequestException(`Registration cannot be completed from status: ${registration.status}`);
+        this.logger.warn(
+          `Registration ${registrationId} has invalid status: ${registration.status}`,
+        );
+        throw new BadRequestException(
+          `Registration cannot be completed from status: ${registration.status}`,
+        );
       }
 
       // Find or create job title
-      const jobTitle = await this.findOrCreateJobTitle(registrationData.profileInfo.jobTitle);
-      this.logger.debug(`Job title resolved: ${jobTitle.title} (ID: ${jobTitle.id})`);
+      const jobTitle = await this.findOrCreateJobTitle(
+        registrationData.profileInfo.jobTitle,
+      );
+      this.logger.debug(
+        `Job title resolved: ${jobTitle.title} (ID: ${jobTitle.id})`,
+      );
 
       // Hash the admin password
-      const hashedPassword = await this.hashPassword(registrationData.adminCredentials.password);
+      const hashedPassword = await this.hashPassword(
+        registrationData.adminCredentials.password,
+      );
 
       // Create institution record
-      const institution = await this.institutionModel.create({
-        name: registrationData.institutionDetails.legalName, // For backward compatibility
-        legalName: registrationData.institutionDetails.legalName,
-        institutionType: registrationData.institutionDetails.institutionType,
-        accreditationNumber: registrationData.institutionDetails.accreditationNumber,
-        streetAddress: registrationData.institutionDetails.streetAddress,
-        city: registrationData.institutionDetails.city,
-        stateProvince: registrationData.institutionDetails.stateProvince,
-        zipPostalCode: registrationData.institutionDetails.zipPostalCode,
-        officialWebsite: registrationData.institutionDetails.officialWebsite,
-        createdById: null // Will be updated after user creation
-      }, { transaction });
-      this.logger.log(`Institution created: ${institution.legalName} (ID: ${institution.id})`);
+      const institution = await this.institutionModel.create(
+        {
+          name: registrationData.institutionDetails.legalName, // For backward compatibility
+          legalName: registrationData.institutionDetails.legalName,
+          institutionType: registrationData.institutionDetails.institutionType,
+          accreditationNumber:
+            registrationData.institutionDetails.accreditationNumber,
+          streetAddress: registrationData.institutionDetails.streetAddress,
+          city: registrationData.institutionDetails.city,
+          stateProvince: registrationData.institutionDetails.stateProvince,
+          zipPostalCode: registrationData.institutionDetails.zipPostalCode,
+          officialWebsite: registrationData.institutionDetails.officialWebsite,
+          createdById: null, // Will be updated after user creation
+        },
+        { transaction },
+      );
+      this.logger.log(
+        `Institution created: ${institution.legalName} (ID: ${institution.id})`,
+      );
 
       // Create admin user record
-      const adminUser = await this.userModel.create({
-        firstName: registrationData.profileInfo.firstName,
-        lastName: registrationData.profileInfo.lastName,
-        email: registrationData.profileInfo.email,
-        username: registrationData.adminCredentials.username,
-        password: hashedPassword,
-        jobTitleId: jobTitle.id,
-        emailVerifiedAt: null, // Will be verified separately
-        phoneVerifiedAt: null
-      }, { transaction });
-      this.logger.log(`Admin user created: ${adminUser.username} (ID: ${adminUser.id})`);
+      const adminUser = await this.userModel.create(
+        {
+          firstName: registrationData.profileInfo.firstName,
+          lastName: registrationData.profileInfo.lastName,
+          email: registrationData.profileInfo.email,
+          username: registrationData.adminCredentials.username,
+          password: hashedPassword,
+          jobTitleId: jobTitle.id,
+          emailVerifiedAt: null, // Will be verified separately
+          phoneVerifiedAt: null,
+        },
+        { transaction },
+      );
+      this.logger.log(
+        `Admin user created: ${adminUser.username} (ID: ${adminUser.id})`,
+      );
 
       // Update institution with the created user as creator
-      await institution.update({
-        createdById: adminUser.id
-      }, { transaction });
+      await institution.update(
+        {
+          createdById: adminUser.id,
+        },
+        { transaction },
+      );
 
       // Assign admin role to the user
       await this.assignAdminRole(adminUser.id, transaction);
       this.logger.debug(`Admin role assigned to user ${adminUser.id}`);
 
       // Update registration record with final relationships
-      await registration.update({
-        institutionId: institution.id,
-        adminUserId: adminUser.id,
-        completedAt: new Date()
-      }, { transaction });
+      await registration.update(
+        {
+          institutionId: institution.id,
+          adminUserId: adminUser.id,
+          completedAt: new Date(),
+        },
+        { transaction },
+      );
 
       // Update registration status to under review
       await this.updateRegistrationStatus(
@@ -632,21 +772,30 @@ export class RegistrationService {
         RegistrationStatus.UNDER_REVIEW,
         'system',
         'Registration completed successfully, pending review',
-        transaction
+        transaction,
       );
 
       // Commit the transaction
       await transaction.commit();
-      this.logger.log(`Registration ${registrationId} completed successfully. Institution ID: ${institution.id}, User ID: ${adminUser.id}`);
+      this.logger.log(
+        `Registration ${registrationId} completed successfully. Institution ID: ${institution.id}, User ID: ${adminUser.id}`,
+      );
 
       // Setup two-factor authentication if requested
       let twoFactorSetup;
       if (registrationData.adminCredentials.enableTwoFactor) {
         try {
-          twoFactorSetup = await this.authService.setupTwoFactorAuth(adminUser.id);
-          this.logger.log(`Two-factor authentication setup for user ${adminUser.id}`);
+          twoFactorSetup = await this.authService.setupTwoFactorAuth(
+            adminUser.id,
+          );
+          this.logger.log(
+            `Two-factor authentication setup for user ${adminUser.id}`,
+          );
         } catch (error) {
-          this.logger.error(`Failed to setup two-factor authentication for user ${adminUser.id}:`, error);
+          this.logger.error(
+            `Failed to setup two-factor authentication for user ${adminUser.id}:`,
+            error,
+          );
           // Don't fail the registration if 2FA setup fails
         }
       }
@@ -655,14 +804,16 @@ export class RegistrationService {
         success: true,
         institutionId: institution.id,
         adminUserId: adminUser.id,
-        twoFactorSetup
+        twoFactorSetup,
       };
-
     } catch (error: any) {
       // Rollback transaction on any error
       await transaction.rollback();
-      this.logger.error(`Registration ${registrationId} failed and was rolled back:`, error);
-      
+      this.logger.error(
+        `Registration ${registrationId} failed and was rolled back:`,
+        error,
+      );
+
       if (error instanceof BadRequestException) {
         throw error;
       }
@@ -670,23 +821,31 @@ export class RegistrationService {
       // Handle specific database constraint errors
       if (error.name === 'SequelizeUniqueConstraintError') {
         const field = error.errors?.[0]?.path;
-        const message = field === 'email' ? 'Email address is already registered' : 
-                       field === 'username' ? 'Username is already taken' : 
-                       'A unique constraint was violated';
-        
-        this.logger.warn(`Unique constraint violation during registration ${registrationId}: ${field}`);
+        const message =
+          field === 'email'
+            ? 'Email address is already registered'
+            : field === 'username'
+              ? 'Username is already taken'
+              : 'A unique constraint was violated';
+
+        this.logger.warn(
+          `Unique constraint violation during registration ${registrationId}: ${field}`,
+        );
         return {
           success: false,
-          errors: [{ field: field || 'unknown', message }]
+          errors: [{ field: field || 'unknown', message }],
         };
       }
 
       // Handle other database errors
       if (error.name?.startsWith('Sequelize')) {
-        this.logger.error(`Database error during registration ${registrationId}:`, error);
+        this.logger.error(
+          `Database error during registration ${registrationId}:`,
+          error,
+        );
         return {
           success: false,
-          errors: [{ field: 'database', message: 'Database operation failed' }]
+          errors: [{ field: 'database', message: 'Database operation failed' }],
         };
       }
 
@@ -699,26 +858,34 @@ export class RegistrationService {
    * Assigns admin role to a user
    * Requirements: 5.4
    */
-  private async assignAdminRole(userId: number, transaction: Transaction): Promise<void> {
+  private async assignAdminRole(
+    userId: number,
+    transaction: Transaction,
+  ): Promise<void> {
     // Find the admin role (assuming it exists)
     const adminRole = await this.roleModel.findOne({
       where: { name: 'admin' },
-      transaction
+      transaction,
     });
 
     if (!adminRole) {
       // If admin role doesn't exist, create it
-      const newAdminRole = await this.roleModel.create({
-        name: 'admin'
-      }, { transaction });
+      const newAdminRole = await this.roleModel.create(
+        {
+          name: 'admin',
+        },
+        { transaction },
+      );
 
       // Associate user with the new admin role
-      await this.userModel.findByPk(userId, { transaction })
-        .then(user => user?.$add('roles', newAdminRole, { transaction }));
+      await this.userModel
+        .findByPk(userId, { transaction })
+        .then((user) => user?.$add('roles', newAdminRole, { transaction }));
     } else {
       // Associate user with existing admin role
-      await this.userModel.findByPk(userId, { transaction })
-        .then(user => user?.$add('roles', adminRole, { transaction }));
+      await this.userModel
+        .findByPk(userId, { transaction })
+        .then((user) => user?.$add('roles', adminRole, { transaction }));
     }
   }
 
@@ -727,17 +894,19 @@ export class RegistrationService {
    * Requirements: 6.5
    */
   async sendRegistrationCompletionNotification(
-    registrationId: number
+    registrationId: number,
   ): Promise<void> {
-    const registration = await this.registrationRecordModel.findByPk(registrationId, {
-      include: [
-        { model: this.institutionModel },
-        { model: this.userModel }
-      ]
-    });
+    const registration = await this.registrationRecordModel.findByPk(
+      registrationId,
+      {
+        include: [{ model: this.institutionModel }, { model: this.userModel }],
+      },
+    );
 
     if (!registration || !registration.adminUser || !registration.institution) {
-      throw new BadRequestException('Registration record, user, or institution not found');
+      throw new BadRequestException(
+        'Registration record, user, or institution not found',
+      );
     }
 
     const { adminUser, institution } = registration;
@@ -756,7 +925,7 @@ export class RegistrationService {
             <h2 style="color: #333;">Registration Completed Successfully</h2>
             <p>Dear ${adminUser.firstName} ${adminUser.lastName},</p>
             <p>Thank you for completing your institution registration with Tahiniwa. Your registration for <strong>${institution.legalName}</strong> has been successfully submitted and is now under review.</p>
-            
+
             <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
               <h3 style="margin-top: 0; color: #333;">Registration Details:</h3>
               <ul style="list-style: none; padding: 0;">
@@ -766,17 +935,20 @@ export class RegistrationService {
                 <li><strong>Status:</strong> Under Review</li>
               </ul>
             </div>
-            
+
             <p>Our team will review your registration and supporting documents. You will receive an email notification once the review is complete.</p>
-            
+
             <p>If you have any questions, please don't hesitate to contact our support team.</p>
-            
+
             <p>Best regards,<br>The Tahiniwa Team</p>
           </div>
-        `
+        `,
       });
     } catch (error) {
-      console.error('Failed to send registration completion notification:', error);
+      console.error(
+        'Failed to send registration completion notification:',
+        error,
+      );
       // Don't throw error to avoid breaking the registration flow
     }
   }
@@ -786,17 +958,19 @@ export class RegistrationService {
    * Requirements: 6.5
    */
   async sendRegistrationApprovalNotification(
-    registrationId: number
+    registrationId: number,
   ): Promise<void> {
-    const registration = await this.registrationRecordModel.findByPk(registrationId, {
-      include: [
-        { model: this.institutionModel },
-        { model: this.userModel }
-      ]
-    });
+    const registration = await this.registrationRecordModel.findByPk(
+      registrationId,
+      {
+        include: [{ model: this.institutionModel }, { model: this.userModel }],
+      },
+    );
 
     if (!registration || !registration.adminUser || !registration.institution) {
-      throw new BadRequestException('Registration record, user, or institution not found');
+      throw new BadRequestException(
+        'Registration record, user, or institution not found',
+      );
     }
 
     const { adminUser, institution } = registration;
@@ -815,12 +989,12 @@ export class RegistrationService {
             <h2 style="color: #28a745;">Registration Approved!</h2>
             <p>Dear ${adminUser.firstName} ${adminUser.lastName},</p>
             <p>Congratulations! Your institution registration for <strong>${institution.legalName}</strong> has been approved.</p>
-            
+
             <div style="background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #28a745;">
               <h3 style="margin-top: 0; color: #155724;">Your account is now active!</h3>
               <p style="margin-bottom: 0; color: #155724;">You can now log in to your admin dashboard and start using Tahiniwa's services.</p>
             </div>
-            
+
             <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
               <h3 style="margin-top: 0; color: #333;">Next Steps:</h3>
               <ol>
@@ -830,22 +1004,25 @@ export class RegistrationService {
                 <li>Explore available features and services</li>
               </ol>
             </div>
-            
+
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env['FSMS_APP_URL']}/login" 
+              <a href="${process.env['FSMS_APP_URL']}/login"
                  style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                 Access Your Dashboard
               </a>
             </div>
-            
+
             <p>If you need any assistance getting started, our support team is here to help.</p>
-            
+
             <p>Welcome to Tahiniwa!<br>The Tahiniwa Team</p>
           </div>
-        `
+        `,
       });
     } catch (error) {
-      console.error('Failed to send registration approval notification:', error);
+      console.error(
+        'Failed to send registration approval notification:',
+        error,
+      );
       // Don't throw error to avoid breaking the approval flow
     }
   }
@@ -856,17 +1033,19 @@ export class RegistrationService {
    */
   async sendRegistrationRejectionNotification(
     registrationId: number,
-    rejectionReason?: string
+    rejectionReason?: string,
   ): Promise<void> {
-    const registration = await this.registrationRecordModel.findByPk(registrationId, {
-      include: [
-        { model: this.institutionModel },
-        { model: this.userModel }
-      ]
-    });
+    const registration = await this.registrationRecordModel.findByPk(
+      registrationId,
+      {
+        include: [{ model: this.institutionModel }, { model: this.userModel }],
+      },
+    );
 
     if (!registration || !registration.adminUser || !registration.institution) {
-      throw new BadRequestException('Registration record, user, or institution not found');
+      throw new BadRequestException(
+        'Registration record, user, or institution not found',
+      );
     }
 
     const { adminUser, institution } = registration;
@@ -885,20 +1064,24 @@ export class RegistrationService {
             <h2 style="color: #dc3545;">Registration Requires Updates</h2>
             <p>Dear ${adminUser.firstName} ${adminUser.lastName},</p>
             <p>Thank you for your interest in registering <strong>${institution.legalName}</strong> with Tahiniwa.</p>
-            
+
             <div style="background-color: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #dc3545;">
               <h3 style="margin-top: 0; color: #721c24;">Additional Information Required</h3>
               <p style="color: #721c24;">
                 After reviewing your registration, we need some additional information or documentation before we can proceed.
               </p>
-              ${rejectionReason ? `
+              ${
+                rejectionReason
+                  ? `
                 <div style="background-color: white; padding: 10px; border-radius: 3px; margin-top: 10px;">
                   <strong>Details:</strong><br>
                   ${rejectionReason}
                 </div>
-              ` : ''}
+              `
+                  : ''
+              }
             </div>
-            
+
             <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
               <h3 style="margin-top: 0; color: #333;">What to do next:</h3>
               <ol>
@@ -908,15 +1091,18 @@ export class RegistrationService {
                 <li>Resubmit your registration when ready</li>
               </ol>
             </div>
-            
+
             <p>Our support team is available to help you through this process. Please don't hesitate to reach out if you need assistance.</p>
-            
+
             <p>Thank you for your patience.<br>The Tahiniwa Team</p>
           </div>
-        `
+        `,
       });
     } catch (error) {
-      console.error('Failed to send registration rejection notification:', error);
+      console.error(
+        'Failed to send registration rejection notification:',
+        error,
+      );
       // Don't throw error to avoid breaking the rejection flow
     }
   }
@@ -927,17 +1113,23 @@ export class RegistrationService {
    */
   async completeRegistrationWithNotification(
     registrationId: number,
-    registrationData: CompleteRegistrationData
+    registrationData: CompleteRegistrationData,
   ): Promise<RegistrationResult> {
     // Complete the registration using existing method
-    const result = await this.completeRegistration(registrationId, registrationData);
+    const result = await this.completeRegistration(
+      registrationId,
+      registrationData,
+    );
 
     // Send completion notification if successful
     if (result.success) {
       try {
         await this.sendRegistrationCompletionNotification(registrationId);
       } catch (error) {
-        console.error('Failed to send completion notification, but registration was successful:', error);
+        console.error(
+          'Failed to send completion notification, but registration was successful:',
+          error,
+        );
         // Don't fail the registration if email fails
       }
     }
@@ -954,7 +1146,7 @@ export class RegistrationService {
     newStatus: RegistrationStatus,
     changedBy: string,
     notes?: string,
-    transaction?: Transaction
+    transaction?: Transaction,
   ): Promise<RegistrationStatusHistoryModel> {
     // Update status using existing method
     const historyEntry = await this.updateRegistrationStatusWithAudit(
@@ -962,7 +1154,7 @@ export class RegistrationService {
       newStatus,
       changedBy,
       notes,
-      transaction
+      transaction,
     );
 
     // Send appropriate notification based on status

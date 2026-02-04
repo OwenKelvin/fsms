@@ -1,4 +1,4 @@
-import { Module, Logger } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { RegistrationResolver } from './resolvers/registration.resolver';
 import { DocumentResolver } from './resolvers/document.resolver';
 import { RegistrationQueryResolver } from './resolvers/registration-query.resolver';
@@ -19,12 +19,10 @@ import { RegistrationServiceModule } from '@fsms/backend/registration-backend-se
  * @module RegistrationServiceModule
  */
 @Module({
-  imports: [
-    RegistrationServiceModule
-  ],
+  imports: [RegistrationServiceModule],
   providers: [
-    RegistrationResolver,      // Registration mutations
-    DocumentResolver,          // Document upload mutations
+    RegistrationResolver, // Registration mutations
+    DocumentResolver, // Document upload mutations
     RegistrationQueryResolver, // Registration queries
 
     // Logger for error handling and debugging
@@ -40,6 +38,8 @@ export class RegistrationModule {
   constructor() {
     this.logger.log('RegistrationServiceModule initialized successfully');
     this.logger.log('Services: RegistrationService, DocumentService');
-    this.logger.log('Resolvers: RegistrationResolver, DocumentResolver, RegistrationQueryResolver');
+    this.logger.log(
+      'Resolvers: RegistrationResolver, DocumentResolver, RegistrationQueryResolver',
+    );
   }
 }

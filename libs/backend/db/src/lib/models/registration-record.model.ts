@@ -1,4 +1,12 @@
-import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { InstitutionModel } from './institution.model';
 import { UserModel } from './user.model';
 import { RegistrationDocumentModel } from './registration-document.model';
@@ -31,7 +39,7 @@ export class RegistrationRecordModel extends Model {
       'admin_credentials_set',
       'under_review',
       'approved',
-      'rejected'
+      'rejected',
     ),
     allowNull: false,
     defaultValue: RegistrationStatus.PENDING,
@@ -126,7 +134,7 @@ export class RegistrationStatusHistoryModel extends Model {
       'admin_credentials_set',
       'under_review',
       'approved',
-      'rejected'
+      'rejected',
     ),
     allowNull: true,
   })
@@ -141,7 +149,7 @@ export class RegistrationStatusHistoryModel extends Model {
       'admin_credentials_set',
       'under_review',
       'approved',
-      'rejected'
+      'rejected',
     ),
     allowNull: false,
   })

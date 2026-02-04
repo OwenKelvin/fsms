@@ -5,23 +5,22 @@ import { ExamModel } from './exam.model';
 import { TagModel } from './tag.model';
 
 @Table({
-
   tableName: 'exam_tag',
   underscored: true,
   paranoid: false,
   timestamps: true,
-  deletedAt: false
+  deletedAt: false,
 })
 export class ExamTagModel extends Model {
   @ForeignKey(() => ExamModel)
   @Column({ type: DataTypes.INTEGER, allowNull: false })
   examId!: number;
 
-  exam!: ExamModel
+  exam!: ExamModel;
 
   @ForeignKey(() => TagModel)
   @Column({ type: DataTypes.INTEGER, allowNull: false })
   tagId!: number;
 
-  tag!: TagModel
+  tag!: TagModel;
 }

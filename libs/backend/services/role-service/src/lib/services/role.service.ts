@@ -15,16 +15,16 @@ export class RoleService extends CrudAbstractService<RoleModel> {
   async getUserRoles(userId: number) {
     const userRoles = await this.roleUserModel.findAll({
       where: { userId },
-      attributes: ['roleId']
+      attributes: ['roleId'],
     });
 
-    const roleIds = userRoles.map(ur => ur.roleId);
+    const roleIds = userRoles.map((ur) => ur.roleId);
     if (roleIds.length > 0) {
       return this.roleModel.findAll({
         where: {
-          id: roleIds
+          id: roleIds,
         },
-        include: ['permissions']
+        include: ['permissions'],
       });
     } else {
       return [];
@@ -35,7 +35,7 @@ export class RoleService extends CrudAbstractService<RoleModel> {
   async assignRoleToUser(userId: number, roleName: string): Promise<void> {
     // Find the role by roleName
     const role = await this.roleModel.findOne({
-      where: { name: roleName }
+      where: { name: roleName },
     });
 
     if (!role) {

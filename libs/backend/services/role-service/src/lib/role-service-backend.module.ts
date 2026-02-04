@@ -4,14 +4,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { RoleModel, RoleUserModel } from '@fsms/backend/db';
 
 @Module({
-  imports: [
-    SequelizeModule.forFeature([RoleModel, RoleUserModel])
-  ],
-  providers: [
-    RoleService
-  ],
-  exports: [
-    RoleService
-  ],
+  imports: [SequelizeModule.forFeature([RoleModel, RoleUserModel])],
+  providers: [RoleService],
+  exports: [RoleService],
 })
 export class RoleServiceBackendModule {}

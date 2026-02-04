@@ -13,7 +13,7 @@ export class PasswordResetModel extends Model {
   @ForeignKey(() => UserModel)
   @Column({
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   })
   userId?: number; // or userId if you prefer to use user ID instead
 

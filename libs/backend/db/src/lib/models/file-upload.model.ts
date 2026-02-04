@@ -6,21 +6,21 @@ import { DataTypes } from 'sequelize';
   underscored: true,
   paranoid: true,
   timestamps: true,
-  deletedAt: true
+  deletedAt: true,
 })
 export class FileUploadModel extends Model {
-  @Column({type: DataTypes.STRING})
+  @Column({ type: DataTypes.STRING })
   name?: string;
 
-  @Column({type: DataTypes.STRING})
+  @Column({ type: DataTypes.STRING })
   encoding?: string;
 
-  @Column({type: DataTypes.FLOAT})
+  @Column({ type: DataTypes.FLOAT })
   size?: number;
 
-  @Column({type: DataTypes.STRING})
-  mimetype?: string
+  @Column({ type: DataTypes.STRING })
+  mimetype?: string;
 
-  @Column({type: DataTypes.STRING})
-  originalName?: string
+  @Column({ type: DataTypes.STRING })
+  originalName?: string;
 }

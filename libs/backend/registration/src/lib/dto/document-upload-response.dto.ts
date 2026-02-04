@@ -1,4 +1,4 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { DocumentType } from '@fsms/backend/db';
 import { ValidationErrorDto } from './validation-error.dto';
 

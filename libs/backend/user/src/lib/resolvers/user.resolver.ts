@@ -1,35 +1,41 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserService } from '@fsms/backend/user-service';
 import { CreateUserInputDto } from '../dto/create-user-input.dto';
-import { BadRequestException, Body, UseGuards, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserCreatedEvent } from '../events/user-created.event';
 import { JwtAuthGuard } from '@fsms/backend/auth';
-import { PermissionGuard, Permissions, PermissionsEnum } from '@fsms/backend/permission-service';
+import {
+  PermissionGuard,
+  Permissions,
+  PermissionsEnum,
+} from '@fsms/backend/permission-service';
 import { IQueryParam, UserModel } from '@fsms/backend/db';
 import { UpdateUserInputDto } from '../dto/update-user-input.dto';
 import { UserUpdatedEvent } from '../events/user-updated.event';
 
 @Resolver()
 export class UserResolver {
-
-  constructor(private userService: UserService, private eventEmitter: EventEmitter2) {
-  }
+  constructor(
+    private userService: UserService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
   @Query(() => UserModel)
-  users(
-    @Args('query') query: IQueryParam
-  ) {
+  users(@Args('query') query: IQueryParam) {
     return this.userService.findAll({
       ...query,
-      filters: query?.filters ?? []
+      filters: query?.filters ?? [],
     });
   }
 
   @Query(() => UserModel)
-  async user(
-    @Args('id') id: number
-  ) {
+  async user(@Args('id') id: number) {
     return this.userService.findById(id);
   }
 
@@ -38,17 +44,14 @@ export class UserResolver {
   @Permissions(PermissionsEnum.CreateUser)
   async createUser(@Body(new ValidationPipe()) params: CreateUserInputDto) {
     const user = await this.userService.create({
-      ...params
+      ...params,
     });
 
-    this.eventEmitter.emit(
-      'user.created',
-      new UserCreatedEvent(user)
-    );
+    this.eventEmitter.emit('user.created', new UserCreatedEvent(user));
 
     return {
       message: 'Successfully created user',
-      data: user
+      data: user,
     };
   }
 
@@ -61,13 +64,10 @@ export class UserResolver {
       await user?.update(params.params);
       await user?.save();
 
-      this.eventEmitter.emit(
-        'user.updated',
-        new UserUpdatedEvent(user)
-      );
+      this.eventEmitter.emit('user.updated', new UserUpdatedEvent(user));
       return {
         message: 'Successfully created user',
-        data: user
+        data: user,
       };
     }
     throw new BadRequestException('No user found');

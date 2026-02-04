@@ -14,13 +14,13 @@ export class JobTitleModel extends Model {
     allowNull: false,
     validate: {
       notEmpty: {
-        msg: 'Job title cannot be empty'
+        msg: 'Job title cannot be empty',
       },
       len: {
         args: [1, 255],
-        msg: 'Job title must be between 1 and 255 characters'
-      }
-    }
+        msg: 'Job title must be between 1 and 255 characters',
+      },
+    },
   })
   title!: string;
 

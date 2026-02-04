@@ -15,7 +15,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import { IQueryParam, ActivityLogModel } from '@fsms/backend/db';
+import { ActivityLogModel, IQueryParam } from '@fsms/backend/db';
 import { UpdateActivityLogInputDto } from '../dto/update-activity-log-input.dto';
 import { ActivityLogUpdatedEvent } from '../events/activity-log-updated.event';
 import { DeleteActivityLogInputDto } from '../dto/delete-activity-log-input.dto';

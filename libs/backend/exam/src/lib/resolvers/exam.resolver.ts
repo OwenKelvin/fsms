@@ -16,6 +16,7 @@ import {
 import {
   CurrentInstitution,
   CurrentUser,
+  InstitutionGuard,
   JwtAuthGuard,
 } from '@fsms/backend/auth';
 import {
@@ -36,7 +37,6 @@ import { DeleteExamInputDto } from '../dto/delete-exam-input.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UpdateExamInputDto } from '../dto/update-exam-input.dto';
 import { ExamUpdateEvent } from '../events/exam-updated.event';
-import { InstitutionGuard } from '@fsms/backend/auth';
 
 @Resolver(() => ExamModel)
 export class ExamResolver {

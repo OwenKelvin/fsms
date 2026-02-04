@@ -15,7 +15,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import { IQueryParam, CreditModel } from '@fsms/backend/db';
+import { CreditModel, IQueryParam } from '@fsms/backend/db';
 import { UpdateCreditInputDto } from '../dto/update-credit-input.dto';
 import { CreditUpdatedEvent } from '../events/credit-updated.event';
 import { DeleteCreditInputDto } from '../dto/delete-credit-input.dto';

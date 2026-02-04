@@ -7,7 +7,7 @@ export class UpdateRoleInputDto {
   @IsInt()
   @Exists(RoleModel, 'name', {
     message: (validationArguments) =>
-      `User with id  ${validationArguments.value}" not found`
+      `User with id  ${validationArguments.value}" not found`,
   })
   id = 0;
 

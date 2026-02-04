@@ -1,9 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExamPaperBackendService } from './exam-paper-backend.service';
 import {
-  QueryOperatorEnum,
+  ConfigExamPaperModel,
   ExamPaperModel,
-  SortByDirectionEnum, ConfigExamPaperModel, ExamPaperTagModel, TagModel
+  ExamPaperTagModel,
+  QueryOperatorEnum,
+  SortByDirectionEnum,
+  TagModel,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
 import { getModelToken } from '@nestjs/sequelize';
@@ -86,7 +89,7 @@ describe('ExamPaperBackendService', () => {
             id: '1',
             lastName: { [Op.iLike]: '%a%' },
           },
-        })
+        }),
       );
     });
   });
@@ -97,7 +100,7 @@ describe('ExamPaperBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 
@@ -128,7 +131,7 @@ describe('ExamPaperBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
       expect(modelRepositoryMock.update).toHaveBeenCalledWith(params);
     });
@@ -140,7 +143,7 @@ describe('ExamPaperBackendService', () => {
       expect(modelRepositoryMock.destroy).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 

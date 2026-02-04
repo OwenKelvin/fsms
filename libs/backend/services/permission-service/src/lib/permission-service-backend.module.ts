@@ -4,14 +4,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { PermissionModel } from '@fsms/backend/db';
 
 @Module({
-  imports: [
-    SequelizeModule.forFeature([PermissionModel])
-  ],
-  providers: [
-    PermissionService
-  ],
-  exports: [
-    PermissionService
-  ],
+  imports: [SequelizeModule.forFeature([PermissionModel])],
+  providers: [PermissionService],
+  exports: [PermissionService],
 })
 export class PermissionServiceBackendModule {}

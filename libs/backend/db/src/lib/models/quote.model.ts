@@ -1,10 +1,10 @@
 import {
+  BelongsTo,
   Column,
-  Model,
-  Table,
   DataType,
   ForeignKey,
-  BelongsTo,
+  Model,
+  Table,
 } from 'sequelize-typescript';
 import { InstitutionModel } from './institution.model';
 import { DataTypes } from 'sequelize';

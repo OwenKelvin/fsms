@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/sequelize';
 @Injectable()
 export class ConfigBackendService extends CrudAbstractService<ConfigModel> {
   constructor(
-    @InjectModel(ConfigModel) private configModel: typeof ConfigModel
+    @InjectModel(ConfigModel) private configModel: typeof ConfigModel,
   ) {
     super(configModel);
   }

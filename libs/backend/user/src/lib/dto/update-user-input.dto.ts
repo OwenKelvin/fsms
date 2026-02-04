@@ -12,5 +12,10 @@ export class UpdateUserInputDto {
   id = 0;
 
   @ValidateNested()
-  params: CreateUserInputDto = { email: '', firstName: '', lastName: '', phone: '' };
+  params: CreateUserInputDto = {
+    email: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+  };
 }

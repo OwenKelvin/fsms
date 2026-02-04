@@ -260,11 +260,17 @@ export class AuthService {
       user: user,
       accessToken: this.jwtService.sign(
         { ...payload, type: 'AuthToken', sessionId },
-        { secret: this.jwtSecret, expiresIn: this.accessTokenExpiryPeriod as any },
+        {
+          secret: this.jwtSecret,
+          expiresIn: this.accessTokenExpiryPeriod as any,
+        },
       ),
       refreshToken: this.jwtService.sign(
         { ...payload, type: 'RefreshToken', sessionId } as any,
-        { secret: this.jwtSecret, expiresIn: this.refreshTokenExpiryPeriod  as any },
+        {
+          secret: this.jwtSecret,
+          expiresIn: this.refreshTokenExpiryPeriod as any,
+        },
       ),
       refreshTokenKey: uuid(),
     };
@@ -440,7 +446,10 @@ export class AuthService {
   /**
    * Verify and consume a backup code
    */
-  private async verifyBackupCode(user: UserModel, backupCode: string): Promise<boolean> {
+  private async verifyBackupCode(
+    user: UserModel,
+    backupCode: string,
+  ): Promise<boolean> {
     if (!user.twoFactorBackupCodes) {
       return false;
     }
@@ -476,7 +485,10 @@ export class AuthService {
   /**
    * Regenerate backup codes for a user
    */
-  async regenerateBackupCodes(userId: number, token: string): Promise<string[]> {
+  async regenerateBackupCodes(
+    userId: number,
+    token: string,
+  ): Promise<string[]> {
     const user = await this.userService.findById(userId);
     if (!user || !user.twoFactorEnabled) {
       throw new BadRequestException('Two-factor authentication not enabled');

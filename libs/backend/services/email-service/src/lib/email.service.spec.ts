@@ -4,7 +4,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 
 // Mocked email transporter
 const mailerServiceMock = {
-  sendMail: jest.fn().mockResolvedValue({} as Record<string, string>) // Mocking the sendMail method
+  sendMail: jest.fn().mockResolvedValue({} as Record<string, string>), // Mocking the sendMail method
 };
 
 describe('EmailService', () => {
@@ -16,9 +16,9 @@ describe('EmailService', () => {
         EmailService,
         {
           provide: MailerService,
-          useValue: mailerServiceMock
-        }
-      ]
+          useValue: mailerServiceMock,
+        },
+      ],
     }).compile();
 
     service = module.get<EmailService>(EmailService);
@@ -34,7 +34,7 @@ describe('EmailService', () => {
       to: email,
       from: 'test@example.com',
       subject: 'Welcome to Studiz!',
-      text: 'You have successfully created an account with Studiz'
+      text: 'You have successfully created an account with Studiz',
     });
 
     // Check if the sendMail method was called with the correct parameters
@@ -42,7 +42,7 @@ describe('EmailService', () => {
       from: 'test@example.com',
       to: email,
       subject: 'Welcome to Studiz!',
-      text: 'You have successfully created an account with Studiz'
+      text: 'You have successfully created an account with Studiz',
     });
   });
 });

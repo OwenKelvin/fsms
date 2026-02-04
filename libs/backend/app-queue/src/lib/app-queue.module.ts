@@ -10,6 +10,6 @@ import { BullModule } from '@nestjs/bull';
         // password: process.env['FSMS_REDIS_PASSWORD'],
       },
     }),
-  ]
+  ],
 })
 export class AppQueueModule {}

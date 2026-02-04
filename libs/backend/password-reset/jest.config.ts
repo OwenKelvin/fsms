@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'password-reset-backend',
   preset: '../../../jest.preset.js',

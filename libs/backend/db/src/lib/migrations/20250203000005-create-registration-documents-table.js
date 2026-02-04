@@ -19,7 +19,12 @@ module.exports = {
       },
       verificationStatus: {
         field: 'verification_status',
-        type: DataTypes.ENUM('pending', 'approved', 'rejected', 'requires_resubmission'),
+        type: DataTypes.ENUM(
+          'pending',
+          'approved',
+          'rejected',
+          'requires_resubmission',
+        ),
         allowNull: false,
         defaultValue: 'pending',
       },
@@ -79,9 +84,13 @@ module.exports = {
     });
 
     // Add indexes for common queries
-    await queryInterface.addIndex('registration_documents', ['registration_id']);
+    await queryInterface.addIndex('registration_documents', [
+      'registration_id',
+    ]);
     await queryInterface.addIndex('registration_documents', ['file_upload_id']);
-    await queryInterface.addIndex('registration_documents', ['verification_status']);
+    await queryInterface.addIndex('registration_documents', [
+      'verification_status',
+    ]);
     await queryInterface.addIndex('registration_documents', ['document_type']);
   },
 

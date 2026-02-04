@@ -1,4 +1,4 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { RegistrationStatus } from '@fsms/backend/db';
 
 @ObjectType()

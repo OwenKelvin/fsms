@@ -1,5 +1,11 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { Field, InputType } from '@nestjs/graphql';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 @InputType()
 export class AdminCredentialsInputDto {

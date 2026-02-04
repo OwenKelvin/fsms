@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PasswordResetBackendService } from './password-reset-backend.service';
 import {
-  QueryOperatorEnum,
   PasswordResetModel,
-  SortByDirectionEnum, UserModel
+  QueryOperatorEnum,
+  SortByDirectionEnum,
+  UserModel,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
 import { getModelToken } from '@nestjs/sequelize';
@@ -45,7 +46,7 @@ describe('PasswordResetBackendService', () => {
     }).compile();
 
     service = module.get<PasswordResetBackendService>(
-      PasswordResetBackendService
+      PasswordResetBackendService,
     );
   });
 
@@ -89,7 +90,7 @@ describe('PasswordResetBackendService', () => {
             id: '1',
             lastName: { [Op.iLike]: '%a%' },
           },
-        })
+        }),
       );
     });
   });
@@ -100,7 +101,7 @@ describe('PasswordResetBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 
@@ -131,7 +132,7 @@ describe('PasswordResetBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
       expect(modelRepositoryMock.update).toHaveBeenCalledWith(params);
     });
@@ -143,7 +144,7 @@ describe('PasswordResetBackendService', () => {
       expect(modelRepositoryMock.destroy).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 

@@ -21,7 +21,7 @@ module.exports = {
           'admin_credentials_set',
           'under_review',
           'approved',
-          'rejected'
+          'rejected',
         ),
         allowNull: false,
         defaultValue: 'pending',

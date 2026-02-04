@@ -15,7 +15,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import { IQueryParam, ExamineeModel } from '@fsms/backend/db';
+import { ExamineeModel, IQueryParam } from '@fsms/backend/db';
 import { UpdateExamineeInputDto } from '../dto/update-examinee-input.dto';
 import { ExamineeUpdatedEvent } from '../events/examinee-updated.event';
 import { DeleteExamineeInputDto } from '../dto/delete-examinee-input.dto';

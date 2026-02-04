@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CrudAbstractService } from '@fsms/backend/crud-abstract';
-import {
-  ExamineeGroupModel,
-  ExamineeModel,
-  UserModel,
-} from '@fsms/backend/db';
+import { ExamineeGroupModel, ExamineeModel, UserModel } from '@fsms/backend/db';
 import { InjectModel } from '@nestjs/sequelize';
 
 interface ExamineeInput {

@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'tag-backend',
   preset: '../../../jest.preset.js',

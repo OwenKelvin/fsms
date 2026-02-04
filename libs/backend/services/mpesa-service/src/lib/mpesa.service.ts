@@ -25,8 +25,7 @@ export class MpesaService {
     .replace(/\D/g, '')
     .slice(0, 14);
   private readonly consumerKey = process.env['FSMS_MPESA_CONSUMER_KEY'];
-  private readonly consumerSecret =
-    process.env['FSMS_MPESA_CONSUMER_SECRET'];
+  private readonly consumerSecret = process.env['FSMS_MPESA_CONSUMER_SECRET'];
   private readonly passKey = process.env['FSMS_MPESA_PASS_KEY'];
   private readonly shortCode = Number(process.env['FSMS_MPESA_SHORT_CODE']);
   private readonly password = Buffer.from(

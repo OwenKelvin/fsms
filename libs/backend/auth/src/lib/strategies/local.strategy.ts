@@ -4,7 +4,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthServiceBackend } from '@fsms/backend/auth-service';
 import { TranslationService } from '@fsms/backend/translation';
 
-
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -15,11 +14,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string) {
-    const user = await this.authService.validateUser({ email, password});
+    const user = await this.authService.validateUser({ email, password });
     if (!user) {
-      throw new UnauthorizedException(this.translationService.getTranslation('alert.invalidLogin'));
+      throw new UnauthorizedException(
+        this.translationService.getTranslation('alert.invalidLogin'),
+      );
     }
     return user;
-
   }
 }

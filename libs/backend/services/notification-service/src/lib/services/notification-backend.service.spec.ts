@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotificationBackendService } from './notification-backend.service';
 import {
-  QueryOperatorEnum,
   NotificationModel,
-  SortByDirectionEnum,
   NotificationUserModel,
+  QueryOperatorEnum,
+  SortByDirectionEnum,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
 import { getModelToken } from '@nestjs/sequelize';

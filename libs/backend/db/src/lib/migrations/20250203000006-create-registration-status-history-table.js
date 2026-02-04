@@ -33,7 +33,7 @@ module.exports = {
           'admin_credentials_set',
           'under_review',
           'approved',
-          'rejected'
+          'rejected',
         ),
         allowNull: true,
       },
@@ -47,7 +47,7 @@ module.exports = {
           'admin_credentials_set',
           'under_review',
           'approved',
-          'rejected'
+          'rejected',
         ),
         allowNull: false,
       },
@@ -79,8 +79,12 @@ module.exports = {
     });
 
     // Add indexes for common queries
-    await queryInterface.addIndex('registration_status_history', ['registration_id']);
-    await queryInterface.addIndex('registration_status_history', ['changed_at']);
+    await queryInterface.addIndex('registration_status_history', [
+      'registration_id',
+    ]);
+    await queryInterface.addIndex('registration_status_history', [
+      'changed_at',
+    ]);
   },
 
   async down(queryInterface) {

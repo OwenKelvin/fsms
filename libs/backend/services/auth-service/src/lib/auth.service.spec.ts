@@ -148,7 +148,8 @@ describe('AuthService', () => {
       it('should setup 2FA for a user', async () => {
         const mockSecret = {
           base32: 'JBSWY3DPEHPK3PXP',
-          otpauth_url: 'otpauth://totp/FSMS%20(test@example.com)?secret=JBSWY3DPEHPK3PXP&issuer=FSMS',
+          otpauth_url:
+            'otpauth://totp/FSMS%20(test@example.com)?secret=JBSWY3DPEHPK3PXP&issuer=FSMS',
         };
         const mockQrCodeUrl = 'data:image/png;base64,mockqrcode';
 
@@ -202,17 +203,17 @@ describe('AuthService', () => {
         mockUserService.findById.mockResolvedValue(userWithSecret);
         (speakeasy.totp.verify as jest.Mock).mockReturnValue(false);
 
-        await expect(service.enableTwoFactorAuth('1', '123456')).rejects.toThrow(
-          BadRequestException,
-        );
+        await expect(
+          service.enableTwoFactorAuth('1', '123456'),
+        ).rejects.toThrow(BadRequestException);
       });
 
       it('should throw BadRequestException when user has no secret', async () => {
         mockUserService.findById.mockResolvedValue(mockUser);
 
-        await expect(service.enableTwoFactorAuth('1', '123456')).rejects.toThrow(
-          BadRequestException,
-        );
+        await expect(
+          service.enableTwoFactorAuth('1', '123456'),
+        ).rejects.toThrow(BadRequestException);
       });
     });
 
@@ -239,9 +240,9 @@ describe('AuthService', () => {
       it('should throw BadRequestException when 2FA not enabled', async () => {
         mockUserService.findById.mockResolvedValue(mockUser);
 
-        await expect(service.disableTwoFactorAuth('1', '123456')).rejects.toThrow(
-          BadRequestException,
-        );
+        await expect(
+          service.disableTwoFactorAuth('1', '123456'),
+        ).rejects.toThrow(BadRequestException);
       });
     });
 
@@ -255,9 +256,12 @@ describe('AuthService', () => {
 
         (speakeasy.totp.verify as jest.Mock).mockReturnValue(true);
 
-        const result = await service.verifyTwoFactorToken(userWith2FA as UserModel, {
-          token: '123456',
-        });
+        const result = await service.verifyTwoFactorToken(
+          userWith2FA as UserModel,
+          {
+            token: '123456',
+          },
+        );
 
         expect(result).toBe(true);
       });
@@ -271,14 +275,19 @@ describe('AuthService', () => {
           save: jest.fn(),
         };
 
-        const result = await service.verifyTwoFactorToken(userWith2FA as UserModel, {
-          token: '',
-          backupCode: 'BACKUP123',
-        });
+        const result = await service.verifyTwoFactorToken(
+          userWith2FA as UserModel,
+          {
+            token: '',
+            backupCode: 'BACKUP123',
+          },
+        );
 
         expect(result).toBe(true);
         expect(userWith2FA.save).toHaveBeenCalled();
-        expect(JSON.parse(userWith2FA.twoFactorBackupCodes)).toEqual(['BACKUP456']);
+        expect(JSON.parse(userWith2FA.twoFactorBackupCodes)).toEqual([
+          'BACKUP456',
+        ]);
       });
 
       it('should return false for invalid backup code', async () => {
@@ -289,18 +298,24 @@ describe('AuthService', () => {
           twoFactorBackupCodes: JSON.stringify(['BACKUP123', 'BACKUP456']),
         };
 
-        const result = await service.verifyTwoFactorToken(userWith2FA as UserModel, {
-          token: '',
-          backupCode: 'INVALID',
-        });
+        const result = await service.verifyTwoFactorToken(
+          userWith2FA as UserModel,
+          {
+            token: '',
+            backupCode: 'INVALID',
+          },
+        );
 
         expect(result).toBe(false);
       });
 
       it('should return false when 2FA not enabled', async () => {
-        const result = await service.verifyTwoFactorToken(mockUser as UserModel, {
-          token: '123456',
-        });
+        const result = await service.verifyTwoFactorToken(
+          mockUser as UserModel,
+          {
+            token: '123456',
+          },
+        );
 
         expect(result).toBe(false);
       });
@@ -323,15 +338,18 @@ describe('AuthService', () => {
 
         expect(result).toHaveLength(10);
         expect(userWith2FA.save).toHaveBeenCalled();
-        expect(JSON.parse(userWith2FA.twoFactorBackupCodes)).not.toEqual(['OLD1', 'OLD2']);
+        expect(JSON.parse(userWith2FA.twoFactorBackupCodes)).not.toEqual([
+          'OLD1',
+          'OLD2',
+        ]);
       });
 
       it('should throw BadRequestException when 2FA not enabled', async () => {
         mockUserService.findById.mockResolvedValue(mockUser);
 
-        await expect(service.regenerateBackupCodes('1', '123456')).rejects.toThrow(
-          BadRequestException,
-        );
+        await expect(
+          service.regenerateBackupCodes('1', '123456'),
+        ).rejects.toThrow(BadRequestException);
       });
     });
   });

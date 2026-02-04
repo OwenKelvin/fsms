@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CrudAbstractService } from '@fsms/backend/crud-abstract';
-import { ChoiceModel, QuestionModel, TagModel } from '@fsms/backend/db';
+import {
+  ChoiceModel,
+  QuestionModel,
+  QuestionTagModel,
+  TagModel,
+} from '@fsms/backend/db';
 import { InjectModel } from '@nestjs/sequelize';
-import { QuestionTagModel } from '@fsms/backend/db';
+
 interface QuestionChoice {
   description: string;
   isCorrectChoice: boolean;

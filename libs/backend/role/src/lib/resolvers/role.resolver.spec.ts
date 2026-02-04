@@ -13,7 +13,7 @@ const modelRepositoryMock = {
   create: jest.fn(),
   update: jest.fn(),
   destroy: jest.fn(),
-  bulkCreate: jest.fn()
+  bulkCreate: jest.fn(),
 };
 
 describe('RoleResolver', () => {
@@ -26,11 +26,11 @@ describe('RoleResolver', () => {
         RoleResolver,
         {
           provide: getModelToken(RoleModel),
-          useValue: modelRepositoryMock
+          useValue: modelRepositoryMock,
         },
         {
           provide: I18nService,
-          useValue: {}
+          useValue: {},
         },
         {
           provide: RoleService,
@@ -53,7 +53,9 @@ describe('RoleResolver', () => {
     it('should create a role', async () => {
       const createRoleInput: CreateRoleInputDto = { name: 'New Role' };
       const createdRole = { name: 'New Role', id: 1 };
-      jest.spyOn(roleService, 'create').mockResolvedValueOnce(createdRole as RoleModel);
+      jest
+        .spyOn(roleService, 'create')
+        .mockResolvedValueOnce(createdRole as RoleModel);
 
       const result = await resolver.createRole(createRoleInput);
 

@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TagBackendService } from './tag-backend.service';
 import {
   QueryOperatorEnum,
-  TagModel,
   SortByDirectionEnum,
+  TagModel,
 } from '@fsms/backend/db';
 import { Op } from 'sequelize';
 import { getModelToken } from '@nestjs/sequelize';
@@ -74,7 +74,7 @@ describe('TagBackendService', () => {
             id: '1',
             lastName: { [Op.iLike]: '%a%' },
           },
-        })
+        }),
       );
     });
   });
@@ -85,7 +85,7 @@ describe('TagBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 
@@ -116,7 +116,7 @@ describe('TagBackendService', () => {
       expect(modelRepositoryMock.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
       expect(modelRepositoryMock.update).toHaveBeenCalledWith(params);
     });
@@ -128,7 +128,7 @@ describe('TagBackendService', () => {
       expect(modelRepositoryMock.destroy).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 1 },
-        })
+        }),
       );
     });
 

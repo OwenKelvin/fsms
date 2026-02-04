@@ -15,7 +15,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import { IQueryParam, ConfigModel } from '@fsms/backend/db';
+import { ConfigModel, IQueryParam } from '@fsms/backend/db';
 import { UpdateConfigInputDto } from '../dto/update-config-input.dto';
 import { ConfigUpdatedEvent } from '../events/config-updated.event';
 import { DeleteConfigInputDto } from '../dto/delete-config-input.dto';
@@ -25,7 +25,7 @@ import { ConfigDeletedEvent } from '../events/config-deleted.event';
 export class ConfigResolver {
   constructor(
     private configService: ConfigBackendService,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @Query(() => ConfigModel)
