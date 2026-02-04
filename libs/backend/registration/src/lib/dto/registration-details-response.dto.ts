@@ -8,7 +8,7 @@ import {
 @ObjectType()
 export class RegistrationStatusHistoryDto {
   @Field()
-  id!: number;
+  id!: string;
 
   @Field(() => String, { nullable: true })
   previousStatus?: RegistrationStatus;
@@ -29,7 +29,7 @@ export class RegistrationStatusHistoryDto {
 @ObjectType()
 export class RegistrationDetailsResponseDto {
   @Field()
-  id!: number;
+  id!: string;
 
   @Field(() => String)
   status!: RegistrationStatus;
@@ -56,10 +56,10 @@ export class RegistrationDetailsResponseDto {
   completedAt?: Date;
 
   @Field({ nullable: true })
-  institutionId?: number;
+  institutionId?: string;
 
   @Field({ nullable: true })
-  adminUserId?: number;
+  adminUserId?: string;
 
   @Field(() => InstitutionModel, { nullable: true })
   institution?: InstitutionModel;

@@ -8,7 +8,7 @@ import { Type } from 'class-transformer';
 //     message: (validationArguments) =>
 //       `Permission with id  ${validationArguments.value}" not found`
 //   })
-//   id = 0;
+//   id = '';
 // }
 
 export class GivePermissionToRoleInputDto {
@@ -17,7 +17,7 @@ export class GivePermissionToRoleInputDto {
     message: (validationArguments) =>
       `Permission with id  ${validationArguments.value}" not found`,
   })
-  roleId = 0;
+  roleId = '';
 
   @IsArray()
   @ValidateNested({ each: true })

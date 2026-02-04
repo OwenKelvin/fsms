@@ -83,7 +83,7 @@ describe('QuestionResolver', () => {
     it('should create a question and emit event', async () => {
       const createQuestionInput: CreateQuestionInputDto = {
         description: 'new question',
-        tags: [] as { id: number }[],
+        tags: [] as { id: string }[],
       } as CreateQuestionInputDto;
       const createdQuestion = {
         id: 1,

@@ -5,15 +5,15 @@ module.exports = {
   up: async (queryInterface) => {
     await queryInterface.createTable('activity_logs', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
 
       userId: {
         field: 'user_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
       },
       action: {
@@ -42,6 +42,10 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('activity_logs', ['id']);
+    await queryInterface.addIndex('activity_logs', ['user_id']);
   },
 
   down: async (queryInterface) => {

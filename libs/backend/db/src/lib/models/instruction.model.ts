@@ -1,8 +1,10 @@
 import {
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { ExamPaperModel } from './exam-paper.model';
@@ -17,19 +19,24 @@ import { UserModel } from './user.model';
   deletedAt: true,
 })
 export class InstructionModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @ForeignKey(() => ExamPaperModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  examPaperId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  examPaperId!: string;
 
   @Column({ type: DataTypes.STRING, allowNull: false })
   description?: string;
 
   @ForeignKey(() => UserModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  createdById?: number;
+  createdById?: string;
 
   @BelongsTo(() => UserModel)
   createdBy!: UserModel;

@@ -1,5 +1,5 @@
 type CreditModel {
-  id: Int!
+  id: ID!
   balance: Int!
 }
 
@@ -23,13 +23,13 @@ type CreateCreditSuccessResponse {
 
 extend type Query {
   credits(query: QueryParams): PaginatedCredit!
-  credit(id: Int!): CreditModel
+  credit(id: ID!): CreditModel
 }
 
 extend type Mutation {
-  updateCredit(id: Int!, params: UpdateCreditInput): CreateCreditSuccessResponse
+  updateCredit(id: ID!, params: UpdateCreditInput): CreateCreditSuccessResponse
 
   createCredit(params: CreateCreditInput): CreateCreditSuccessResponse
 
-  deleteCredit(id: Int!): DeleteSuccessResponse
+  deleteCredit(id: ID!): DeleteSuccessResponse
 }

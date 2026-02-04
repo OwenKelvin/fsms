@@ -6,9 +6,9 @@ module.exports = {
     // Create file_uploads table
     await queryInterface.createTable('file_uploads', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       name: {
@@ -50,6 +50,9 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add index
+    await queryInterface.addIndex('file_uploads', ['id']);
   },
 
   down: async (queryInterface) => {

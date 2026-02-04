@@ -8,5 +8,5 @@ export class DeleteOtpInputDto {
     message: (validationArguments) =>
       `Otp with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

@@ -2,7 +2,9 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  Default,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { UserModel } from './user.model';
@@ -15,11 +17,16 @@ import { ActivityLogUserModel } from './activity-log-user.model';
   timestamps: true,
 })
 export class ActivityLogModel extends Model {
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  override id!: string;
+
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  userId!: number;
+  userId!: string;
 
   @Column({
     type: DataType.STRING,

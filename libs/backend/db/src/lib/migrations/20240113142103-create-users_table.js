@@ -4,13 +4,18 @@ const { DataTypes } = require('sequelize');
 
 module.exports = {
   async up(queryInterface) {
+    // Enable uuid-ossp extension for UUID support
+    await queryInterface.sequelize.query(
+      'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+    );
+
     // Create the 'users' table
     await queryInterface.createTable('users', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       username: {
         type: DataTypes.STRING,
@@ -76,6 +81,9 @@ module.exports = {
         type: DataTypes.DATE,
       },
     });
+
+    // Add index on primary key
+    await queryInterface.addIndex('users', ['id']);
   },
 
   async down(queryInterface) {

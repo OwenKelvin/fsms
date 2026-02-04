@@ -1,4 +1,4 @@
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Default, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { UserModel } from './user.model';
 
 @Table({
@@ -9,6 +9,11 @@ import { UserModel } from './user.model';
   deletedAt: true,
 })
 export class JobTitleModel extends Model {
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  override id!: string;
+
   @Column({
     type: DataType.STRING,
     allowNull: false,

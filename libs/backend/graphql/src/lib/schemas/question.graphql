@@ -5,13 +5,13 @@ enum ChoiceType {
 }
 
 input QuestionTagInput {
-  id: Int
+  id: ID
   name: String
 }
 
 type QuestionModel {
-  id: Int!
-  examPaperId: Int!
+  id: ID!
+  examPaperId: ID!
   exam: ExamModel!
   description: String!
   choiceType: ChoiceType!
@@ -22,7 +22,7 @@ type QuestionModel {
 }
 
 input CreateQuestionInput {
-  examPaperId: Int!
+  examPaperId: ID!
   description: String!
   choiceType: ChoiceType!
   autoMark: Boolean
@@ -32,7 +32,7 @@ input CreateQuestionInput {
 }
 
 input UpdateQuestionInput {
-  examPaperId: Int!
+  examPaperId: ID!
   description: String!
   choiceType: ChoiceType!
   correctChoiceExplanation: String
@@ -51,16 +51,16 @@ type CreateQuestionSuccessResponse {
 
 extend type Query {
   questions(query: QueryParams): PaginatedQuestion!
-  question(id: Int!): QuestionModel
+  question(id: ID!): QuestionModel
 }
 
 extend type Mutation {
   updateQuestion(
-    id: Int!
+    id: ID!
     params: UpdateQuestionInput
   ): CreateQuestionSuccessResponse
 
   createQuestion(params: CreateQuestionInput): CreateQuestionSuccessResponse
 
-  deleteQuestion(id: Int!): DeleteSuccessResponse
+  deleteQuestion(id: ID!): DeleteSuccessResponse
 }

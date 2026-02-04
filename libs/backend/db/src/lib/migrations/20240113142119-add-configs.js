@@ -1,4 +1,7 @@
 'use strict';
+
+const { v4: uuidv4 } = require('uuid');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
@@ -21,6 +24,7 @@ module.exports = {
         { type: 'EXAM_PAPER', name: 'Set passing score' },
       ].map((item) => {
         return {
+          id: uuidv4(),
           ...item,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

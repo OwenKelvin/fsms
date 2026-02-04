@@ -37,7 +37,7 @@ export class PlanInfoResolver {
   }
 
   @Query(() => PlanInfoModel)
-  async planInfo(@Args('id') id: number) {
+  async planInfo(@Args('id') id: string) {
     return this.planInfoService.findById(id);
   }
 

@@ -12,14 +12,14 @@ import { DataTypes } from 'sequelize';
 })
 export class RoleUserModel extends Model {
   @ForeignKey(() => UserModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  userId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  userId!: string;
 
   user!: UserModel;
 
   @ForeignKey(() => RoleModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  roleId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  roleId!: string;
 
   role!: RoleModel;
 }

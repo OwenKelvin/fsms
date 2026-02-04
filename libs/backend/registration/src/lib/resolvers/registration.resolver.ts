@@ -21,7 +21,7 @@ export class RegistrationResolver {
   @Mutation(() => RegistrationStepResponseDto)
   async submitProfileInfo(
     @Args('input', new ValidationPipe()) input: ProfileInfoInputDto,
-    @Args('registrationId', { nullable: true }) registrationId?: number,
+    @Args('registrationId', { nullable: true }) registrationId?: string,
   ): Promise<RegistrationStepResponseDto> {
     try {
       // Validate profile information
@@ -96,7 +96,7 @@ export class RegistrationResolver {
   @Mutation(() => RegistrationStepResponseDto)
   async submitInstitutionDetails(
     @Args('input', new ValidationPipe()) input: InstitutionDetailsInputDto,
-    @Args('registrationId') registrationId: number,
+    @Args('registrationId') registrationId: string,
   ): Promise<RegistrationStepResponseDto> {
     try {
       // Validate institution details
@@ -164,7 +164,7 @@ export class RegistrationResolver {
   @Mutation(() => RegistrationStepResponseDto)
   async submitAdminCredentials(
     @Args('input', new ValidationPipe()) input: AdminCredentialsInputDto,
-    @Args('registrationId') registrationId: number,
+    @Args('registrationId') registrationId: string,
   ): Promise<RegistrationStepResponseDto> {
     try {
       // Validate admin credentials
@@ -231,7 +231,7 @@ export class RegistrationResolver {
    */
   @Mutation(() => CompleteRegistrationResponseDto)
   async completeRegistration(
-    @Args('registrationId') registrationId: number,
+    @Args('registrationId') registrationId: string,
     @Args('profileInfo', new ValidationPipe()) profileInfo: ProfileInfoInputDto,
     @Args('institutionDetails', new ValidationPipe())
     institutionDetails: InstitutionDetailsInputDto,

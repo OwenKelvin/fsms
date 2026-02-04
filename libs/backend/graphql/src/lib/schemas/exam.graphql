@@ -1,5 +1,5 @@
 type ExamModel {
-  id: Int!
+  id: ID!
   name: String!
   startDate: String
   endDate: String
@@ -10,7 +10,7 @@ type ExamModel {
 }
 
 input ExamTagInput {
-  id: Int
+  id: ID
   name: String
 }
 
@@ -42,13 +42,13 @@ type CreateExamSuccessResponse {
 
 extend type Query {
   exams(query: QueryParams): PaginatedExam!
-  exam(id: Int!): ExamModel
+  exam(id: ID!): ExamModel
 }
 
 extend type Mutation {
-  updateExam(id: Int!, params: UpdateExamInput): CreateExamSuccessResponse
+  updateExam(id: ID!, params: UpdateExamInput): CreateExamSuccessResponse
 
   createExam(params: CreateExamInput!): CreateExamSuccessResponse
 
-  deleteExam(id: Int!): DeleteSuccessResponse
+  deleteExam(id: ID!): DeleteSuccessResponse
 }

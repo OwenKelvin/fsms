@@ -2,9 +2,11 @@ import {
   BelongsTo,
   BelongsToMany,
   Column,
+  Default,
   ForeignKey,
   HasMany,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
@@ -21,12 +23,17 @@ import { TagModel } from './tag.model';
   deletedAt: true,
 })
 export class QuestionModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @ForeignKey(() => UserModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  createdById?: number;
+  createdById?: string;
 
   @BelongsTo(() => UserModel)
   createdBy!: UserModel;
@@ -38,8 +45,8 @@ export class QuestionModel extends Model {
   correctChoiceExplanation?: string;
 
   @ForeignKey(() => ExamPaperModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  examPaperId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  examPaperId!: string;
 
   @BelongsTo(() => ExamPaperModel)
   examPaper!: ExamPaperModel;

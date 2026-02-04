@@ -1,6 +1,7 @@
 'use strict';
 
 const { Op, QueryTypes } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
 
 const permissionsDeclarations = [
   "'create quote'",
@@ -64,6 +65,7 @@ module.exports = {
 
     // Assign the selected permissions to the 'Examiner' role
     const permissionRoleValues = permissionIds.map((permissionId) => ({
+      id: uuidv4(),
       permission_id: permissionId,
       role_id: examinerRoleId,
       created_at: new Date().toISOString(),

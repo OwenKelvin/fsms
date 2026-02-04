@@ -27,6 +27,7 @@ import { UpdatePlanInputDto } from '../dto/update-plan-input.dto';
 import { PlanUpdatedEvent } from '../events/plan-updated.event';
 import { DeletePlanInputDto } from '../dto/delete-plan-input.dto';
 import { PlanDeletedEvent } from '../events/plan-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => PlanModel)
 export class PlanResolver {
@@ -45,6 +46,7 @@ export class PlanResolver {
 
   @ResolveField(() => [PlanInfoModel])
   async planInfos(@Parent() plan: PlanModel) {
+    validateUUID(plan.id, 'planId');
     // Fetch the associated plan infos for the given plan
     return await PlanInfoModel.findAll({
       where: { planId: plan.id },
@@ -52,7 +54,8 @@ export class PlanResolver {
   }
 
   @Query(() => PlanModel)
-  async plan(@Args('id') id: number) {
+  async plan(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.planService.findById(id);
   }
 
@@ -78,6 +81,7 @@ export class PlanResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.UpdatePlan)
   async updatePlan(@Body(new ValidationPipe()) params: UpdatePlanInputDto) {
+    validateUUID(params.id, 'id');
     const plan = await this.planService.findById(params.id);
     if (plan) {
       await plan?.update(params.params);
@@ -96,6 +100,7 @@ export class PlanResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.DeletePlan)
   async deletePlan(@Body(new ValidationPipe()) { id }: DeletePlanInputDto) {
+    validateUUID(id, 'id');
     const plan = (await this.planService.findById(id)) as PlanModel;
 
     await plan.destroy();

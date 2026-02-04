@@ -6,9 +6,9 @@ module.exports = {
     // Create tags table
     await queryInterface.createTable('tags', {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
       },
       name: {
@@ -18,7 +18,7 @@ module.exports = {
       },
       createdById: {
         field: 'created_by_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'users',
@@ -45,6 +45,10 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('tags', ['id']);
+    await queryInterface.addIndex('tags', ['created_by_id']);
   },
 
   down: async (queryInterface) => {

@@ -1,8 +1,11 @@
 import {
   BelongsTo,
   Column,
+  DataType,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { InstitutionModel } from './institution.model';
@@ -15,8 +18,13 @@ import { QuoteModel } from './quote.model';
   timestamps: true,
 })
 export class MpesaStkRequestModel extends Model {
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  override id!: string;
+
   @ForeignKey(() => InstitutionModel)
-  @Column
+  @Column(DataType.UUID)
   institutionId?: string;
 
   @BelongsTo(() => InstitutionModel)
@@ -29,8 +37,8 @@ export class MpesaStkRequestModel extends Model {
   checkoutRequestId?: string;
 
   @ForeignKey(() => QuoteModel)
-  @Column
-  quoteId?: number;
+  @Column(DataType.UUID)
+  quoteId?: string;
 
   @BelongsTo(() => QuoteModel)
   quote?: QuoteModel;

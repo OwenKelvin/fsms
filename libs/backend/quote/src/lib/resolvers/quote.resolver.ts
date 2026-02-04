@@ -43,7 +43,7 @@ export class QuoteResolver {
   }
 
   @Query(() => QuoteModel)
-  async quote(@Args('id') id: number) {
+  async quote(@Args('id') id: string) {
     return this.quoteService.findById(id);
   }
 
@@ -52,7 +52,7 @@ export class QuoteResolver {
   @Permissions(PermissionsEnum.CreateQuote)
   async createQuote(
     @Body('params', new ValidationPipe()) params: CreateQuoteInputDto,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
     const taxRate = 0.16;
     const { planId, creditAmount } = params;

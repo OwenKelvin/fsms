@@ -7,6 +7,7 @@ import {
   TagModel,
 } from '@fsms/backend/db';
 import { InjectModel } from '@nestjs/sequelize';
+import { validateUUID } from '@fsms/backend/util';
 
 @Injectable()
 export class ExamPaperBackendService extends CrudAbstractService<ExamPaperModel> {
@@ -23,13 +24,15 @@ export class ExamPaperBackendService extends CrudAbstractService<ExamPaperModel>
 
   async setConfigs(
     exam: ExamPaperModel,
-    inputConfigs: { id: number; selected: boolean; value?: string }[],
+    inputConfigs: { id: string; selected: boolean; value?: string }[],
   ) {
     const existingConfigs = await this.configExamPaperModel.findAll({
       where: { examPaperId: exam.id },
     });
 
     for (const config of inputConfigs) {
+      validateUUID(config.id, 'configId');
+      
       const existingConfig = existingConfigs.find(
         (c) => c.configId === config.id,
       );
@@ -51,14 +54,18 @@ export class ExamPaperBackendService extends CrudAbstractService<ExamPaperModel>
 
   async setTags(
     exam: ExamPaperModel,
-    inputTags: { id?: number; name?: string; createdById: number }[],
+    inputTags: { id?: string; name?: string; createdById: string }[],
   ) {
     const existingTags = await this.examPaperTagModel.findAll({
       where: { examPaperId: exam.id },
     });
 
     for (const tag of inputTags) {
+      validateUUID(tag.createdById, 'createdById');
+      
       if (tag.id) {
+        validateUUID(tag.id, 'tagId');
+        
         // Check if the tag is already associated
         const existingTag = existingTags.find((t) => t.tagId === tag.id);
         if (!existingTag) {

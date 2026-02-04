@@ -1,5 +1,5 @@
 type PermissionModel {
-  id: Int!
+  id: ID!
   name: String!
 }
 
@@ -23,16 +23,16 @@ type CreatePermissionSuccessResponse {
 
 extend type Query {
   permissions(query: QueryParams): PaginatedPermission!
-  permission(id: Int!): PermissionModel
+  permission(id: ID!): PermissionModel
 }
 
 extend type Mutation {
   updatePermission(
-    id: Int!
+    id: ID!
     params: UpdatePermissionInput
   ): CreatePermissionSuccessResponse
 
   createPermission(name: String!): CreatePermissionSuccessResponse
 
-  deletePermission(id: Int!): DeleteSuccessResponse
+  deletePermission(id: ID!): DeleteSuccessResponse
 }

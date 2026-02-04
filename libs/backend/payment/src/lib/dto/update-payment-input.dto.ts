@@ -9,7 +9,7 @@ export class UpdatePaymentInputDto {
     message: (validationArguments) =>
       `Payment with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreatePaymentInputDto = { name: '' };

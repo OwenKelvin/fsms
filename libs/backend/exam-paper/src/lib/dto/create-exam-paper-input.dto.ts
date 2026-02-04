@@ -19,7 +19,7 @@ class CreateExamPaperTagInput {
 
   @IsOptional()
   @IsNumber()
-  tagId?: number;
+  tagId?: string;
 }
 
 class CreateExamPaperConfigInput {
@@ -28,7 +28,7 @@ class CreateExamPaperConfigInput {
     message: (validationArguments) =>
       `Config with id  ${validationArguments.value}" not found`,
   })
-  id?: number;
+  id?: string;
 
   @IsBoolean()
   selected?: boolean;
@@ -46,7 +46,7 @@ export class CreateExamPaperInputDto {
     message: (validationArguments) =>
       `Exam with id  ${validationArguments.value}" not found`,
   })
-  examId?: number;
+  examId?: string;
 
   @IsOptional()
   @IsDateString()

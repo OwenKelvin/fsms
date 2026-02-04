@@ -8,5 +8,5 @@ export class DeleteChoiceInputDto {
     message: (validationArguments) =>
       `Choice with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

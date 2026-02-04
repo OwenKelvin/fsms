@@ -1,15 +1,15 @@
 type InstructionModel {
-  id: Int!
+  id: ID!
   description: String!
 }
 
 input CreateInstructionInput {
-  examPaperId: Int!
+  examPaperId: ID!
   description: String!
 }
 
 input UpdateInstructionInput {
-  examPaperId: Int!
+  examPaperId: ID!
   description: String!
 }
 
@@ -25,12 +25,12 @@ type CreateInstructionSuccessResponse {
 
 extend type Query {
   instructions(query: QueryParams): PaginatedInstruction!
-  instruction(id: Int!): InstructionModel
+  instruction(id: ID!): InstructionModel
 }
 
 extend type Mutation {
   updateInstruction(
-    id: Int!
+    id: ID!
     params: UpdateInstructionInput
   ): CreateInstructionSuccessResponse
 
@@ -38,5 +38,5 @@ extend type Mutation {
     params: CreateInstructionInput
   ): CreateInstructionSuccessResponse
 
-  deleteInstruction(id: Int!): DeleteSuccessResponse
+  deleteInstruction(id: ID!): DeleteSuccessResponse
 }

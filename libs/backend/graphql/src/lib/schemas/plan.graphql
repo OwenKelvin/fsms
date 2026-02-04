@@ -1,5 +1,5 @@
 type PlanModel {
-  id: Int!
+  id: ID!
   name: String!
   tagLine: String!
   costPerCreditInKES: Float!
@@ -36,13 +36,13 @@ type CreatePlanSuccessResponse {
 
 extend type Query {
   plans(query: QueryParams): PaginatedPlan!
-  plan(id: Int!): PlanModel
+  plan(id: ID!): PlanModel
 }
 
 extend type Mutation {
-  updatePlan(id: Int!, params: UpdatePlanInput): CreatePlanSuccessResponse
+  updatePlan(id: ID!, params: UpdatePlanInput): CreatePlanSuccessResponse
 
   createPlan(params: CreatePlanInput): CreatePlanSuccessResponse
 
-  deletePlan(id: Int!): DeleteSuccessResponse
+  deletePlan(id: ID!): DeleteSuccessResponse
 }

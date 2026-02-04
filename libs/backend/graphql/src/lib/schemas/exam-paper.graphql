@@ -1,7 +1,7 @@
 type ExamPaperModel {
-  id: Int!
+  id: ID!
   name: String!
-  examId: Int!
+  examId: ID!
   publishedAt: String
   createdAt: String!
   paperDate: String
@@ -13,7 +13,7 @@ type ExamPaperModel {
 
 input CreateExamPaperInput {
   name: String!
-  examId: Int!
+  examId: ID!
   paperDate: String
   configs: [ExamConfigInput]!
   tags: [ExamTagInput]!
@@ -21,7 +21,7 @@ input CreateExamPaperInput {
 
 input UpdateExamPaperInput {
   name: String!
-  examId: Int!
+  examId: ID!
 }
 
 type PaginatedExamPaper {
@@ -36,25 +36,25 @@ type CreateExamPaperSuccessResponse {
 
 extend type Query {
   examPapers(query: QueryParams): PaginatedExamPaper!
-  examPaper(id: Int!): ExamPaperModel
+  examPaper(id: ID!): ExamPaperModel
 }
 
 input AssignExamineeToExamPaperInput {
-  examPaperId: Int!
+  examPaperId: ID!
   examineeGroups: [SelectCategory!]!
 }
 
 extend type Mutation {
   updateExamPaper(
-    id: Int!
+    id: ID!
     params: UpdateExamPaperInput
   ): CreateExamPaperSuccessResponse
 
   createExamPaper(params: CreateExamPaperInput!): CreateExamPaperSuccessResponse
 
-  deleteExamPaper(id: Int!): DeleteSuccessResponse
+  deleteExamPaper(id: ID!): DeleteSuccessResponse
 
-  publishExamPaper(id: Int!): CreateExamPaperSuccessResponse
+  publishExamPaper(id: ID!): CreateExamPaperSuccessResponse
 
   assignExamineeGroupToExamPaper(
     params: AssignExamineeToExamPaperInput

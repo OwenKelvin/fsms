@@ -8,13 +8,13 @@ module.exports = {
     await queryInterface.createTable('mpesa_stk_requests', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       institutionId: {
         field: 'institution_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
           model: 'institutions',
           key: 'id',
@@ -26,7 +26,7 @@ module.exports = {
 
       quoteId: {
         field: 'quote_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
           model: 'quotes',
           key: 'id',
@@ -82,6 +82,11 @@ module.exports = {
         type: DataTypes.DATE,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('mpesa_stk_requests', ['id']);
+    await queryInterface.addIndex('mpesa_stk_requests', ['institution_id']);
+    await queryInterface.addIndex('mpesa_stk_requests', ['quote_id']);
   },
 
   async down(queryInterface) {

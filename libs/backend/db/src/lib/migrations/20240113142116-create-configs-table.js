@@ -6,9 +6,9 @@ module.exports = {
     // Create exams table
     await queryInterface.createTable('configs', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       name: {
@@ -36,6 +36,10 @@ module.exports = {
         allowNull: true,
       },
     });
+    
+    // Add index
+    await queryInterface.addIndex('configs', ['id']);
+    
     // Add unique constraint on combination of type and name
     await queryInterface.addConstraint('configs', {
       fields: ['type', 'name'],

@@ -9,7 +9,7 @@ export class UpdateExamineeGroupInputDto {
     message: (validationArguments) =>
       `ExamineeGroup with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreateExamineeGroupInputDto = { examinees: [], name: '' };

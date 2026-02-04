@@ -4,7 +4,7 @@ import { RegistrationStatus } from '@fsms/backend/db';
 @ObjectType()
 export class RegistrationStatusResponseDto {
   @Field()
-  id!: number;
+  id!: string;
 
   @Field(() => String)
   status!: RegistrationStatus;
@@ -31,8 +31,8 @@ export class RegistrationStatusResponseDto {
   completedAt?: Date;
 
   @Field({ nullable: true })
-  institutionId?: number;
+  institutionId?: string;
 
   @Field({ nullable: true })
-  adminUserId?: number;
+  adminUserId?: string;
 }

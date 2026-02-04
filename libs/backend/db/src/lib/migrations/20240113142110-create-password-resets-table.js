@@ -4,13 +4,13 @@ module.exports = {
     await queryInterface.createTable('password_resets', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       userId: {
         field: 'user_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'users',
@@ -44,6 +44,10 @@ module.exports = {
         type: DataTypes.DATE,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('password_resets', ['id']);
+    await queryInterface.addIndex('password_resets', ['user_id']);
   },
   down: async (queryInterface) => {
     await queryInterface.dropTable('password_resets');

@@ -40,6 +40,7 @@ import { DeleteExamPaperInputDto } from '../dto/delete-exam-paper-input.dto';
 import { ExamService } from '@fsms/backend/exam-service';
 import { AssignExamineeGroupToExamPaperInputDto } from '../dto/assign-examinee-group-to-exam-paper-input.dto';
 import { PublishExamPaperInputDto } from '../dto/publish-exam-paper-input.dto';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => ExamPaperModel)
 export class ExamPaperResolver {
@@ -58,12 +59,14 @@ export class ExamPaperResolver {
   }
 
   @Query(() => ExamPaperModel)
-  async examPaper(@Args('id') id: number) {
+  async examPaper(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.examPaperService.findById(id);
   }
 
   @ResolveField()
   async configs(@Parent() examPaperModel: ExamPaperModel) {
+    validateUUID(examPaperModel.id, 'examPaperId');
     const examPaperConfigs = await this.examPaperService.findById(
       examPaperModel.id,
       {
@@ -89,6 +92,7 @@ export class ExamPaperResolver {
 
   @ResolveField()
   async tags(@Parent() examPaperModel: ExamPaperModel) {
+    validateUUID(examPaperModel.id, 'examPaperId');
     const examPaperTags = await this.examPaperService.findById(
       examPaperModel.id,
       {
@@ -100,6 +104,7 @@ export class ExamPaperResolver {
 
   @ResolveField()
   async examineeGroups(@Parent() examPaperModel: ExamPaperModel) {
+    validateUUID(examPaperModel.id, 'examPaperId');
     const examPaperTags = await this.examPaperService.findById(
       examPaperModel.id,
       {
@@ -115,8 +120,10 @@ export class ExamPaperResolver {
   async createExamPaper(
     @Body('params', new ValidationPipe()) params: CreateExamPaperInputDto,
     @CurrentUser() user: UserModel,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
+    validateUUID(institutionId, 'institutionId');
+    validateUUID(params.examId, 'examId');
     await this.examService.validateCreatedBy(params.examId, user.id);
 
     const {
@@ -136,7 +143,7 @@ export class ExamPaperResolver {
       inputConfigs.map(({ id, selected, ...item }) => ({
         ...item,
         selected: selected as boolean,
-        id: id as number,
+        id: id as string,
       })),
     );
     await this.examPaperService.setTags(
@@ -158,6 +165,7 @@ export class ExamPaperResolver {
   async updateExamPaper(
     @Body(new ValidationPipe()) params: UpdateExamPaperInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const examPaper = await this.examPaperService.findById(params.id);
     if (examPaper) {
       await examPaper?.update(params.params);
@@ -181,6 +189,7 @@ export class ExamPaperResolver {
   async publishExamPaper(
     @Body(new ValidationPipe()) params: PublishExamPaperInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const examPaper = (await this.examPaperService.findById(
       params.id,
     )) as ExamPaperModel;
@@ -203,6 +212,7 @@ export class ExamPaperResolver {
   async deleteExamPaper(
     @Body(new ValidationPipe()) { id }: DeleteExamPaperInputDto,
   ) {
+    validateUUID(id, 'id');
     const examPaper = (await this.examPaperService.findById(
       id,
     )) as ExamPaperModel;
@@ -223,6 +233,9 @@ export class ExamPaperResolver {
     @Body('params', new ValidationPipe())
     { examPaperId, examineeGroups }: AssignExamineeGroupToExamPaperInputDto,
   ) {
+    validateUUID(examPaperId, 'examPaperId');
+    examineeGroups.forEach(({ id }) => validateUUID(id, 'examineeGroupId'));
+    
     const examPaper = (await this.examPaperService.findById(
       examPaperId,
     )) as ExamPaperModel;

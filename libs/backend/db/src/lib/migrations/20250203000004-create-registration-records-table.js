@@ -8,9 +8,9 @@ module.exports = {
     await queryInterface.createTable('registration_records', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       status: {
         type: DataTypes.ENUM(
@@ -57,7 +57,7 @@ module.exports = {
       },
       institutionId: {
         field: 'institution_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: true,
         references: {
           model: 'institutions',
@@ -68,7 +68,7 @@ module.exports = {
       },
       adminUserId: {
         field: 'admin_user_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: true,
         references: {
           model: 'users',
@@ -95,6 +95,7 @@ module.exports = {
     });
 
     // Add indexes for common queries
+    await queryInterface.addIndex('registration_records', ['id']);
     await queryInterface.addIndex('registration_records', ['status']);
     await queryInterface.addIndex('registration_records', ['institution_id']);
     await queryInterface.addIndex('registration_records', ['admin_user_id']);

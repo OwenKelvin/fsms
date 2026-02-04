@@ -7,10 +7,10 @@ export class CompleteRegistrationResponseDto {
   success!: boolean;
 
   @Field({ nullable: true })
-  institutionId?: number;
+  institutionId?: string;
 
   @Field({ nullable: true })
-  adminUserId?: number;
+  adminUserId?: string;
 
   @Field({ nullable: true })
   message?: string;

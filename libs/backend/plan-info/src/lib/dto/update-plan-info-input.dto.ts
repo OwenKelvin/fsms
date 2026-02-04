@@ -9,7 +9,7 @@ export class UpdatePlanInfoInputDto {
     message: (validationArguments) =>
       `PlanInfo with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreatePlanInfoInputDto = { name: '' };

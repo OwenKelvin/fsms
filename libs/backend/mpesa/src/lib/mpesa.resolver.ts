@@ -25,7 +25,7 @@ export class MpesaResolver {
   @UseGuards(InstitutionGuard)
   async requestMpesaStk(
     @Body() { phoneNumber, quoteId }: RequestMpesaStkInputDto,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
     await this.mpesaService.requestStkPush(phoneNumber, quoteId, {
       institutionId: String(institutionId),

@@ -27,7 +27,7 @@ class ExamineeInputDtp {
     message: (validationArguments) =>
       `Examinee with id  ${validationArguments.value}" not found`,
   })
-  id?: number;
+  id?: string;
 
   @IsString()
   @IsOptional()

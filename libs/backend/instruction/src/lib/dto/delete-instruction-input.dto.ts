@@ -8,5 +8,5 @@ export class DeleteInstructionInputDto {
     message: (validationArguments) =>
       `Instruction with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

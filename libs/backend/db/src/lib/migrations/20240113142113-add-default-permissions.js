@@ -1,4 +1,7 @@
 'use strict';
+
+const { v4: uuidv4 } = require('uuid');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
@@ -37,6 +40,7 @@ module.exports = {
         'mark notification as read',
       ].map((name) => {
         return {
+          id: uuidv4(),
           name,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

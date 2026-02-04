@@ -13,14 +13,14 @@ import { ConfigModel } from './config.model';
 })
 export class ConfigExamModel extends Model {
   @ForeignKey(() => ExamModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  examId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  examId!: string;
 
   exam!: ExamModel;
 
   @ForeignKey(() => ConfigModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  configId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  configId!: string;
 
   config!: ConfigModel;
 

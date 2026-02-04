@@ -47,7 +47,7 @@ export class RegistrationService {
    */
   submitProfileInfo(
     input: IProfileInfoInput,
-    registrationId?: number,
+    registrationId?: string,
   ): Observable<ISubmitProfileInfoMutation['submitProfileInfo']> {
     return this.apollo
       .mutate<ISubmitProfileInfoMutation>({
@@ -71,7 +71,7 @@ export class RegistrationService {
             ) {
               const errorMessages = gqlError.extensions.originalError.message;
               const parsedErrors = parseValidationErrors(errorMessages);
-              
+
               // Create a custom error with parsed errors
               const customError: any = new Error('Validation failed');
               customError.validationErrors = parsedErrors;
@@ -87,7 +87,7 @@ export class RegistrationService {
    * Submit institution details for registration (Step 2)
    */
   submitInstitutionDetails(
-    registrationId: number,
+    registrationId: string,
     input: IInstitutionDetailsInput,
   ): Observable<ISubmitInstitutionDetailsMutation['submitInstitutionDetails']> {
     return this.apollo
@@ -111,7 +111,7 @@ export class RegistrationService {
             ) {
               const errorMessages = gqlError.extensions.originalError.message;
               const parsedErrors = parseValidationErrors(errorMessages);
-              
+
               const customError: any = new Error('Validation failed');
               customError.validationErrors = parsedErrors;
               return throwError(() => customError);
@@ -150,7 +150,7 @@ export class RegistrationService {
             ) {
               const errorMessages = gqlError.extensions.originalError.message;
               const parsedErrors = parseValidationErrors(errorMessages);
-              
+
               const customError: any = new Error('Validation failed');
               customError.validationErrors = parsedErrors;
               return throwError(() => customError);
@@ -165,7 +165,7 @@ export class RegistrationService {
    * Submit admin credentials for registration (Step 4)
    */
   submitAdminCredentials(
-    registrationId: number,
+    registrationId: string,
     input: IAdminCredentialsInput,
   ): Observable<ISubmitAdminCredentialsMutation['submitAdminCredentials']> {
     return this.apollo
@@ -189,7 +189,7 @@ export class RegistrationService {
             ) {
               const errorMessages = gqlError.extensions.originalError.message;
               const parsedErrors = parseValidationErrors(errorMessages);
-              
+
               const customError: any = new Error('Validation failed');
               customError.validationErrors = parsedErrors;
               return throwError(() => customError);
@@ -204,7 +204,7 @@ export class RegistrationService {
    * Complete the registration process atomically (Alternative to steps 1-4)
    */
   completeRegistration(
-    registrationId: number,
+    registrationId: string,
     profileInfo: IProfileInfoInput,
     institutionDetails: IInstitutionDetailsInput,
     adminCredentials: IAdminCredentialsInput,
@@ -233,7 +233,7 @@ export class RegistrationService {
    * Get registration status by ID
    */
   getRegistrationStatus(
-    registrationId: number,
+    registrationId: string,
   ): Observable<IGetRegistrationStatusQuery['getRegistrationStatus']> {
     return from(
       this.apollo.query<IGetRegistrationStatusQuery>({
@@ -255,7 +255,7 @@ export class RegistrationService {
    * Get detailed registration information by ID
    */
   getRegistrationDetails(
-    registrationId: number,
+    registrationId: string,
   ): Observable<IGetRegistrationDetailsQuery['getRegistrationDetails']> {
     return from(
       this.apollo.query<IGetRegistrationDetailsQuery>({

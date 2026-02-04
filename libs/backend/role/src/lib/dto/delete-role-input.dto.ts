@@ -8,5 +8,5 @@ export class DeleteRoleInputDto {
     message: (validationArguments) =>
       `Role with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

@@ -5,9 +5,9 @@ module.exports = {
   up: async (queryInterface) => {
     await queryInterface.createTable('answers', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       description: {
@@ -16,7 +16,7 @@ module.exports = {
       },
       questionId: {
         field: 'question_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
           model: 'questions',
           key: 'id',
@@ -32,7 +32,7 @@ module.exports = {
       },
       createdById: {
         field: 'created_by_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'users',
@@ -59,6 +59,11 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('answers', ['id']);
+    await queryInterface.addIndex('answers', ['question_id']);
+    await queryInterface.addIndex('answers', ['created_by_id']);
   },
 
   down: async (queryInterface) => {

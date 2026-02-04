@@ -8,7 +8,7 @@ export class RequestMpesaStkInputDto {
     message: (validationArguments) =>
       `Quote with id  ${validationArguments.value}" not found`,
   })
-  quoteId!: number;
+  quoteId!: string;
 
   // @IsPhoneNumber()
   phoneNumber!: string;

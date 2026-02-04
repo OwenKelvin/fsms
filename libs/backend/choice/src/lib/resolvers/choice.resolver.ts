@@ -20,6 +20,7 @@ import { UpdateChoiceInputDto } from '../dto/update-choice-input.dto';
 import { ChoiceUpdatedEvent } from '../events/choice-updated.event';
 import { DeleteChoiceInputDto } from '../dto/delete-choice-input.dto';
 import { ChoiceDeletedEvent } from '../events/choice-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => ChoiceModel)
 export class ChoiceResolver {
@@ -37,7 +38,8 @@ export class ChoiceResolver {
   }
 
   @Query(() => ChoiceModel)
-  async choice(@Args('id') id: number) {
+  async choice(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.choiceService.findById(id);
   }
 
@@ -63,6 +65,7 @@ export class ChoiceResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.UpdateChoice)
   async updateChoice(@Body(new ValidationPipe()) params: UpdateChoiceInputDto) {
+    validateUUID(params.id, 'id');
     const choice = await this.choiceService.findById(params.id);
     if (choice) {
       await choice?.update(params.params);
@@ -81,6 +84,7 @@ export class ChoiceResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.DeleteChoice)
   async deleteChoice(@Body(new ValidationPipe()) { id }: DeleteChoiceInputDto) {
+    validateUUID(id, 'id');
     const choice = (await this.choiceService.findById(id)) as ChoiceModel;
 
     await choice.destroy();

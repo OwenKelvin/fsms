@@ -22,7 +22,7 @@ import { NotificationUpdatedEvent } from '../events/notification-updated.event';
 import { DeleteNotificationInputDto } from '../dto/delete-notification-input.dto';
 import { NotificationDeletedEvent } from '../events/notification-deleted.event';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
-import { PUB_SUB } from '@fsms/backend/util';
+import { PUB_SUB, validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => NotificationModel)
 export class NotificationResolver {
@@ -41,7 +41,8 @@ export class NotificationResolver {
   }
 
   @Query(() => NotificationModel)
-  async notification(@Args('id') id: number) {
+  async notification(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.notificationService.findById(id);
   }
 
@@ -72,6 +73,7 @@ export class NotificationResolver {
   async updateNotification(
     @Body(new ValidationPipe()) params: UpdateNotificationInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const notification = await this.notificationService.findById(params.id);
     if (notification) {
       await notification?.update(params.params);
@@ -94,6 +96,7 @@ export class NotificationResolver {
   async deleteNotification(
     @Body(new ValidationPipe()) { id }: DeleteNotificationInputDto,
   ) {
+    validateUUID(id, 'id');
     const notification = (await this.notificationService.findById(
       id,
     )) as NotificationModel;
@@ -113,6 +116,7 @@ export class NotificationResolver {
   @Mutation()
   @UseGuards(JwtAuthGuard)
   async testNotification(@CurrentUser() user: UserModel) {
+    validateUUID(user.id, 'userId');
     await this.notificationService.sendNotification(
       `Title ${Math.random()}`,
       `Description ${Math.random()}`,
@@ -124,6 +128,7 @@ export class NotificationResolver {
   @Subscription('notificationCreated', {
     async resolve(this: NotificationResolver, value, args, context) {
       const userId = context.extra?.user?.id ?? context.user.id;
+      validateUUID(userId, 'userId');
       const stats = await this.notificationService.userStats(userId);
       return {
         stats,

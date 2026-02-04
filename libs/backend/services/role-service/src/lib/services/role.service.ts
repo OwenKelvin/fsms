@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CrudAbstractService } from '@fsms/backend/crud-abstract';
 import { RoleModel, RoleUserModel } from '@fsms/backend/db';
 import { InjectModel } from '@nestjs/sequelize';
+import { validateUUID } from '@fsms/backend/util';
 
 @Injectable()
 export class RoleService extends CrudAbstractService<RoleModel> {
@@ -12,7 +13,9 @@ export class RoleService extends CrudAbstractService<RoleModel> {
     super(roleModel);
   }
 
-  async getUserRoles(userId: number) {
+  async getUserRoles(userId: string) {
+    validateUUID(userId, 'userId');
+    
     const userRoles = await this.roleUserModel.findAll({
       where: { userId },
       attributes: ['roleId'],
@@ -32,7 +35,9 @@ export class RoleService extends CrudAbstractService<RoleModel> {
   }
 
   // Modified assignRole function to accept roleName
-  async assignRoleToUser(userId: number, roleName: string): Promise<void> {
+  async assignRoleToUser(userId: string, roleName: string): Promise<void> {
+    validateUUID(userId, 'userId');
+    
     // Find the role by roleName
     const role = await this.roleModel.findOne({
       where: { name: roleName },

@@ -1,4 +1,4 @@
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Default, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { PlanInfoModel } from './plan-info.model';
 
 @Table({
@@ -9,6 +9,11 @@ import { PlanInfoModel } from './plan-info.model';
   deletedAt: true,
 })
 export class PlanModel extends Model {
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  override id!: string;
+
   @Column({
     type: DataType.STRING,
     allowNull: false,

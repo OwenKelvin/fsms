@@ -1,14 +1,16 @@
 'use strict';
 
 const { DataTypes, fn } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = {
   up: async (queryInterface) => {
     // Create 'plan-infos' table
     await queryInterface.createTable('plan_infos', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       description: {
@@ -17,7 +19,7 @@ module.exports = {
       },
       planId: {
         field: 'plan_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'plans',
@@ -45,6 +47,10 @@ module.exports = {
       },
     });
 
+    // Add indexes
+    await queryInterface.addIndex('plan_infos', ['id']);
+    await queryInterface.addIndex('plan_infos', ['plan_id']);
+
     // Retrieve the ID of the plan by name
     const [plan] = await queryInterface.sequelize.query(
       `SELECT id FROM plans WHERE name = 'Alpha Plan' LIMIT 1;`,
@@ -55,24 +61,28 @@ module.exports = {
       // Inserting sample data into 'plan-infos'
       await queryInterface.bulkInsert('plan_infos', [
         {
+          id: uuidv4(),
           description: 'Free access to archived exams',
           plan_id: planId,
           created_at: fn('NOW'),
           updated_at: fn('NOW'),
         },
         {
+          id: uuidv4(),
           description: 'Free creating of exams',
           plan_id: planId,
           created_at: fn('NOW'),
           updated_at: fn('NOW'),
         },
         {
+          id: uuidv4(),
           description: '5 credits per exam paper taken',
           plan_id: planId,
           created_at: fn('NOW'),
           updated_at: fn('NOW'),
         },
         {
+          id: uuidv4(),
           description: 'Each exam costs 5 credits to take',
           plan_id: planId,
           created_at: fn('NOW'),

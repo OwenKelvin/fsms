@@ -8,7 +8,7 @@ class NotificationSelectedInputDto {
     message: (validationArguments) =>
       `Notification with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }
 
 export class MarkAsReadNotificationInputDto {

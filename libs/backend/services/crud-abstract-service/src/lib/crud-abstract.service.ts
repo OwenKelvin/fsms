@@ -9,6 +9,7 @@ import {
 } from '@fsms/backend/db';
 import { MakeNullishOptional } from 'sequelize/types/utils';
 import { BadRequestException } from '@nestjs/common';
+import { validateUUID } from '@fsms/backend/util';
 
 export abstract class CrudAbstractService<T extends Model> {
   globalSearchFields: string[] = ['name'];
@@ -98,7 +99,7 @@ export abstract class CrudAbstractService<T extends Model> {
   }
 
   async findById(
-    id?: number,
+    id?: string,
     params?: { include?: Includeable | Includeable[]; where?: WhereOptions },
   ) {
     const { where, include } = params ?? {};
@@ -106,6 +107,10 @@ export abstract class CrudAbstractService<T extends Model> {
     if (!id) {
       return null;
     }
+    
+    // Validate UUID format
+    validateUUID(id, 'id');
+    
     return this.repository.findOne({
       where: {
         ...where,
@@ -142,8 +147,11 @@ export abstract class CrudAbstractService<T extends Model> {
     id,
   }: {
     params: T['_creationAttributes'];
-    id: number;
+    id: string;
   }) {
+    // Validate UUID format
+    validateUUID(id, 'id');
+    
     const item: T = (await this.repository.findOne({
       where: { id } as WhereOptions,
     } as FindOptions<T>)) as T;
@@ -151,12 +159,16 @@ export abstract class CrudAbstractService<T extends Model> {
     return item;
   }
 
-  async deleteById(id?: number) {
+  async deleteById(id?: string) {
     if (!id) {
       return {
         message: 'No id provided',
       };
     }
+    
+    // Validate UUID format
+    validateUUID(id, 'id');
+    
     await this.repository.destroy({
       where: {
         id,
@@ -170,7 +182,10 @@ export abstract class CrudAbstractService<T extends Model> {
     return this.repository.bulkCreate(params);
   }
 
-  async bulkDeleteById(ids: number[]) {
+  async bulkDeleteById(ids: string[]) {
+    // Validate all UUIDs
+    ids.forEach(id => validateUUID(id, 'id'));
+    
     await Promise.all(
       ids.map((id) =>
         this.repository.destroy({
@@ -183,7 +198,14 @@ export abstract class CrudAbstractService<T extends Model> {
     return true;
   }
 
-  async validateCreatedBy(modelId?: number, userId?: number) {
+  async validateCreatedBy(modelId?: string, userId?: string) {
+    if (modelId) {
+      validateUUID(modelId, 'modelId');
+    }
+    if (userId) {
+      validateUUID(userId, 'userId');
+    }
+    
     const model = await this.findById(modelId, {
       where: { createdById: userId },
     });

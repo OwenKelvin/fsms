@@ -1,17 +1,17 @@
 type PlanInfoModel {
-  id: Int!
+  id: ID!
   description: String!
-  planId: Int!
+  planId: ID!
 }
 
 input CreatePlanInfoInput {
   description: String!
-  planId: Int!
+  planId: ID!
 }
 
 input UpdatePlanInfoInput {
   description: String
-  planId: Int
+  planId: ID
 }
 
 type PaginatedPlanInfo {
@@ -26,16 +26,16 @@ type CreatePlanInfoSuccessResponse {
 
 extend type Query {
   planInfos(query: QueryParams): PaginatedPlanInfo!
-  planInfo(id: Int!): PlanInfoModel
+  planInfo(id: ID!): PlanInfoModel
 }
 
 extend type Mutation {
   updatePlanInfo(
-    id: Int!
+    id: ID!
     params: UpdatePlanInfoInput
   ): CreatePlanInfoSuccessResponse
 
   createPlanInfo(params: CreatePlanInfoInput): CreatePlanInfoSuccessResponse
 
-  deletePlanInfo(id: Int!): DeleteSuccessResponse
+  deletePlanInfo(id: ID!): DeleteSuccessResponse
 }

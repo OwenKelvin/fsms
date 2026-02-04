@@ -8,10 +8,10 @@ export class DocumentUploadResponseDto {
   success!: boolean;
 
   @Field({ nullable: true })
-  documentId?: number;
+  documentId?: string;
 
   @Field({ nullable: true })
-  fileUploadId?: number;
+  fileUploadId?: string;
 
   @Field(() => String, { nullable: true })
   documentType?: DocumentType;

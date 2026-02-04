@@ -29,7 +29,7 @@ class CreateQuestionTagInput {
 
   @IsOptional()
   @IsNumber()
-  id?: number;
+  id?: string;
 }
 
 export class CreateQuestionInputDto {
@@ -53,7 +53,7 @@ export class CreateQuestionInputDto {
     message: (validationArguments) =>
       `Exam paper with id  ${validationArguments.value}" not found`,
   })
-  examPaperId?: number;
+  examPaperId?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

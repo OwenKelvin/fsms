@@ -7,7 +7,7 @@ input ExamineeOtherDetailsInput {
   lastName: String
 }
 type ExamineeModel {
-  id: Int!
+  id: ID!
   uniqueIdentifier: String!
   otherDetails: ExamineeOtherDetails
 }
@@ -34,16 +34,16 @@ type CreateExamineeSuccessResponse {
 
 extend type Query {
   examinees(query: QueryParams): PaginatedExaminee!
-  examinee(id: Int!): ExamineeModel
+  examinee(id: ID!): ExamineeModel
 }
 
 extend type Mutation {
   updateExaminee(
-    id: Int!
+    id: ID!
     params: UpdateExamineeInput
   ): CreateExamineeSuccessResponse
 
   createExaminee(params: CreateExamineeInput): CreateExamineeSuccessResponse
 
-  deleteExaminee(id: Int!): DeleteSuccessResponse
+  deleteExaminee(id: ID!): DeleteSuccessResponse
 }

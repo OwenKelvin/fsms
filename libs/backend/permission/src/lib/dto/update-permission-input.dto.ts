@@ -9,7 +9,7 @@ export class UpdatePermissionInputDto {
     message: (validationArguments) =>
       `User with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreatePermissionInputDto = { name: '' };

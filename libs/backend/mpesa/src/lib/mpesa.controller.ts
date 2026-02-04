@@ -102,7 +102,7 @@ export class MpesaController {
 
     try {
       const quote = (await this.quoteService.findById(
-        this.stkRequest?.quoteId as number,
+        this.stkRequest?.quoteId,
       )) as QuoteModel;
       quote.set({ purchaseAt: new Date() });
       await quote.save();

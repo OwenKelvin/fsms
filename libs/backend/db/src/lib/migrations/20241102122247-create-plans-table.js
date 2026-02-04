@@ -1,13 +1,15 @@
 'use strict';
 
 const { DataTypes, fn } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = {
   up: async (queryInterface) => {
     await queryInterface.createTable('plans', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       name: {
@@ -42,8 +44,13 @@ module.exports = {
         allowNull: true,
       },
     });
+    
+    // Add index
+    await queryInterface.addIndex('plans', ['id']);
+    
     await queryInterface.bulkInsert('plans', [
       {
+        id: uuidv4(),
         name: 'Alpha Plan',
         tag_line: 'General purpose plan for everyone',
         cost_per_credit_in_kes: 2.5,

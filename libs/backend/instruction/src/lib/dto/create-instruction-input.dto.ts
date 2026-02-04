@@ -8,7 +8,7 @@ export class CreateInstructionInputDto {
     message: (validationArguments) =>
       `Exam paper with id  ${validationArguments.value}" not found`,
   })
-  examPaperId = 0;
+  examPaperId = '';
 
   @IsString()
   @IsNotEmpty()

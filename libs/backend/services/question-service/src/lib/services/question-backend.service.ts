@@ -7,6 +7,7 @@ import {
   TagModel,
 } from '@fsms/backend/db';
 import { InjectModel } from '@nestjs/sequelize';
+import { validateUUID } from '@fsms/backend/util';
 
 interface QuestionChoice {
   description: string;
@@ -30,10 +31,13 @@ export class QuestionBackendService extends CrudAbstractService<QuestionModel> {
     choices,
     createdById,
   }: {
-    questionId: number;
+    questionId: string;
     choices: QuestionChoice[];
-    createdById: number;
+    createdById: string;
   }) {
+    validateUUID(questionId, 'questionId');
+    validateUUID(createdById, 'createdById');
+    
     const dataToInsert = choices.map((choice) => ({
       questionId,
       createdById,
@@ -45,10 +49,10 @@ export class QuestionBackendService extends CrudAbstractService<QuestionModel> {
   async setTags(
     question: QuestionModel,
     inputTags: {
-      institutionId: number;
-      id?: number;
+      institutionId: string;
+      id?: string;
       name?: string;
-      createdById: number;
+      createdById: string;
     }[],
   ) {
     const existingTags = await this.questionTagModel.findAll({
@@ -56,7 +60,12 @@ export class QuestionBackendService extends CrudAbstractService<QuestionModel> {
     });
 
     for (const tag of inputTags) {
+      validateUUID(tag.institutionId, 'institutionId');
+      validateUUID(tag.createdById, 'createdById');
+      
       if (tag.id) {
+        validateUUID(tag.id, 'tagId');
+        
         // Check if the tag is already associated
         const existingTag = existingTags.find((t) => t.tagId === tag.id);
         if (!existingTag) {

@@ -20,6 +20,7 @@ import { UpdateSettingInputDto } from '../dto/update-setting-input.dto';
 import { SettingUpdatedEvent } from '../events/setting-updated.event';
 import { DeleteSettingInputDto } from '../dto/delete-setting-input.dto';
 import { SettingDeletedEvent } from '../events/setting-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => SettingModel)
 export class SettingResolver {
@@ -37,7 +38,8 @@ export class SettingResolver {
   }
 
   @Query(() => SettingModel)
-  async setting(@Args('id') id: number) {
+  async setting(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.settingService.findById(id);
   }
 
@@ -65,6 +67,7 @@ export class SettingResolver {
   async updateSetting(
     @Body(new ValidationPipe()) params: UpdateSettingInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const setting = await this.settingService.findById(params.id);
     if (setting) {
       await setting?.update(params.params);
@@ -88,6 +91,7 @@ export class SettingResolver {
   async deleteSetting(
     @Body(new ValidationPipe()) { id }: DeleteSettingInputDto,
   ) {
+    validateUUID(id, 'id');
     const setting = (await this.settingService.findById(id)) as SettingModel;
 
     await setting.destroy();

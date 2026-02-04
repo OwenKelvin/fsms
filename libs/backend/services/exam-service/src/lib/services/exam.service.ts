@@ -8,6 +8,7 @@ import {
   ExamTagModel,
   TagModel,
 } from '@fsms/backend/db';
+import { validateUUID } from '@fsms/backend/util';
 
 @Injectable()
 export class ExamService extends CrudAbstractService<ExamModel> {
@@ -24,13 +25,15 @@ export class ExamService extends CrudAbstractService<ExamModel> {
 
   async setConfigs(
     exam: ExamModel,
-    inputConfigs: { configId: number; selected: boolean; value?: string }[],
+    inputConfigs: { configId: string; selected: boolean; value?: string }[],
   ) {
     const existingConfigs = await this.configExamModel.findAll({
       where: { examId: exam.id },
     });
 
     for (const config of inputConfigs) {
+      validateUUID(config.configId, 'configId');
+      
       const existingConfig = existingConfigs.find(
         (c) => c.configId === config.configId,
       );
@@ -53,10 +56,10 @@ export class ExamService extends CrudAbstractService<ExamModel> {
   async setTags(
     exam: ExamModel,
     inputTags: {
-      institutionId: number;
-      id?: number;
+      institutionId: string;
+      id?: string;
       name?: string;
-      createdById: number;
+      createdById: string;
     }[],
   ) {
     const existingTags = await this.examTagModel.findAll({
@@ -64,7 +67,12 @@ export class ExamService extends CrudAbstractService<ExamModel> {
     });
 
     for (const tag of inputTags) {
+      validateUUID(tag.institutionId, 'institutionId');
+      validateUUID(tag.createdById, 'createdById');
+      
       if (tag.id) {
+        validateUUID(tag.id, 'tagId');
+        
         // Check if the tag is already associated
         const existingTag = existingTags.find((t) => t.tagId === tag.id);
         if (!existingTag) {
@@ -91,7 +99,9 @@ export class ExamService extends CrudAbstractService<ExamModel> {
     }
   }
 
-  async findExamPapers(examId: number, limit = 5, offset = 0) {
+  async findExamPapers(examId: string, limit = 5, offset = 0) {
+    validateUUID(examId, 'examId');
+    
     const examPapers = await this.examPaperModel.findAll({
       where: {
         examId,

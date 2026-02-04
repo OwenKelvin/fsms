@@ -20,6 +20,7 @@ import { UpdatePaymentInputDto } from '../dto/update-payment-input.dto';
 import { PaymentUpdatedEvent } from '../events/payment-updated.event';
 import { DeletePaymentInputDto } from '../dto/delete-payment-input.dto';
 import { PaymentDeletedEvent } from '../events/payment-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => PaymentModel)
 export class PaymentResolver {
@@ -37,7 +38,8 @@ export class PaymentResolver {
   }
 
   @Query(() => PaymentModel)
-  async payment(@Args('id') id: number) {
+  async payment(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.paymentService.findById(id);
   }
 
@@ -65,6 +67,7 @@ export class PaymentResolver {
   async updatePayment(
     @Body(new ValidationPipe()) params: UpdatePaymentInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const payment = await this.paymentService.findById(params.id);
     if (payment) {
       await payment?.update(params.params);
@@ -88,6 +91,7 @@ export class PaymentResolver {
   async deletePayment(
     @Body(new ValidationPipe()) { id }: DeletePaymentInputDto,
   ) {
+    validateUUID(id, 'id');
     const payment = (await this.paymentService.findById(id)) as PaymentModel;
 
     await payment.destroy();

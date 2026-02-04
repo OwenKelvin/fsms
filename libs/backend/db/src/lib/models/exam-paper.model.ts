@@ -2,8 +2,10 @@ import {
   BelongsTo,
   BelongsToMany,
   Column,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { ExamModel } from './exam.model';
@@ -22,6 +24,11 @@ import { ExamineeGroupModel } from './examinee-group.model';
   deletedAt: true,
 })
 export class ExamPaperModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @Column({ type: DataTypes.STRING })
   name?: string;
 
@@ -29,28 +36,28 @@ export class ExamPaperModel extends Model {
   paperDate?: string;
 
   @ForeignKey(() => ExamModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  examId?: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  examId?: string;
 
   @BelongsTo(() => ExamModel)
   exam!: ExamModel;
 
   @ForeignKey(() => UserModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  createdById?: UserModel;
+  createdById?: string;
 
   @BelongsTo(() => UserModel)
   createdBy!: UserModel;
 
   @ForeignKey(() => InstitutionModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  institutionId?: number;
+  institutionId?: string;
 
   @BelongsTo(() => InstitutionModel)
   institution!: InstitutionModel;

@@ -8,9 +8,9 @@ module.exports = {
     await queryInterface.createTable('otps', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       identifier: {
         type: DataTypes.STRING,
@@ -45,6 +45,9 @@ module.exports = {
         type: DataTypes.DATE,
       },
     });
+
+    // Add index
+    await queryInterface.addIndex('otps', ['id']);
   },
 
   async down(queryInterface) {

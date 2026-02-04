@@ -18,6 +18,7 @@ import {
 import { IQueryParam, UserModel } from '@fsms/backend/db';
 import { UpdateUserInputDto } from '../dto/update-user-input.dto';
 import { UserUpdatedEvent } from '../events/user-updated.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver()
 export class UserResolver {
@@ -35,7 +36,8 @@ export class UserResolver {
   }
 
   @Query(() => UserModel)
-  async user(@Args('id') id: number) {
+  async user(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.userService.findById(id);
   }
 
@@ -59,6 +61,7 @@ export class UserResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.UpdateUser)
   async updateUser(@Body(new ValidationPipe()) params: UpdateUserInputDto) {
+    validateUUID(params.id, 'id');
     const user = await this.userService.findById(params.id);
     if (user) {
       await user?.update(params.params);

@@ -8,5 +8,5 @@ export class DeletePlanInputDto {
     message: (validationArguments) =>
       `Plan with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

@@ -2,8 +2,10 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { FileUploadModel } from './file-upload.model';
@@ -28,6 +30,11 @@ export enum DocumentVerificationStatus {
   deletedAt: true,
 })
 export class RegistrationDocumentModel extends Model {
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  override id!: string;
+
   @Column({
     type: DataType.ENUM('accreditation_certificate', 'operating_license'),
     allowNull: false,
@@ -67,19 +74,19 @@ export class RegistrationDocumentModel extends Model {
 
   @ForeignKey(() => FileUploadModel)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  fileUploadId!: number;
+  fileUploadId!: string;
 
   @BelongsTo(() => FileUploadModel)
   fileUpload!: FileUploadModel;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  registrationId!: number;
+  registrationId!: string;
 
   // Note: The BelongsTo relationship will be established when both models are loaded
 }

@@ -20,6 +20,7 @@ import { UpdateExamineeInputDto } from '../dto/update-examinee-input.dto';
 import { ExamineeUpdatedEvent } from '../events/examinee-updated.event';
 import { DeleteExamineeInputDto } from '../dto/delete-examinee-input.dto';
 import { ExamineeDeletedEvent } from '../events/examinee-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => ExamineeModel)
 export class ExamineeResolver {
@@ -37,7 +38,8 @@ export class ExamineeResolver {
   }
 
   @Query(() => ExamineeModel)
-  async examinee(@Args('id') id: number) {
+  async examinee(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.examineeService.findById(id);
   }
 
@@ -68,6 +70,7 @@ export class ExamineeResolver {
   async updateExaminee(
     @Body(new ValidationPipe()) params: UpdateExamineeInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const examinee = await this.examineeService.findById(params.id);
     if (examinee) {
       await examinee?.update(params.params);
@@ -91,6 +94,7 @@ export class ExamineeResolver {
   async deleteExaminee(
     @Body(new ValidationPipe()) { id }: DeleteExamineeInputDto,
   ) {
+    validateUUID(id, 'id');
     const examinee = (await this.examineeService.findById(id)) as ExamineeModel;
 
     await examinee.destroy();

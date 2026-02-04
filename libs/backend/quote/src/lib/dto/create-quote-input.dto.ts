@@ -9,7 +9,7 @@ export class CreateQuoteInputDto {
     message: (validationArguments) =>
       `Plan with id  ${validationArguments.value}" not found`,
   })
-  planId!: number;
+  planId!: string;
 
   @IsInt()
   @IsNotEmpty()

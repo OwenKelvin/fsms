@@ -37,7 +37,7 @@ export class InstructionResolver {
   }
 
   @Query(() => InstructionModel)
-  async instruction(@Args('id') id: number) {
+  async instruction(@Args('id') id: string) {
     return this.instructionService.findById(id);
   }
 

@@ -5,14 +5,14 @@ module.exports = {
   up: async (queryInterface) => {
     await queryInterface.createTable('credits', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       institutionId: {
         field: 'institution_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: true,
         references: {
           model: 'institutions',
@@ -43,6 +43,10 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('credits', ['id']);
+    await queryInterface.addIndex('credits', ['institution_id']);
   },
 
   down: async (queryInterface) => {

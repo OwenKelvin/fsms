@@ -20,6 +20,7 @@ import { UpdateCreditInputDto } from '../dto/update-credit-input.dto';
 import { CreditUpdatedEvent } from '../events/credit-updated.event';
 import { DeleteCreditInputDto } from '../dto/delete-credit-input.dto';
 import { CreditDeletedEvent } from '../events/credit-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => CreditModel)
 export class CreditResolver {
@@ -37,7 +38,8 @@ export class CreditResolver {
   }
 
   @Query(() => CreditModel)
-  async credit(@Args('id') id: number) {
+  async credit(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.creditService.findById(id);
   }
 
@@ -63,6 +65,7 @@ export class CreditResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.UpdateCredit)
   async updateCredit(@Body(new ValidationPipe()) params: UpdateCreditInputDto) {
+    validateUUID(params.id, 'id');
     const credit = await this.creditService.findById(params.id);
     if (credit) {
       await credit?.update(params.params);
@@ -81,6 +84,7 @@ export class CreditResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.DeleteCredit)
   async deleteCredit(@Body(new ValidationPipe()) { id }: DeleteCreditInputDto) {
+    validateUUID(id, 'id');
     const credit = (await this.creditService.findById(id)) as CreditModel;
 
     await credit.destroy();

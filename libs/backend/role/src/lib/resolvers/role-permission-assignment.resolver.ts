@@ -12,6 +12,7 @@ import { GivePermissionToRoleInputDto } from '../dto/give-permission-to-role-inp
 import { PermissionModel, RoleModel, UserModel } from '@fsms/backend/db';
 import { AssignRoleToUserInputDto } from '../dto/assign-role-to-user-input.dto';
 import { UserService } from '@fsms/backend/user-service';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => RoleModel)
 export class RolePermissionAssignmentResolver {
@@ -27,10 +28,12 @@ export class RolePermissionAssignmentResolver {
   async givePermissionsToRole(
     @Body(new ValidationPipe()) input: GivePermissionToRoleInputDto,
   ) {
+    validateUUID(input.roleId, 'roleId');
     const role = (await this.roleService.findById(input.roleId)) as RoleModel;
     await role.$set('permissions', []);
     for (let i = 0; i < input.permissions.length; i++) {
       const permissionId = input.permissions[i].id;
+      validateUUID(permissionId, 'permissionId');
       const permission = (await this.permissionService.findById(
         permissionId,
       )) as PermissionModel;
@@ -49,10 +52,12 @@ export class RolePermissionAssignmentResolver {
   async assignRoleToUser(
     @Body(new ValidationPipe()) input: AssignRoleToUserInputDto,
   ) {
+    validateUUID(input.userId, 'userId');
     const user = (await this.userService.findById(input.userId)) as UserModel;
     await user.$set('roles', []);
     for (let i = 0; i < input.roles.length; i++) {
       const roleId = input.roles[i].id;
+      validateUUID(roleId, 'roleId');
       const role = (await this.roleService.findById(roleId)) as RoleModel;
       await user.$add('roles', role);
     }

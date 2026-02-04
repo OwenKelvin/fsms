@@ -8,9 +8,9 @@ module.exports = {
     await queryInterface.createTable('job_titles', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       title: {
         type: DataTypes.STRING,
@@ -43,6 +43,8 @@ module.exports = {
       },
     });
 
+    // Add indexes
+    await queryInterface.addIndex('job_titles', ['id']);
     // Add index for active job titles
     await queryInterface.addIndex('job_titles', ['is_active']);
   },

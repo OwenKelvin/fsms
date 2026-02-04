@@ -19,15 +19,15 @@ import { ExamineeGroupModel } from './examinee-group.model';
 })
 export class ExamineesGroupExamPaperModel extends Model {
   @ForeignKey(() => ExamPaperModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  examPaperId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  examPaperId!: string;
 
   @BelongsTo(() => ExamPaperModel)
   examPaper!: ExamPaperModel;
 
   @ForeignKey(() => ExamineeGroupModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  examineeGroupId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  examineeGroupId!: string;
 
   @BelongsTo(() => ExamineeGroupModel)
   examineeGroup!: ExamineeGroupModel;

@@ -53,8 +53,8 @@ export interface ValidationError {
 
 export interface RegistrationResult {
   success: boolean;
-  institutionId?: number;
-  adminUserId?: number;
+  institutionId?: string;
+  adminUserId?: string;
   twoFactorSetup?: {
     secret: string;
     qrCodeUrl: string;
@@ -276,7 +276,7 @@ export class RegistrationService {
    * Requirements: 1.5, 2.5, 4.5
    */
   async updateRegistrationStatus(
-    registrationId: number,
+    registrationId: string,
     newStatus: RegistrationStatus,
     changedBy?: string,
     notes?: string,
@@ -315,7 +315,7 @@ export class RegistrationService {
    * Requirements: 1.5, 2.5, 4.5
    */
   async progressWorkflowState(
-    registrationId: number,
+    registrationId: string,
     completedStep:
       | 'profileInfo'
       | 'institutionDetails'
@@ -387,7 +387,7 @@ export class RegistrationService {
    * Gets registration status by ID
    */
   async getRegistrationStatus(
-    registrationId: number,
+    registrationId: string,
   ): Promise<RegistrationRecordModel | null> {
     return await this.registrationRecordModel.findByPk(registrationId, {
       include: [
@@ -473,7 +473,7 @@ export class RegistrationService {
    * Requirements: 6.1, 6.2
    */
   async getRegistrationStatusHistory(
-    registrationId: number,
+    registrationId: string,
   ): Promise<RegistrationStatusHistoryModel[]> {
     return await this.registrationStatusHistoryModel.findAll({
       where: { registrationId },
@@ -509,7 +509,7 @@ export class RegistrationService {
    * Requirements: 6.1, 6.2
    */
   async updateRegistrationStatusWithAudit(
-    registrationId: number,
+    registrationId: string,
     newStatus: RegistrationStatus,
     changedBy: string,
     notes?: string,
@@ -558,7 +558,7 @@ export class RegistrationService {
    * Requirements: 5.1, 5.2, 5.3, 5.4, 5.5
    */
   async completeRegistration(
-    registrationId: number,
+    registrationId: string,
     registrationData: CompleteRegistrationData,
   ): Promise<RegistrationResult> {
     this.logger.log(
@@ -772,7 +772,7 @@ export class RegistrationService {
    * Requirements: 5.4
    */
   private async assignAdminRole(
-    userId: number,
+    userId: string,
     transaction: Transaction,
   ): Promise<void> {
     // Find the admin role (assuming it exists)
@@ -807,7 +807,7 @@ export class RegistrationService {
    * Requirements: 6.5
    */
   async sendRegistrationCompletionNotification(
-    registrationId: number,
+    registrationId: string,
   ): Promise<void> {
     const registration = await this.registrationRecordModel.findByPk(
       registrationId,
@@ -871,7 +871,7 @@ export class RegistrationService {
    * Requirements: 6.5
    */
   async sendRegistrationApprovalNotification(
-    registrationId: number,
+    registrationId: string,
   ): Promise<void> {
     const registration = await this.registrationRecordModel.findByPk(
       registrationId,
@@ -945,7 +945,7 @@ export class RegistrationService {
    * Requirements: 6.5
    */
   async sendRegistrationRejectionNotification(
-    registrationId: number,
+    registrationId: string,
     rejectionReason?: string,
   ): Promise<void> {
     const registration = await this.registrationRecordModel.findByPk(
@@ -1025,7 +1025,7 @@ export class RegistrationService {
    * Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 6.5
    */
   async completeRegistrationWithNotification(
-    registrationId: number,
+    registrationId: string,
     registrationData: CompleteRegistrationData,
   ): Promise<RegistrationResult> {
     // Complete the registration using existing method
@@ -1055,7 +1055,7 @@ export class RegistrationService {
    * Requirements: 6.1, 6.2, 6.5
    */
   async updateRegistrationStatusWithNotification(
-    registrationId: number,
+    registrationId: string,
     newStatus: RegistrationStatus,
     changedBy: string,
     notes?: string,

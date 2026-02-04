@@ -16,7 +16,7 @@ export class RegistrationQueryResolver {
    */
   @Query(() => RegistrationStatusResponseDto, { nullable: true })
   async getRegistrationStatus(
-    @Args('registrationId') registrationId: number,
+    @Args('registrationId') registrationId: string,
   ): Promise<RegistrationStatusResponseDto | null> {
     try {
       const registration =
@@ -53,7 +53,7 @@ export class RegistrationQueryResolver {
    */
   @Query(() => RegistrationDetailsResponseDto, { nullable: true })
   async getRegistrationDetails(
-    @Args('registrationId') registrationId: number,
+    @Args('registrationId') registrationId: string,
   ): Promise<RegistrationDetailsResponseDto | null> {
     try {
       const registration =

@@ -9,7 +9,7 @@ class ExamineeCategoryInputDto {
     message: (validationArguments) =>
       `Examinee group with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }
 
 export class AssignExamineeGroupToExamPaperInputDto {
@@ -18,7 +18,7 @@ export class AssignExamineeGroupToExamPaperInputDto {
     message: (validationArguments) =>
       `ExamPaper with id  ${validationArguments.value}" not found`,
   })
-  examPaperId = 0;
+  examPaperId = '';
 
   @IsArray()
   @ValidateNested({ each: true })

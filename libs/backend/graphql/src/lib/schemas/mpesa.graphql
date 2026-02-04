@@ -3,7 +3,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  requestMpesaStk(phoneNumber: String!, quoteId: Int!): SuccessResponse
+  requestMpesaStk(phoneNumber: String!, quoteId: ID!): SuccessResponse
 }
 
 type ReceivedPaymentSubscription {
@@ -11,5 +11,5 @@ type ReceivedPaymentSubscription {
 }
 
 extend type Subscription {
-  mpesaPaymentReceived(quoteId: Int!): ReceivedPaymentSubscription
+  mpesaPaymentReceived(quoteId: ID!): ReceivedPaymentSubscription
 }

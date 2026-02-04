@@ -8,7 +8,7 @@ class RoleDto {
     message: (validationArguments) =>
       `Role with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }
 
 export class AssignRoleToUserInputDto {
@@ -18,7 +18,7 @@ export class AssignRoleToUserInputDto {
     message: (validationArguments) =>
       `User with id  ${validationArguments.value}" not found`,
   })
-  userId?: number;
+  userId?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

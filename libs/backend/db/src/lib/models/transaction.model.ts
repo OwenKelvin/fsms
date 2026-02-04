@@ -1,8 +1,10 @@
 import {
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { InstitutionModel } from './institution.model';
@@ -17,22 +19,27 @@ import { QuoteModel } from './quote.model';
   deletedAt: true,
 })
 export class TransactionModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @ForeignKey(() => InstitutionModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  institutionId?: number;
+  institutionId?: string;
 
   @BelongsTo(() => InstitutionModel)
   institution!: InstitutionModel;
 
   @ForeignKey(() => QuoteModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: true,
   })
-  quoteId?: number;
+  quoteId?: string;
 
   @BelongsTo(() => QuoteModel)
   quote!: QuoteModel;

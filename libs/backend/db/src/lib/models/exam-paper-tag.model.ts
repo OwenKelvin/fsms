@@ -19,15 +19,15 @@ import { ExamPaperModel } from './exam-paper.model';
 })
 export class ExamPaperTagModel extends Model {
   @ForeignKey(() => ExamPaperModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  examPaperId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  examPaperId!: string;
 
   @BelongsTo(() => ExamPaperModel)
   examPaper!: ExamPaperModel;
 
   @ForeignKey(() => TagModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  tagId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  tagId!: string;
 
   @BelongsTo(() => TagModel)
   tag!: TagModel;

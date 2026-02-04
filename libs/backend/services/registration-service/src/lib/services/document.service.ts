@@ -19,8 +19,8 @@ import { Transaction } from 'sequelize';
 import { EmailService } from '@fsms/backend/email-service';
 
 export interface DocumentUploadResult {
-  documentId: number;
-  fileUploadId: number;
+  documentId: string;
+  fileUploadId: string;
   documentType: DocumentType;
   fileName: string;
   fileSize: number;
@@ -28,7 +28,7 @@ export interface DocumentUploadResult {
 }
 
 export interface DocumentReviewFlag {
-  documentId: number;
+  documentId: string;
   flagReason: string;
   flaggedAt: Date;
   requiresManualReview: boolean;
@@ -64,7 +64,7 @@ export class DocumentService {
   async uploadRegistrationDocument(
     file: BufferedFile,
     documentType: DocumentType,
-    registrationId: number,
+    registrationId: string,
     transaction?: Transaction,
   ): Promise<DocumentUploadResult> {
     this.logger.log(
@@ -192,8 +192,8 @@ export class DocumentService {
    * Requirements: 3.5
    */
   async linkDocumentToRegistration(
-    fileUploadId: number,
-    registrationId: number,
+    fileUploadId: string,
+    registrationId: string,
     documentType: DocumentType,
     transaction?: Transaction,
   ): Promise<RegistrationDocumentModel> {
@@ -238,7 +238,7 @@ export class DocumentService {
   /**
    * Gets a secure URL for downloading a document
    */
-  async getDocumentUrl(documentId: number): Promise<string> {
+  async getDocumentUrl(documentId: string): Promise<string> {
     const document = await this.registrationDocumentModel.findByPk(documentId, {
       include: [{ model: this.fileUploadModel }],
     });
@@ -256,7 +256,7 @@ export class DocumentService {
    * Deletes a document and its associated file
    */
   async deleteDocument(
-    documentId: number,
+    documentId: string,
     transaction?: Transaction,
   ): Promise<void> {
     const document = await this.registrationDocumentModel.findByPk(documentId, {
@@ -293,7 +293,7 @@ export class DocumentService {
    * Gets all documents for a registration
    */
   async getRegistrationDocuments(
-    registrationId: number,
+    registrationId: string,
   ): Promise<RegistrationDocumentModel[]> {
     return await this.registrationDocumentModel.findAll({
       where: { registrationId },
@@ -306,7 +306,7 @@ export class DocumentService {
    * Updates document verification status
    */
   async updateDocumentVerificationStatus(
-    documentId: number,
+    documentId: string,
     status: DocumentVerificationStatus,
     verifiedBy?: string,
     transaction?: Transaction,
@@ -332,7 +332,7 @@ export class DocumentService {
   /**
    * Checks if all required documents are uploaded for a registration
    */
-  async areAllDocumentsUploaded(registrationId: number): Promise<boolean> {
+  async areAllDocumentsUploaded(registrationId: string): Promise<boolean> {
     const requiredDocumentTypes = [
       DocumentType.ACCREDITATION_CERTIFICATE,
       DocumentType.OPERATING_LICENSE,
@@ -353,7 +353,7 @@ export class DocumentService {
    * Requirements: 6.3
    */
   async flagDocumentForReview(
-    documentId: number,
+    documentId: string,
     flagReason: string,
     transaction?: Transaction,
   ): Promise<DocumentReviewFlag> {
@@ -405,7 +405,7 @@ export class DocumentService {
    * Requirements: 6.3
    */
   async performAutomaticDocumentReview(
-    documentId: number,
+    documentId: string,
     transaction?: Transaction,
   ): Promise<DocumentReviewFlag[]> {
     const document = await this.registrationDocumentModel.findByPk(documentId, {
@@ -507,7 +507,7 @@ export class DocumentService {
    * Requirements: 6.3
    */
   async notifyAdminsOfPendingReview(
-    registrationId: number,
+    registrationId: string,
     reviewFlag: DocumentReviewFlag,
   ): Promise<void> {
     try {
@@ -598,7 +598,7 @@ export class DocumentService {
    * Requirements: 6.3
    */
   async updateDocumentReviewStatus(
-    documentId: number,
+    documentId: string,
     status: DocumentVerificationStatus,
     reviewedBy: string,
     reviewNotes?: string,
@@ -655,8 +655,8 @@ export class DocumentService {
    * Requirements: 6.3
    */
   async notifyApplicantOfDocumentIssues(
-    registrationId: number,
-    documentId: number,
+    registrationId: string,
+    documentId: string,
     status: DocumentVerificationStatus,
     reviewNotes?: string,
   ): Promise<void> {
@@ -735,7 +735,7 @@ export class DocumentService {
   async uploadRegistrationDocumentWithReview(
     file: BufferedFile,
     documentType: DocumentType,
-    registrationId: number,
+    registrationId: string,
     transaction?: Transaction,
   ): Promise<DocumentUploadResult & { reviewFlags?: DocumentReviewFlag[] }> {
     // Upload document using existing method

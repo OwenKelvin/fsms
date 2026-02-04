@@ -8,5 +8,5 @@ export class DeletePasswordResetInputDto {
     message: (validationArguments) =>
       `PasswordReset with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

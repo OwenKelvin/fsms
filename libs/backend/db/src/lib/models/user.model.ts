@@ -2,8 +2,10 @@ import {
   BelongsTo,
   BelongsToMany,
   Column,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { RoleModel } from './role.model';
@@ -19,6 +21,11 @@ import { ActivityLogUserModel } from './activity-log-user.model';
   deletedAt: true,
 })
 export class UserModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @Column({ allowNull: false })
   username?: string;
 
@@ -57,10 +64,10 @@ export class UserModel extends Model {
 
   @ForeignKey(() => JobTitleModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: true,
   })
-  jobTitleId?: number;
+  jobTitleId?: string;
 
   @BelongsTo(() => JobTitleModel)
   jobTitle?: JobTitleModel;

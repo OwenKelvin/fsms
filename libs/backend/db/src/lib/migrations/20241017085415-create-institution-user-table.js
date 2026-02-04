@@ -6,14 +6,14 @@ module.exports = {
     // Create exams table
     await queryInterface.createTable('institution_user', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       institutionId: {
         field: 'institution_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: true,
         references: {
           model: 'institutions',
@@ -24,7 +24,7 @@ module.exports = {
       },
       userId: {
         field: 'user_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'users',
@@ -56,6 +56,11 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('institution_user', ['id']);
+    await queryInterface.addIndex('institution_user', ['institution_id']);
+    await queryInterface.addIndex('institution_user', ['user_id']);
   },
 
   down: async (queryInterface) => {

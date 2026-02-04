@@ -1,11 +1,11 @@
 type ExamineeGroupModel {
-  id: Int!
+  id: ID!
   name: String!
   examinees: [ExamineeModel]
 }
 
 input CreateGroupExamineeInput {
-  id: Int
+  id: ID
   uniqueIdentifier: String
   otherDetails: ExamineeOtherDetailsInput
 }
@@ -32,12 +32,12 @@ type CreateExamineeGroupSuccessResponse {
 
 extend type Query {
   examineeGroups(query: QueryParams): PaginatedExamineeGroup!
-  examineeGroup(id: Int!): ExamineeGroupModel
+  examineeGroup(id: ID!): ExamineeGroupModel
 }
 
 extend type Mutation {
   updateExamineeGroup(
-    id: Int!
+    id: ID!
     params: UpdateExamineeGroupInput
   ): CreateExamineeGroupSuccessResponse
 
@@ -45,5 +45,5 @@ extend type Mutation {
     params: CreateExamineeGroupInput
   ): CreateExamineeGroupSuccessResponse
 
-  deleteExamineeGroup(id: Int!): DeleteSuccessResponse
+  deleteExamineeGroup(id: ID!): DeleteSuccessResponse
 }

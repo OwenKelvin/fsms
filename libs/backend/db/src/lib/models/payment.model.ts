@@ -1,4 +1,5 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { DataTypes } from 'sequelize';
 
 @Table({
   tableName: 'payments',
@@ -8,6 +9,11 @@ import { Column, Model, Table } from 'sequelize-typescript';
   deletedAt: true,
 })
 export class PaymentModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @Column
   name?: string;
 }

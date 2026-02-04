@@ -26,7 +26,7 @@ export class InstitutionGuard implements CanActivate {
       return true;
     }
 
-    let user = req.user as { id: number } | undefined;
+    let user = req.user as { id: string } | undefined;
     const authHeader = req.headers['authorization'];
 
     if (!user?.id && authHeader) {
@@ -36,7 +36,7 @@ export class InstitutionGuard implements CanActivate {
 
       const extractedUser = await this.authService.validateToken(token);
       if (extractedUser?.userId) {
-        user = { id: Number(extractedUser.userId) };
+        user = { id: extractedUser.userId };
       } else {
         throw new BadRequestException('Invalid or expired token');
       }

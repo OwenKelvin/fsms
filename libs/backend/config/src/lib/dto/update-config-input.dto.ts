@@ -9,7 +9,7 @@ export class UpdateConfigInputDto {
     message: (validationArguments) =>
       `Config with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreateConfigInputDto = { name: '' };

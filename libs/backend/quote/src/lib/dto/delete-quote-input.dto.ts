@@ -8,5 +8,5 @@ export class DeleteQuoteInputDto {
     message: (validationArguments) =>
       `Quote with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

@@ -8,7 +8,7 @@ export class ImageController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 
   @Get(':imageId')
-  async getImage(@Param('imageId') imageId: number, @Res() res: FastifyReply) {
+  async getImage(@Param('imageId') imageId: string, @Res() res: FastifyReply) {
     try {
       const fileUpload = (await this.fileUploadService.findById(
         imageId,

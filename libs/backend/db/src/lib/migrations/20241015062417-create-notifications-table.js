@@ -5,9 +5,9 @@ module.exports = {
   up: async (queryInterface) => {
     await queryInterface.createTable('notifications', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       description: {
@@ -32,6 +32,9 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add index
+    await queryInterface.addIndex('notifications', ['id']);
   },
 
   down: async (queryInterface) => {

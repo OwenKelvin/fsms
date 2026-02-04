@@ -5,9 +5,9 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('permissions', {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
       },
       name: {
@@ -32,12 +32,16 @@ module.exports = {
         allowNull: true,
       },
     });
+    
+    // Add index on permissions primary key
+    await queryInterface.addIndex('permissions', ['id']);
+    
     // Create roles table
     await queryInterface.createTable('roles', {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
       },
       name: {
@@ -63,16 +67,19 @@ module.exports = {
       },
     });
 
+    // Add index on roles primary key
+    await queryInterface.addIndex('roles', ['id']);
+
     // Create permission_role join table
     await queryInterface.createTable('permission_role', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       role_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: 'roles',
           key: 'id',
@@ -81,7 +88,7 @@ module.exports = {
         allowNull: false,
       },
       permission_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: 'permissions', // Assuming the permission table is named 'permissions'
           key: 'id',
@@ -101,16 +108,21 @@ module.exports = {
       },
     });
 
+    // Add indexes on permission_role foreign keys
+    await queryInterface.addIndex('permission_role', ['id']);
+    await queryInterface.addIndex('permission_role', ['role_id']);
+    await queryInterface.addIndex('permission_role', ['permission_id']);
+
     // Create role_user join table
     await queryInterface.createTable('role_user', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       role_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: 'roles',
           key: 'id',
@@ -119,7 +131,7 @@ module.exports = {
         allowNull: false,
       },
       user_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: 'users', // Assuming the user table is named 'users'
           key: 'id',
@@ -138,6 +150,11 @@ module.exports = {
         defaultValue: Sequelize.fn('NOW'),
       },
     });
+
+    // Add indexes on role_user foreign keys
+    await queryInterface.addIndex('role_user', ['id']);
+    await queryInterface.addIndex('role_user', ['role_id']);
+    await queryInterface.addIndex('role_user', ['user_id']);
   },
 
   down: async (queryInterface) => {

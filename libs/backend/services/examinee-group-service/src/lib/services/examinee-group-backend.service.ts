@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CrudAbstractService } from '@fsms/backend/crud-abstract';
 import { ExamineeGroupModel, ExamineeModel, UserModel } from '@fsms/backend/db';
 import { InjectModel } from '@nestjs/sequelize';
+import { validateUUID } from '@fsms/backend/util';
 
 interface ExamineeInput {
-  id?: number;
+  id?: string;
   uniqueIdentifier?: string;
   otherDetails?: {
     firstName?: string;
@@ -28,11 +29,12 @@ export class ExamineeGroupBackendService extends CrudAbstractService<ExamineeGro
     createdBy: UserModel,
     examineeInputs: ExamineeInput[] = [],
   ) {
-    const examineeGroupIds: number[] = [];
+    const examineeGroupIds: string[] = [];
     for (let i = 0; i < examineeInputs.length; i++) {
       const examineeInput = examineeInputs[i];
       if (examineeInput.id) {
-        examineeGroupIds.push(examineeInput.id as number);
+        validateUUID(examineeInput.id, 'examineeId');
+        examineeGroupIds.push(examineeInput.id as string);
       } else if (examineeInputs[i].uniqueIdentifier) {
         const [createdExaminee] = await this.examineeModel.findOrCreate({
           where: {

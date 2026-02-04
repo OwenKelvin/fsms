@@ -1,4 +1,4 @@
-import { BelongsToMany, Column, Model, Table } from 'sequelize-typescript';
+import { BelongsToMany, Column, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { PermissionModel } from './permission.model';
 import { UserModel } from './user.model';
 import { DataTypes } from 'sequelize';
@@ -11,6 +11,11 @@ import { DataTypes } from 'sequelize';
   deletedAt: true,
 })
 export class RoleModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  id!: string;
+
   @Column({ type: DataTypes.STRING, allowNull: false })
   name?: string;
 

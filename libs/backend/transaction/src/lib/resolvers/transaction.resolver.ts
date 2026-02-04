@@ -20,6 +20,7 @@ import { UpdateTransactionInputDto } from '../dto/update-transaction-input.dto';
 import { TransactionUpdatedEvent } from '../events/transaction-updated.event';
 import { DeleteTransactionInputDto } from '../dto/delete-transaction-input.dto';
 import { TransactionDeletedEvent } from '../events/transaction-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => TransactionModel)
 export class TransactionResolver {
@@ -37,7 +38,8 @@ export class TransactionResolver {
   }
 
   @Query(() => TransactionModel)
-  async transaction(@Args('id') id: number) {
+  async transaction(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.transactionService.findById(id);
   }
 
@@ -68,6 +70,7 @@ export class TransactionResolver {
   async updateTransaction(
     @Body(new ValidationPipe()) params: UpdateTransactionInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const transaction = await this.transactionService.findById(params.id);
     if (transaction) {
       await transaction?.update(params.params);
@@ -91,6 +94,7 @@ export class TransactionResolver {
   async deleteTransaction(
     @Body(new ValidationPipe()) { id }: DeleteTransactionInputDto,
   ) {
+    validateUUID(id, 'id');
     const transaction = (await this.transactionService.findById(
       id,
     )) as TransactionModel;

@@ -1,5 +1,5 @@
 type TagModel {
-  id: Int!
+  id: ID!
   name: String!
 }
 
@@ -23,13 +23,13 @@ type CreateTagSuccessResponse {
 
 extend type Query {
   tags(query: QueryParams): PaginatedTag!
-  tag(id: Int!): TagModel
+  tag(id: ID!): TagModel
 }
 
 extend type Mutation {
-  updateTag(id: Int!, params: UpdateTagInput): CreateTagSuccessResponse
+  updateTag(id: ID!, params: UpdateTagInput): CreateTagSuccessResponse
 
   createTag(params: CreateTagInput): CreateTagSuccessResponse
 
-  deleteTag(id: Int!): DeleteSuccessResponse
+  deleteTag(id: ID!): DeleteSuccessResponse
 }

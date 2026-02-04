@@ -1,6 +1,6 @@
 type QuoteModel {
-  id: Int!
-  planId: Int!
+  id: ID!
+  planId: ID!
   expireAt: String
   totalCost: Float
   creditAmount: Float!
@@ -12,12 +12,12 @@ type QuoteModel {
 }
 
 input CreateQuoteInput {
-  planId: Int!
+  planId: ID!
   creditAmount: Int!
 }
 
 input UpdateQuoteInput {
-  planId: Int!
+  planId: ID!
   paymentAmount: Float!
 }
 
@@ -33,13 +33,13 @@ type CreateQuoteSuccessResponse {
 
 extend type Query {
   quotes(query: QueryParams): PaginatedQuote!
-  quote(id: Int!): QuoteModel
+  quote(id: ID!): QuoteModel
 }
 
 extend type Mutation {
-  updateQuote(id: Int!, params: UpdateQuoteInput): CreateQuoteSuccessResponse
+  updateQuote(id: ID!, params: UpdateQuoteInput): CreateQuoteSuccessResponse
 
   createQuote(params: CreateQuoteInput): CreateQuoteSuccessResponse
 
-  deleteQuote(id: Int!): DeleteSuccessResponse
+  deleteQuote(id: ID!): DeleteSuccessResponse
 }

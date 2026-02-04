@@ -4,6 +4,7 @@ import { PermissionModel, RoleModel, UserModel } from '@fsms/backend/db';
 import { Op, WhereOptions } from 'sequelize';
 import { InjectModel } from '@nestjs/sequelize';
 import { hash } from 'bcrypt';
+import { validateUUID } from '@fsms/backend/util';
 
 @Injectable()
 export class UserService extends CrudAbstractService<UserModel> {
@@ -21,7 +22,8 @@ export class UserService extends CrudAbstractService<UserModel> {
     return this.repository.findOne({ where });
   }
 
-  async findById(id: number): Promise<UserModel | null> {
+  async findById(id: string): Promise<UserModel | null> {
+    validateUUID(id, 'id');
     return this.repository.findByPk(id);
   }
 

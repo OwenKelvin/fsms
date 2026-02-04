@@ -8,5 +8,5 @@ export class DeleteTransactionInputDto {
     message: (validationArguments) =>
       `Transaction with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

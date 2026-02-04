@@ -9,6 +9,7 @@ import {
 import { TransactionBackendService } from '@fsms/backend/transaction-backend-service';
 import { Sequelize } from 'sequelize-typescript';
 import { CreditBackendService } from '@fsms/backend/credit-backend-service';
+import { validateUUID } from '@fsms/backend/util';
 
 @Injectable()
 export class InstitutionBackendService extends CrudAbstractService<InstitutionModel> {
@@ -27,14 +28,18 @@ export class InstitutionBackendService extends CrudAbstractService<InstitutionMo
   }
 
   async addUser(param: {
-    userId: number;
+    userId: string;
     userRole: 'Owner' | 'Admin' | 'Examiner';
-    institutionId: number;
+    institutionId: string;
   }) {
+    validateUUID(param.userId, 'userId');
+    validateUUID(param.institutionId, 'institutionId');
     await this.institutionUserModel.create({ ...param });
   }
 
-  async allocateFreeCredits(institutionId: number) {
+  async allocateFreeCredits(institutionId: string) {
+    validateUUID(institutionId, 'institutionId');
+    
     const transaction = await this.sequelize.transaction();
     const initialCreditAllocation = await this.settingService.getByName(
       SettingEnum.initialFreeCredit,

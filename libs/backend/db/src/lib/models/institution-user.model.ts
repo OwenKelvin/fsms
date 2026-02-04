@@ -19,15 +19,15 @@ import { UserModel } from './user.model';
 })
 export class InstitutionUserModel extends Model {
   @ForeignKey(() => InstitutionModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  institutionId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  institutionId!: string;
 
   @BelongsTo(() => InstitutionModel)
   institution!: InstitutionModel;
 
   @ForeignKey(() => UserModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  userId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  userId!: string;
 
   @BelongsTo(() => UserModel)
   user!: UserModel;

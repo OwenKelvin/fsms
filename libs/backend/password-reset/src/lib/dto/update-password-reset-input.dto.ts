@@ -9,7 +9,7 @@ export class UpdatePasswordResetInputDto {
     message: (validationArguments) =>
       `PasswordReset with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreatePasswordResetInputDto = { name: '' };

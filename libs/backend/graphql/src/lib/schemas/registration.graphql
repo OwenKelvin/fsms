@@ -26,7 +26,7 @@ enum DocumentType {
 
 # Status History Type
 type RegistrationStatusHistory {
-  id: Int!
+  id: ID!
   previousStatus: RegistrationStatus!
   newStatus: RegistrationStatus!
   changedAt: String!
@@ -36,7 +36,7 @@ type RegistrationStatusHistory {
 
 # Registration Status Response
 type RegistrationStatusResponse {
-  id: Int!
+  id: ID!
   status: RegistrationStatus!
   profileInfoCompleted: Boolean!
   institutionDetailsCompleted: Boolean!
@@ -45,13 +45,13 @@ type RegistrationStatusResponse {
   createdAt: String!
   updatedAt: String!
   completedAt: String
-  institutionId: Int
-  adminUserId: Int
+  institutionId: ID
+  adminUserId: ID
 }
 
 # Registration Details Response (includes related data)
 type RegistrationDetailsResponse {
-  id: Int!
+  id: ID!
   status: RegistrationStatus!
   profileInfoCompleted: Boolean!
   institutionDetailsCompleted: Boolean!
@@ -60,8 +60,8 @@ type RegistrationDetailsResponse {
   createdAt: String!
   updatedAt: String!
   completedAt: String
-  institutionId: Int
-  adminUserId: Int
+  institutionId: ID
+  adminUserId: ID
   institution: InstitutionModel
   adminUser: UserModel
   statusHistory: [RegistrationStatusHistory!]!
@@ -95,7 +95,7 @@ input AdminCredentialsInput {
 }
 
 input DocumentUploadInput {
-  registrationId: Int!
+  registrationId: ID!
   documentType: DocumentType!
 }
 
@@ -115,23 +115,23 @@ type ValidationError {
 
 type RegistrationStepResponse {
   success: Boolean!
-  registrationId: Int
+  registrationId: ID
   message: String
   errors: [ValidationError!]
 }
 
 type CompleteRegistrationResponse {
   success: Boolean!
-  institutionId: Int
-  adminUserId: Int
+  institutionId: ID
+  adminUserId: ID
   message: String
   errors: [ValidationError!]
 }
 
 type DocumentUploadResponse {
   success: Boolean!
-  documentId: Int
-  fileUploadId: Int
+  documentId: ID
+  fileUploadId: ID
   documentType: DocumentType
   fileName: String
   fileSize: Int
@@ -143,10 +143,10 @@ type DocumentUploadResponse {
 
 extend type Query {
   # Get registration status by ID
-  getRegistrationStatus(registrationId: Int!): RegistrationStatusResponse
+  getRegistrationStatus(registrationId: ID!): RegistrationStatusResponse
 
   # Get detailed registration information by ID
-  getRegistrationDetails(registrationId: Int!): RegistrationDetailsResponse
+  getRegistrationDetails(registrationId: ID!): RegistrationDetailsResponse
 
   # Get registrations with filtering capabilities
   getRegistrations(filter: RegistrationFilterInput): [RegistrationDetailsResponse!]!
@@ -161,24 +161,24 @@ extend type Mutation {
   # Submit profile information for registration
   submitProfileInfo(
     input: ProfileInfoInput!
-    registrationId: Int
+    registrationId: ID
   ): RegistrationStepResponse!
 
   # Submit institution details for registration
   submitInstitutionDetails(
-    registrationId: Int!
+    registrationId: ID!
     input: InstitutionDetailsInput!
   ): RegistrationStepResponse!
 
   # Submit admin credentials for registration
   submitAdminCredentials(
-    registrationId: Int!
+    registrationId: ID!
     input: AdminCredentialsInput!
   ): RegistrationStepResponse!
 
   # Complete the registration process atomically
   completeRegistration(
-    registrationId: Int!
+    registrationId: ID!
     profileInfo: ProfileInfoInput!
     institutionDetails: InstitutionDetailsInput!
     adminCredentials: AdminCredentialsInput!

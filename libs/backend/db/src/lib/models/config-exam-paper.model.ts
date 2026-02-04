@@ -19,15 +19,15 @@ import { ConfigModel } from './config.model';
 })
 export class ConfigExamPaperModel extends Model {
   @ForeignKey(() => ExamPaperModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  examPaperId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  examPaperId!: string;
 
   @BelongsTo(() => ExamPaperModel)
   examPaper!: ExamPaperModel;
 
   @ForeignKey(() => ConfigModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  configId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  configId!: string;
 
   @BelongsTo(() => ConfigModel)
   config!: ConfigModel;

@@ -24,6 +24,7 @@ import { UpdateTagInputDto } from '../dto/update-tag-input.dto';
 import { TagUpdatedEvent } from '../events/tag-updated.event';
 import { DeleteTagInputDto } from '../dto/delete-tag-input.dto';
 import { TagDeletedEvent } from '../events/tag-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver()
 export class TagResolver {
@@ -36,8 +37,9 @@ export class TagResolver {
   @UseGuards(InstitutionGuard)
   tags(
     @Args('query') query: IQueryParam,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
+    validateUUID(institutionId, 'institutionId');
     return this.tagService.findAll({
       ...query,
       filters: [
@@ -53,7 +55,8 @@ export class TagResolver {
   }
 
   @Query(() => TagModel)
-  async tag(@Args('id') id: number) {
+  async tag(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.tagService.findById(id);
   }
 
@@ -77,6 +80,7 @@ export class TagResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.UpdateTag)
   async updateTag(@Body(new ValidationPipe()) params: UpdateTagInputDto) {
+    validateUUID(params.id, 'id');
     const tag = await this.tagService.findById(params.id);
     if (tag) {
       await tag?.update(params.params);
@@ -95,6 +99,7 @@ export class TagResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.DeleteTag)
   async deleteTag(@Body(new ValidationPipe()) { id }: DeleteTagInputDto) {
+    validateUUID(id, 'id');
     const tag = (await this.tagService.findById(id)) as TagModel;
 
     await tag.destroy();

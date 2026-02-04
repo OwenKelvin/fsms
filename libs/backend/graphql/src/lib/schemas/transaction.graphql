@@ -4,7 +4,7 @@ enum TransactionTypeEnum {
   promotion
 }
 type TransactionModel {
-  id: Int!
+  id: ID!
   type: TransactionTypeEnum
   amount: Float!
   balanceAfterTransaction: Float!
@@ -31,12 +31,12 @@ type CreateTransactionSuccessResponse {
 
 extend type Query {
   transactions(query: QueryParams): PaginatedTransaction!
-  transaction(id: Int!): TransactionModel
+  transaction(id: ID!): TransactionModel
 }
 
 extend type Mutation {
   updateTransaction(
-    id: Int!
+    id: ID!
     params: UpdateTransactionInput
   ): CreateTransactionSuccessResponse
 
@@ -44,5 +44,5 @@ extend type Mutation {
     params: CreateTransactionInput
   ): CreateTransactionSuccessResponse
 
-  deleteTransaction(id: Int!): DeleteSuccessResponse
+  deleteTransaction(id: ID!): DeleteSuccessResponse
 }

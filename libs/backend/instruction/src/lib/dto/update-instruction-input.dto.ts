@@ -9,8 +9,8 @@ export class UpdateInstructionInputDto {
     message: (validationArguments) =>
       `Instruction with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
-  params: CreateInstructionInputDto = { description: '', examPaperId: 0 };
+  params: CreateInstructionInputDto = { description: '', examPaperId: '' };
 }

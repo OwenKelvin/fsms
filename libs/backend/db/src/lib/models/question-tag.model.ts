@@ -13,14 +13,14 @@ import { QuestionModel } from './question.model';
 })
 export class QuestionTagModel extends Model {
   @ForeignKey(() => QuestionModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  questionId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  questionId!: string;
 
   question!: QuestionModel;
 
   @ForeignKey(() => TagModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  tagId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  tagId!: string;
 
   tag!: TagModel;
 }

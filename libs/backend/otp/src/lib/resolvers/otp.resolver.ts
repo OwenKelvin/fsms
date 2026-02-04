@@ -37,7 +37,7 @@ export class OtpResolver {
   }
 
   @Query(() => OtpModel)
-  async otp(@Args('id') id: number) {
+  async otp(@Args('id') id: string) {
     return this.otpService.findById(id);
   }
 

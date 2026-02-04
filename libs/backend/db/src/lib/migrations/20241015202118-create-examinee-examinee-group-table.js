@@ -6,14 +6,14 @@ module.exports = {
     // Create exams table
     await queryInterface.createTable('examinee_examinee_group', {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
       examineeGroupId: {
         field: 'examinee_group_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: true,
         references: {
           model: 'examinee_groups',
@@ -24,7 +24,7 @@ module.exports = {
       },
       examineeId: {
         field: 'examinee_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'examinees',
@@ -52,6 +52,11 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('examinee_examinee_group', ['id']);
+    await queryInterface.addIndex('examinee_examinee_group', ['examinee_group_id']);
+    await queryInterface.addIndex('examinee_examinee_group', ['examinee_id']);
   },
 
   down: async (queryInterface) => {

@@ -1,6 +1,6 @@
 type ChoiceModel {
-  id: Int!
-  questionId: Int!
+  id: ID!
+  questionId: ID!
   question: QuestionModel!
   description: String!
   isCorrectChoice: Boolean
@@ -27,13 +27,13 @@ type CreateChoiceSuccessResponse {
 
 extend type Query {
   choices(query: QueryParams): PaginatedChoice!
-  choice(id: Int!): ChoiceModel
+  choice(id: ID!): ChoiceModel
 }
 
 extend type Mutation {
-  updateChoice(id: Int!, params: UpdateChoiceInput): CreateChoiceSuccessResponse
+  updateChoice(id: ID!, params: UpdateChoiceInput): CreateChoiceSuccessResponse
 
   createChoice(params: CreateChoiceInput): CreateChoiceSuccessResponse
 
-  deleteChoice(id: Int!): DeleteSuccessResponse
+  deleteChoice(id: ID!): DeleteSuccessResponse
 }

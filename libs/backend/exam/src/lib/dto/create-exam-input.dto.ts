@@ -19,7 +19,7 @@ class CreateExamTagInput {
 
   @IsOptional()
   @IsNumber()
-  id?: number;
+  id?: string;
 }
 
 class CreateExamConfigInput {
@@ -28,7 +28,7 @@ class CreateExamConfigInput {
     message: (validationArguments) =>
       `Config with id  ${validationArguments.value}" not found`,
   })
-  id?: number;
+  id?: string;
 
   @IsBoolean()
   selected?: boolean;

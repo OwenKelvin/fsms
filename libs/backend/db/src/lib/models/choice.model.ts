@@ -1,8 +1,10 @@
 import {
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
@@ -17,16 +19,21 @@ import { UserModel } from './user.model';
   deletedAt: true,
 })
 export class ChoiceModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @ForeignKey(() => QuestionModel)
-  @Column({ type: DataTypes.INTEGER, allowNull: false })
-  questionId!: number;
+  @Column({ type: DataTypes.UUID, allowNull: false })
+  questionId!: string;
 
   @ForeignKey(() => UserModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  createdById?: number;
+  createdById?: string;
 
   @BelongsTo(() => UserModel)
   createdBy!: UserModel;

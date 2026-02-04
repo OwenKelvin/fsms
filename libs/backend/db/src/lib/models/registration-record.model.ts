@@ -2,9 +2,11 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   HasMany,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { InstitutionModel } from './institution.model';
@@ -30,6 +32,11 @@ export enum RegistrationStatus {
   deletedAt: true,
 })
 export class RegistrationRecordModel extends Model {
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  override id!: string;
+
   @Column({
     type: DataType.ENUM(
       'pending',
@@ -84,20 +91,20 @@ export class RegistrationRecordModel extends Model {
   // Relationships
   @ForeignKey(() => InstitutionModel)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: true,
   })
-  institutionId?: number;
+  institutionId?: string;
 
   @BelongsTo(() => InstitutionModel)
   institution?: InstitutionModel;
 
   @ForeignKey(() => UserModel)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: true,
   })
-  adminUserId?: number;
+  adminUserId?: string;
 
   @BelongsTo(() => UserModel)
   adminUser?: UserModel;
@@ -115,12 +122,17 @@ export class RegistrationRecordModel extends Model {
   timestamps: true,
 })
 export class RegistrationStatusHistoryModel extends Model {
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  override id!: string;
+
   @ForeignKey(() => RegistrationRecordModel)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     allowNull: false,
   })
-  registrationId!: number;
+  registrationId!: string;
 
   @BelongsTo(() => RegistrationRecordModel)
   registration!: RegistrationRecordModel;

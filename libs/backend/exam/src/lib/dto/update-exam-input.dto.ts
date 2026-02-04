@@ -9,7 +9,7 @@ export class UpdateExamInputDto {
     message: (validationArguments) =>
       `Exam with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreateExamInputDto = { configs: [], tags: [], name: '' };

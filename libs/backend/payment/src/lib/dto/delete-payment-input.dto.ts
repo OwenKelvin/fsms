@@ -8,5 +8,5 @@ export class DeletePaymentInputDto {
     message: (validationArguments) =>
       `Payment with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

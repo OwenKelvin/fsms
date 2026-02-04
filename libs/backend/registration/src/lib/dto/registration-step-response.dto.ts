@@ -7,7 +7,7 @@ export class RegistrationStepResponseDto {
   success!: boolean;
 
   @Field({ nullable: true })
-  registrationId?: number;
+  registrationId?: string;
 
   @Field({ nullable: true })
   message?: string;

@@ -1,8 +1,10 @@
 import {
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { UserModel } from './user.model';
@@ -17,25 +19,30 @@ import { InstitutionModel } from './institution.model';
   deletedAt: true,
 })
 export class TagModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @Column({ type: DataTypes.STRING })
   name?: string;
 
   @ForeignKey(() => UserModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  createdById?: UserModel;
+  createdById?: string;
 
   @BelongsTo(() => UserModel)
   createdBy!: UserModel;
 
   @ForeignKey(() => InstitutionModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  institutionId?: number;
+  institutionId?: string;
 
   @BelongsTo(() => InstitutionModel)
   institution!: InstitutionModel;

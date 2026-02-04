@@ -6,13 +6,13 @@ module.exports = {
     await queryInterface.createTable('activity_log_user', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
       },
       activityLogId: {
         field: 'activity_log_id',
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: 'activity_logs', // name of the ActivityLog table in snake_case
@@ -23,7 +23,7 @@ module.exports = {
       },
       userId: {
         field: 'user_id',
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: 'users',
@@ -50,6 +50,11 @@ module.exports = {
         allowNull: true,
       },
     });
+
+    // Add indexes
+    await queryInterface.addIndex('activity_log_user', ['id']);
+    await queryInterface.addIndex('activity_log_user', ['activity_log_id']);
+    await queryInterface.addIndex('activity_log_user', ['user_id']);
 
     // Adding a unique constraint to ensure each user can only view a given activity once
     await queryInterface.addConstraint('activity_log_user', {

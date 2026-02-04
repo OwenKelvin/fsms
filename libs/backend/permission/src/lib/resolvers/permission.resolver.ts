@@ -38,7 +38,7 @@ export class PermissionResolver {
   }
 
   @Query(() => PermissionModel)
-  async permission(@Args('id') id: number) {
+  async permission(@Args('id') id: string) {
     return this.permissionService.findById(id);
   }
 }

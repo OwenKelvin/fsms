@@ -93,7 +93,7 @@ export class MpesaService {
 
   async requestStkPush(
     phoneNumber: string,
-    quoteId: number,
+    quoteId: string,
     defaultParams: Record<string, string>,
   ) {
     const quote = (await this.quoteService.findById(quoteId)) as QuoteModel;

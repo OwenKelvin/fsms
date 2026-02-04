@@ -20,6 +20,7 @@ import { UpdateConfigInputDto } from '../dto/update-config-input.dto';
 import { ConfigUpdatedEvent } from '../events/config-updated.event';
 import { DeleteConfigInputDto } from '../dto/delete-config-input.dto';
 import { ConfigDeletedEvent } from '../events/config-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver()
 export class ConfigResolver {
@@ -37,7 +38,8 @@ export class ConfigResolver {
   }
 
   @Query(() => ConfigModel)
-  async config(@Args('id') id: number) {
+  async config(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.configService.findById(id);
   }
 
@@ -61,6 +63,7 @@ export class ConfigResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.UpdateConfig)
   async updateConfig(@Body(new ValidationPipe()) params: UpdateConfigInputDto) {
+    validateUUID(params.id, 'id');
     const config = await this.configService.findById(params.id);
     if (config) {
       await config?.update(params.params);
@@ -79,6 +82,7 @@ export class ConfigResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.DeleteConfig)
   async deleteConfig(@Body(new ValidationPipe()) { id }: DeleteConfigInputDto) {
+    validateUUID(id, 'id');
     const config = (await this.configService.findById(id)) as ConfigModel;
 
     await config.destroy();

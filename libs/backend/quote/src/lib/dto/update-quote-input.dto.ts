@@ -9,8 +9,8 @@ export class UpdateQuoteInputDto {
     message: (validationArguments) =>
       `Quote with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
-  params: CreateQuoteInputDto = { creditAmount: 0, planId: 0 };
+  params: CreateQuoteInputDto = { creditAmount: 0, planId: '' };
 }

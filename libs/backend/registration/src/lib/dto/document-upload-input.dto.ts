@@ -12,5 +12,5 @@ export class DocumentUploadInputDto {
   @Field()
   @IsNotEmpty({ message: 'Registration ID is required' })
   @IsNumber({}, { message: 'Registration ID must be a number' })
-  registrationId!: number;
+  registrationId!: string;
 }

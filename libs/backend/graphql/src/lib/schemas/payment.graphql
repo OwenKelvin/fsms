@@ -1,5 +1,5 @@
 type PaymentModel {
-  id: Int!
+  id: ID!
   name: String!
 }
 
@@ -23,16 +23,16 @@ type CreatePaymentSuccessResponse {
 
 extend type Query {
   payments(query: QueryParams): PaginatedPayment!
-  payment(id: Int!): PaymentModel
+  payment(id: ID!): PaymentModel
 }
 
 extend type Mutation {
   updatePayment(
-    id: Int!
+    id: ID!
     params: UpdatePaymentInput
   ): CreatePaymentSuccessResponse
 
   createPayment(params: CreatePaymentInput): CreatePaymentSuccessResponse
 
-  deletePayment(id: Int!): DeleteSuccessResponse
+  deletePayment(id: ID!): DeleteSuccessResponse
 }

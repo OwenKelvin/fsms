@@ -7,7 +7,7 @@ export type ISubmitProfileInfoMutationVariables = Types.Exact<{
 }>;
 
 
-export type ISubmitProfileInfoMutation = { submitProfileInfo: { success: boolean, registrationId?: number | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
+export type ISubmitProfileInfoMutation = { submitProfileInfo: { success: boolean, registrationId?: string | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type ISubmitInstitutionDetailsMutationVariables = Types.Exact<{
   registrationId: Types.Scalars['Int']['input'];
@@ -15,7 +15,7 @@ export type ISubmitInstitutionDetailsMutationVariables = Types.Exact<{
 }>;
 
 
-export type ISubmitInstitutionDetailsMutation = { submitInstitutionDetails: { success: boolean, registrationId?: number | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
+export type ISubmitInstitutionDetailsMutation = { submitInstitutionDetails: { success: boolean, registrationId?: string | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type IUploadDocumentMutationVariables = Types.Exact<{
   file: Types.Scalars['Upload']['input'];
@@ -23,7 +23,7 @@ export type IUploadDocumentMutationVariables = Types.Exact<{
 }>;
 
 
-export type IUploadDocumentMutation = { uploadRegistrationDocument: { success: boolean, documentId?: number | null, fileUploadId?: number | null, documentType?: Types.IDocumentType | null, fileName?: string | null, fileSize?: number | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
+export type IUploadDocumentMutation = { uploadRegistrationDocument: { success: boolean, documentId?: string | null, fileUploadId?: string | null, documentType?: Types.IDocumentType | null, fileName?: string | null, fileSize?: number | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type ISubmitAdminCredentialsMutationVariables = Types.Exact<{
   registrationId: Types.Scalars['Int']['input'];
@@ -31,7 +31,7 @@ export type ISubmitAdminCredentialsMutationVariables = Types.Exact<{
 }>;
 
 
-export type ISubmitAdminCredentialsMutation = { submitAdminCredentials: { success: boolean, registrationId?: number | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
+export type ISubmitAdminCredentialsMutation = { submitAdminCredentials: { success: boolean, registrationId?: string | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type ICompleteRegistrationMutationVariables = Types.Exact<{
   registrationId: Types.Scalars['Int']['input'];
@@ -41,33 +41,33 @@ export type ICompleteRegistrationMutationVariables = Types.Exact<{
 }>;
 
 
-export type ICompleteRegistrationMutation = { completeRegistration: { success: boolean, institutionId?: number | null, adminUserId?: number | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
+export type ICompleteRegistrationMutation = { completeRegistration: { success: boolean, institutionId?: string | null, adminUserId?: string | null, message?: string | null, errors?: Array<{ field: string, message: string }> | null } };
 
 export type IGetRegistrationStatusQueryVariables = Types.Exact<{
   registrationId: Types.Scalars['Int']['input'];
 }>;
 
 
-export type IGetRegistrationStatusQuery = { getRegistrationStatus?: { id: number, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: number | null, adminUserId?: number | null } | null };
+export type IGetRegistrationStatusQuery = { getRegistrationStatus?: { id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null } | null };
 
 export type IGetRegistrationDetailsQueryVariables = Types.Exact<{
   registrationId: Types.Scalars['Int']['input'];
 }>;
 
 
-export type IGetRegistrationDetailsQuery = { getRegistrationDetails?: { id: number, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: number | null, adminUserId?: number | null, institution?: { id: number, legalName?: string | null, institutionType?: string | null, accreditationNumber?: string | null, streetAddress?: string | null, city?: string | null, stateProvince?: string | null, zipPostalCode?: string | null, officialWebsite?: string | null } | null, adminUser?: { id: number, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: number, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> } | null };
+export type IGetRegistrationDetailsQuery = { getRegistrationDetails?: { id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: string | null, accreditationNumber?: string | null, streetAddress?: string | null, city?: string | null, stateProvince?: string | null, zipPostalCode?: string | null, officialWebsite?: string | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: string, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> } | null };
 
 export type IGetRegistrationsQueryVariables = Types.Exact<{
   filter?: Types.InputMaybe<Types.IRegistrationFilterInput>;
 }>;
 
 
-export type IGetRegistrationsQuery = { getRegistrations: Array<{ id: number, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: number | null, adminUserId?: number | null, institution?: { id: number, legalName?: string | null, institutionType?: string | null } | null, adminUser?: { id: number, firstName: string, lastName: string, email: string } | null }> };
+export type IGetRegistrationsQuery = { getRegistrations: Array<{ id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: string | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null }> };
 
 export type IGetRegistrationsRequiringReviewQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type IGetRegistrationsRequiringReviewQuery = { getRegistrationsRequiringReview: Array<{ id: number, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: number | null, adminUserId?: number | null, institution?: { id: number, legalName?: string | null, institutionType?: string | null } | null, adminUser?: { id: number, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: number, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> }> };
+export type IGetRegistrationsRequiringReviewQuery = { getRegistrationsRequiringReview: Array<{ id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: string | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: string, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> }> };
 
 
 export const SubmitProfileInfo = gql`

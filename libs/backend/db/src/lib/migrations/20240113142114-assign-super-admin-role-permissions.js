@@ -1,5 +1,7 @@
 'use strict';
 
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = {
   async up(queryInterface) {
     // Find the role ID of 'Super Admin'
@@ -31,6 +33,7 @@ module.exports = {
 
     // Assign all permissions to the 'Super Admin' role
     const permissionRoleValues = permissionIds.map((permissionId) => ({
+      id: uuidv4(),
       permission_id: permissionId,
       role_id: superAdminRoleId,
       created_at: new Date().toISOString(),

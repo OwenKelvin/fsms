@@ -9,7 +9,7 @@ export class UpdateNotificationInputDto {
     message: (validationArguments) =>
       `Notification with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreateNotificationInputDto = { description: '', title: '' };

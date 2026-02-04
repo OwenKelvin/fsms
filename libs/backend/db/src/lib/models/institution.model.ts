@@ -1,8 +1,10 @@
 import {
   BelongsTo,
   Column,
+  Default,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
@@ -24,6 +26,11 @@ export enum InstitutionType {
   deletedAt: true,
 })
 export class InstitutionModel extends Model {
+  @PrimaryKey
+  @Default(DataTypes.UUIDV4)
+  @Column(DataTypes.UUID)
+  override id!: string;
+
   @Column({ type: DataTypes.STRING })
   name?: string;
 
@@ -101,10 +108,10 @@ export class InstitutionModel extends Model {
 
   @ForeignKey(() => UserModel)
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull: false,
   })
-  createdById?: UserModel;
+  createdById?: string;
 
   @BelongsTo(() => UserModel)
   createdBy!: UserModel;

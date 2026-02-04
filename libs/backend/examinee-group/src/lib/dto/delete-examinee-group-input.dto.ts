@@ -8,5 +8,5 @@ export class DeleteExamineeGroupInputDto {
     message: (validationArguments) =>
       `ExamineeGroup with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

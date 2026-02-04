@@ -4,20 +4,20 @@ enum ConfigType {
 }
 
 type ExamConfig {
-  id: Int!
+  id: ID!
   name: String!
   selected: Boolean
   value: String
 }
 
 input ExamConfigInput {
-  id: Int!
+  id: ID!
   selected: Boolean!
   value: String
 }
 
 type ConfigModel {
-  id: Int!
+  id: ID!
   name: String!
   type: ConfigType
 }
@@ -44,13 +44,13 @@ type CreateConfigSuccessResponse {
 
 extend type Query {
   configs(query: QueryParams): PaginatedConfig!
-  config(id: Int!): ConfigModel
+  config(id: ID!): ConfigModel
 }
 
 extend type Mutation {
-  updateConfig(id: Int!, params: UpdateConfigInput): CreateConfigSuccessResponse
+  updateConfig(id: ID!, params: UpdateConfigInput): CreateConfigSuccessResponse
 
   createConfig(params: CreateConfigInput!): CreateConfigSuccessResponse
 
-  deleteConfig(id: Int!): DeleteSuccessResponse
+  deleteConfig(id: ID!): DeleteSuccessResponse
 }

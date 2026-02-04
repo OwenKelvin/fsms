@@ -20,6 +20,7 @@ import { UpdateInstitutionInputDto } from '../dto/update-institution-input.dto';
 import { InstitutionUpdatedEvent } from '../events/institution-updated.event';
 import { DeleteInstitutionInputDto } from '../dto/delete-institution-input.dto';
 import { InstitutionDeletedEvent } from '../events/institution-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => InstitutionModel)
 export class InstitutionResolver {
@@ -37,7 +38,8 @@ export class InstitutionResolver {
   }
 
   @Query(() => InstitutionModel)
-  async institution(@Args('id') id: number) {
+  async institution(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.institutionService.findById(id);
   }
 
@@ -68,6 +70,7 @@ export class InstitutionResolver {
   async updateInstitution(
     @Body(new ValidationPipe()) params: UpdateInstitutionInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const institution = await this.institutionService.findById(params.id);
     if (institution) {
       await institution?.update(params.params);
@@ -91,6 +94,7 @@ export class InstitutionResolver {
   async deleteInstitution(
     @Body(new ValidationPipe()) { id }: DeleteInstitutionInputDto,
   ) {
+    validateUUID(id, 'id');
     const institution = (await this.institutionService.findById(
       id,
     )) as InstitutionModel;

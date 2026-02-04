@@ -8,9 +8,9 @@ module.exports = {
     await queryInterface.createTable('registration_documents', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       documentType: {
         field: 'document_type',
@@ -46,7 +46,7 @@ module.exports = {
       },
       fileUploadId: {
         field: 'file_upload_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'file_uploads',
@@ -57,7 +57,7 @@ module.exports = {
       },
       registrationId: {
         field: 'registration_id',
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
           model: 'registration_records',
@@ -84,6 +84,7 @@ module.exports = {
     });
 
     // Add indexes for common queries
+    await queryInterface.addIndex('registration_documents', ['id']);
     await queryInterface.addIndex('registration_documents', [
       'registration_id',
     ]);

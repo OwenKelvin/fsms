@@ -38,6 +38,7 @@ import { QuestionUpdatedEvent } from '../events/question-updated.event';
 import { DeleteQuestionInputDto } from '../dto/delete-question-input.dto';
 import { QuestionDeletedEvent } from '../events/question-deleted.event';
 import { ChoiceBackendService } from '@fsms/backend/choice-backend-service';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => QuestionModel)
 export class QuestionResolver {
@@ -56,7 +57,8 @@ export class QuestionResolver {
   }
 
   @Query(() => QuestionModel)
-  async question(@Args('id') id: number) {
+  async question(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.questionService.findById(id);
   }
 
@@ -66,8 +68,9 @@ export class QuestionResolver {
   async createQuestion(
     @Body('params', new ValidationPipe()) params: CreateQuestionInputDto,
     @CurrentUser() user: UserModel,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
+    validateUUID(institutionId, 'institutionId');
     const { choices, tags: inputTags, ...questionParams } = params;
 
     const question = await this.questionService.create({
@@ -103,11 +106,13 @@ export class QuestionResolver {
 
   @ResolveField()
   async choices(@Parent() questionModel: QuestionModel) {
+    validateUUID(questionModel.id, 'questionId');
     return await this.choiceService.findChoicesByQuestionId(questionModel.id);
   }
 
   @ResolveField()
   async tags(@Parent() questionModel: QuestionModel) {
+    validateUUID(questionModel.id, 'questionId');
     const questionTags = await this.questionService.findById(questionModel.id, {
       include: [TagModel],
     });
@@ -120,6 +125,7 @@ export class QuestionResolver {
   async updateQuestion(
     @Body(new ValidationPipe()) params: UpdateQuestionInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const question = await this.questionService.findById(params.id);
     if (question) {
       await question?.update(params.params);
@@ -143,6 +149,7 @@ export class QuestionResolver {
   async deleteQuestion(
     @Body(new ValidationPipe()) { id }: DeleteQuestionInputDto,
   ) {
+    validateUUID(id, 'id');
     const question = (await this.questionService.findById(id)) as QuestionModel;
 
     await question.destroy();

@@ -1,5 +1,5 @@
 type InstitutionModel {
-  id: Int!
+  id: ID!
   name: String!
   legalName: String
   institutionType: String
@@ -49,12 +49,12 @@ type CreateInstitutionSuccessResponse {
 
 extend type Query {
   institutions(query: QueryParams): PaginatedInstitution!
-  institution(id: Int!): InstitutionModel
+  institution(id: ID!): InstitutionModel
 }
 
 extend type Mutation {
   updateInstitution(
-    id: Int!
+    id: ID!
     params: UpdateInstitutionInput
   ): CreateInstitutionSuccessResponse
 
@@ -62,5 +62,5 @@ extend type Mutation {
     params: CreateInstitutionInput
   ): CreateInstitutionSuccessResponse
 
-  deleteInstitution(id: Int!): DeleteSuccessResponse
+  deleteInstitution(id: ID!): DeleteSuccessResponse
 }

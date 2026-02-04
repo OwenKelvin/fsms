@@ -37,6 +37,7 @@ import { DeleteExamInputDto } from '../dto/delete-exam-input.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UpdateExamInputDto } from '../dto/update-exam-input.dto';
 import { ExamUpdateEvent } from '../events/exam-updated.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => ExamModel)
 export class ExamResolver {
@@ -51,8 +52,9 @@ export class ExamResolver {
   async createExam(
     @Body('params', new ValidationPipe()) params: CreateExamInputDto,
     @CurrentUser() user: UserModel,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
+    validateUUID(institutionId, 'institutionId');
     const {
       configs: inputConfigs,
       tags: inputTags,
@@ -93,7 +95,7 @@ export class ExamResolver {
       inputConfigs.map(({ id, selected, ...item }) => ({
         ...item,
         selected: selected as boolean,
-        configId: id as number,
+        configId: id as string,
       })),
     );
     await this.examService.setTags(
@@ -116,8 +118,9 @@ export class ExamResolver {
   exams(
     @Args('query') query: IQueryParam,
     @CurrentUser() user: UserModel,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
+    validateUUID(institutionId, 'institutionId');
     return this.examService.findAll({
       ...query,
       filters: [
@@ -133,12 +136,14 @@ export class ExamResolver {
   }
 
   @Query(() => ExamModel)
-  async exam(@Args('id') id: number) {
+  async exam(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.examService.findById(id);
   }
 
   @ResolveField()
   async configs(@Parent() examModel: ExamModel) {
+    validateUUID(examModel.id, 'examId');
     const examConfigs = await this.examService.findById(examModel.id, {
       include: [
         {
@@ -161,6 +166,7 @@ export class ExamResolver {
 
   @ResolveField()
   async tags(@Parent() examModel: ExamModel) {
+    validateUUID(examModel.id, 'examId');
     const examTags = await this.examService.findById(examModel.id, {
       include: [TagModel],
     });
@@ -172,6 +178,7 @@ export class ExamResolver {
     @Parent() examModel: ExamModel,
     @Args() { limit = 5, skip = 0 },
   ) {
+    validateUUID(examModel.id, 'examId');
     const rows = await this.examService.findExamPapers(
       examModel.id,
       limit,
@@ -185,6 +192,7 @@ export class ExamResolver {
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @Permissions(PermissionsEnum.DeleteExam)
   async deleteExam(@Body(new ValidationPipe()) { id }: DeleteExamInputDto) {
+    validateUUID(id, 'id');
     const exam = (await this.examService.findById(id)) as ExamModel;
 
     await exam.destroy();
@@ -201,9 +209,11 @@ export class ExamResolver {
   async updateExam(
     @Body(new ValidationPipe()) input: UpdateExamInputDto,
     @CurrentUser() user: UserModel,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
+    validateUUID(institutionId, 'institutionId');
     const { id, params } = input;
+    validateUUID(id, 'id');
 
     if (params.startDate && params.endDate) {
       const now = new Date();
@@ -232,7 +242,7 @@ export class ExamResolver {
         params.configs.map(({ id, selected, ...item }) => ({
           ...item,
           selected: selected as boolean,
-          configId: id as number,
+          configId: id as string,
         })),
       );
       await this.examService.setTags(

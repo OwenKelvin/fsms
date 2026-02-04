@@ -16,6 +16,7 @@ import {
 } from '@fsms/backend/permission-service';
 import { RoleService } from '@fsms/backend/role-service';
 import { IQueryParam, PermissionModel, RoleModel } from '@fsms/backend/db';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => RoleModel)
 export class RoleResolver {
@@ -43,12 +44,14 @@ export class RoleResolver {
   }
 
   @Query(() => RoleModel)
-  async role(@Args('id') id: number) {
+  async role(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.roleService.findById(id);
   }
 
   @ResolveField()
   async permissions(@Parent() roleModel: RoleModel) {
+    validateUUID(roleModel.id, 'roleId');
     const rolePermissions = await this.roleService.findById(roleModel.id, {
       include: [PermissionModel],
     });
@@ -56,7 +59,8 @@ export class RoleResolver {
   }
 
   @Mutation(() => RoleModel)
-  async deleteRole(@Args('id') id: number) {
+  async deleteRole(@Args('id') id: string) {
+    validateUUID(id, 'id');
     await this.roleService.deleteById(id);
 
     return {

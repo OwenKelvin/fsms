@@ -9,7 +9,7 @@ export class UpdateActivityLogInputDto {
     message: (validationArguments) =>
       `ActivityLog with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 
   @ValidateNested()
   params: CreateActivityLogInputDto = { name: '' };

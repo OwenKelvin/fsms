@@ -38,6 +38,7 @@ import { UpdateExamineeGroupInputDto } from '../dto/update-examinee-group-input.
 import { ExamineeGroupUpdatedEvent } from '../events/examinee-group-updated.event';
 import { DeleteExamineeGroupInputDto } from '../dto/delete-examinee-group-input.dto';
 import { ExamineeGroupDeletedEvent } from '../events/examinee-group-deleted.event';
+import { validateUUID } from '@fsms/backend/util';
 
 @Resolver(() => ExamineeGroupModel)
 export class ExamineeGroupResolver {
@@ -50,8 +51,9 @@ export class ExamineeGroupResolver {
   @UseGuards(InstitutionGuard)
   examineeGroups(
     @Args('query') query: IQueryParam,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
   ) {
+    validateUUID(institutionId, 'institutionId');
     return this.examineeGroupService.findAll({
       ...query,
       filters: [
@@ -67,7 +69,8 @@ export class ExamineeGroupResolver {
   }
 
   @Query(() => ExamineeGroupModel)
-  async examineeGroup(@Args('id') id: number) {
+  async examineeGroup(@Args('id') id: string) {
+    validateUUID(id, 'id');
     return this.examineeGroupService.findById(id);
   }
 
@@ -76,9 +79,10 @@ export class ExamineeGroupResolver {
   @Permissions(PermissionsEnum.CreateExamineeGroup)
   async createExamineeGroup(
     @Body('params', new ValidationPipe()) params: CreateExamineeGroupInputDto,
-    @CurrentInstitution() institutionId: number,
+    @CurrentInstitution() institutionId: string,
     @CurrentUser() user: UserModel,
   ) {
+    validateUUID(institutionId, 'institutionId');
     const examineeGroup = await this.examineeGroupService.create({
       institutionId,
       createdById: user.id,
@@ -108,6 +112,7 @@ export class ExamineeGroupResolver {
   async updateExamineeGroup(
     @Body(new ValidationPipe()) params: UpdateExamineeGroupInputDto,
   ) {
+    validateUUID(params.id, 'id');
     const examineeGroup = await this.examineeGroupService.findById(params.id);
     if (examineeGroup) {
       await examineeGroup?.update(params.params);
@@ -131,6 +136,7 @@ export class ExamineeGroupResolver {
   async deleteExamineeGroup(
     @Body(new ValidationPipe()) { id }: DeleteExamineeGroupInputDto,
   ) {
+    validateUUID(id, 'id');
     const examineeGroup = (await this.examineeGroupService.findById(
       id,
     )) as ExamineeGroupModel;
@@ -149,6 +155,7 @@ export class ExamineeGroupResolver {
 
   @ResolveField()
   async examinees(@Parent() examineeGroupModel: ExamineeGroupModel) {
+    validateUUID(examineeGroupModel.id, 'examineeGroupId');
     const examineeGroup = await this.examineeGroupService.findById(
       examineeGroupModel.id,
       {

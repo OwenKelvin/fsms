@@ -8,5 +8,5 @@ export class DeleteConfigInputDto {
     message: (validationArguments) =>
       `Config with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

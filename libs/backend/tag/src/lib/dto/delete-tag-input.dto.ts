@@ -8,5 +8,5 @@ export class DeleteTagInputDto {
     message: (validationArguments) =>
       `Tag with id  ${validationArguments.value}" not found`,
   })
-  id = 0;
+  id = '';
 }

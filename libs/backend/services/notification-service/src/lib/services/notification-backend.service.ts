@@ -4,6 +4,7 @@ import { NotificationModel, NotificationUserModel } from '@fsms/backend/db';
 import { InjectModel } from '@nestjs/sequelize';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { validateUUID } from '@fsms/backend/util';
 
 export const SEND_NOTIFICATION_QUEUE = 'send-notification-queue';
 
@@ -18,7 +19,7 @@ export class NotificationBackendService extends CrudAbstractService<Notification
     private sendNotificationQueue: Queue<{
       title: string;
       description: string;
-      userIds: number[];
+      userIds: string[];
     }>,
   ) {
     super(notificationModel);
@@ -27,12 +28,18 @@ export class NotificationBackendService extends CrudAbstractService<Notification
   async sendNotification(
     title: string,
     description: string,
-    userIds: number[],
+    userIds: string[],
   ) {
+    // Validate all user IDs
+    userIds.forEach(userId => validateUUID(userId, 'userId'));
+    
     await this.sendNotificationQueue.add({ title, description, userIds });
   }
 
-  async addUsers(notificationId: number, userIds: number[]) {
+  async addUsers(notificationId: string, userIds: string[]) {
+    validateUUID(notificationId, 'notificationId');
+    userIds.forEach(userId => validateUUID(userId, 'userId'));
+    
     await this.notificationUserModel.bulkCreate(
       userIds.map((userId) => ({
         userId,
@@ -41,7 +48,9 @@ export class NotificationBackendService extends CrudAbstractService<Notification
     );
   }
 
-  async userStats(userId: number) {
+  async userStats(userId: string) {
+    validateUUID(userId, 'userId');
+    
     const total = await this.notificationUserModel.count({
       where: { userId },
     });

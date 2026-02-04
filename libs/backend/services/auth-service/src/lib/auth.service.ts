@@ -15,6 +15,7 @@ import { compare, hash } from 'bcrypt';
 import Keyv from 'keyv';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
+import { validateUUID } from '@fsms/backend/util';
 
 interface RegisterInputDto {
   firstName: string;
@@ -337,7 +338,9 @@ export class AuthService {
    * Setup two-factor authentication for a user
    * Generates TOTP secret, QR code, and backup codes
    */
-  async setupTwoFactorAuth(userId: number): Promise<TwoFactorSetup> {
+  async setupTwoFactorAuth(userId: string): Promise<TwoFactorSetup> {
+    validateUUID(userId, 'userId');
+    
     const user = await this.userService.findById(userId);
     if (!user) {
       throw new BadRequestException('User not found');
@@ -371,7 +374,9 @@ export class AuthService {
   /**
    * Enable two-factor authentication after verifying the initial token
    */
-  async enableTwoFactorAuth(userId: number, token: string): Promise<boolean> {
+  async enableTwoFactorAuth(userId: string, token: string): Promise<boolean> {
+    validateUUID(userId, 'userId');
+    
     const user = await this.userService.findById(userId);
     if (!user || !user.twoFactorSecret) {
       throw new BadRequestException('Two-factor authentication not set up');
@@ -397,7 +402,9 @@ export class AuthService {
   /**
    * Disable two-factor authentication
    */
-  async disableTwoFactorAuth(userId: number, token: string): Promise<boolean> {
+  async disableTwoFactorAuth(userId: string, token: string): Promise<boolean> {
+    validateUUID(userId, 'userId');
+    
     const user = await this.userService.findById(userId);
     if (!user || !user.twoFactorEnabled) {
       throw new BadRequestException('Two-factor authentication not enabled');
@@ -486,9 +493,11 @@ export class AuthService {
    * Regenerate backup codes for a user
    */
   async regenerateBackupCodes(
-    userId: number,
+    userId: string,
     token: string,
   ): Promise<string[]> {
+    validateUUID(userId, 'userId');
+    
     const user = await this.userService.findById(userId);
     if (!user || !user.twoFactorEnabled) {
       throw new BadRequestException('Two-factor authentication not enabled');

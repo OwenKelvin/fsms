@@ -28,9 +28,9 @@ export class ExistsConstraint implements ValidatorConstraintInterface {
 
 export function Exists(
   model: ModelType<
-    { id: number },
+    { id: string },
     {
-      id: number;
+      id: string;
     }
   >,
   field = 'id',
