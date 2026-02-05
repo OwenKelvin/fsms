@@ -55,16 +55,15 @@ import { JwtService } from '@nestjs/jwt';
           },
         },
       },
-      formatError: (error: GraphQLFormattedError) => {
-        return {
+      formatError: (error: GraphQLFormattedError) => ({
           message: error.message,
           path: error.path,
           extensions: {
             code: error.extensions?.['code'],
+            fields: error.extensions?.['fields'],
             originalError: error.extensions?.['originalError'],
           },
-        };
-      },
+        })
     }),
   ],
 })

@@ -1,5 +1,4 @@
 <form (submit)="handleSubmit($event)">
-  <pre>{{ institutionTypes() }}</pre>
   <!-- Page Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold mb-2">Institution Details</h1>
@@ -49,13 +48,13 @@
             </hlm-prefix>
             <hlm-select
               id="institutionType"
-              [formField]="institutionDetailsForm.institutionType"
+              [formField]="$any(institutionDetailsForm.institutionType)"
+              placeholder="Select Institution"
             >
               <hlm-select-trigger>
-                <hlm-select-value>Select Institution</hlm-select-value>
+                <hlm-select-value></hlm-select-value>
               </hlm-select-trigger>
               <hlm-select-content>
-                <hlm-option [value]="">Select type</hlm-option>
                 @for (institutionType of institutionTypes(); track institutionType.key) {
                   <hlm-option [value]="$any(institutionType.key)">{{ institutionType.description }}</hlm-option>
                 }
@@ -102,19 +101,21 @@
 
       <!-- Street Address -->
       <div class="space-y-2">
-        <label hlmLabel for="streetAddress">Street Address</label>
-        <input
-          hlmInput
-          id="streetAddress"
-          type="text"
-          [formField]="institutionDetailsForm.streetAddress"
-          placeholder="123 Education Plaza"
-          class="w-full"
-        />
-        @for (error of institutionDetailsForm.streetAddress().errors();
-          track error) {
-          <hlm-error>{{ error.message }}</hlm-error>
-        }
+        <hlm-form-field>
+          <label hlmLabel for="streetAddress">Street Address</label>
+          <input
+            hlmInput
+            id="streetAddress"
+            type="text"
+            [formField]="institutionDetailsForm.streetAddress"
+            placeholder="123 Education Plaza"
+            class="w-full"
+          />
+          @for (error of institutionDetailsForm.streetAddress().errors();
+            track error) {
+            <hlm-error>{{ error.message }}</hlm-error>
+          }
+        </hlm-form-field>
       </div>
 
       <!-- City, State, ZIP -->
@@ -195,7 +196,7 @@
             hlmInput
             id="officialWebsite"
             type="text"
-            [formField]="institutionDetailsForm.officialWebsite"
+            [formField]="$any(institutionDetailsForm.officialWebsite)"
             placeholder="www.university.edu"
             class="w-full pl-16"
           />
@@ -230,10 +231,10 @@
       <button
         hlmBtn
         type="submit"
-        [disabled]="!institutionDetailsForm().valid() || isLoading()"
+        [disabled]="!institutionDetailsForm().valid() || submitting()"
         class="flex items-center gap-2"
       >
-        @if (isLoading()) {
+        @if (submitting()) {
           Processing...
         } @else {
           Save & Continue

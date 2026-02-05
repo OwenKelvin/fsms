@@ -3,7 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -38,7 +38,27 @@ async function bootstrap() {
     AppModule,
     fastifyAdapter
   );
-  app.useGlobalPipes(new ValidationPipe());
+  // app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+
+      exceptionFactory: (errors) => {
+        const fields = errors.map((err) => ({
+          field: err.property,
+          message: Object.values(err.constraints ?? {}).join(' ,'),
+        }));
+
+        return new BadRequestException({
+          message: 'Validation failed',
+          fields,
+        });
+      },
+    }),
+  );
+
   app.enableCors();
 
   const port = process.env['FSMS_BACKEND_PORT'] || 3000;

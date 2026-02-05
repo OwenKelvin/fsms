@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { catchError, from, map, Observable, throwError } from 'rxjs';
 
 import {
-  CompleteRegistration,
+  CompleteRegistration, GetInstitutionTypes,
   GetRegistrationDetails,
   GetRegistrationStatus,
   ICompleteRegistrationMutation,
@@ -17,7 +17,7 @@ import {
   SubmitAdminCredentials,
   SubmitInstitutionDetails,
   SubmitProfileInfo,
-  UploadDocument,
+  UploadDocument
 } from './registration.generated';
 import {
   IAdminCredentialsInput,
@@ -43,11 +43,13 @@ export interface RegistrationResponse<T = any> {
 export class RegistrationService {
   private apollo = inject(Apollo);
 
-  getInstitutionTypes = () =>
-    this.apollo.query<IGetInstitutionTypesQuery>({
-      query: GetRegistrationStatus,
+  getInstitutionTypes = () => {
+    console.log('getInstitutionTypes');
+    return this.apollo.query<IGetInstitutionTypesQuery>({
+      query: GetInstitutionTypes,
       fetchPolicy: 'cache-first',
     });
+  }
 
   submitProfileInfo(
     input: IProfileInfoInput,

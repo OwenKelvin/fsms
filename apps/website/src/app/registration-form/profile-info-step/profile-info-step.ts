@@ -37,11 +37,12 @@ import {
   HlmSelectValue,
 } from '@fsms/ui/select';
 import { HlmIcon } from '@fsms/ui/icon';
-import { IProfileInfoInput } from '@fsms/data-access/core';
+import { formatGraphqlError, IProfileInfoInput } from '@fsms/data-access/core';
 import { RegistrationService } from '@fsms/data-access/registration';
 import { lastValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HlmAlert, HlmAlertDescription, HlmAlertIcon, HlmAlertTitle } from '@fsms/ui/alert';
+import { JsonPipe } from '@angular/common';
 
 interface ProfileInfoFormValue {
   firstName: string;
@@ -77,12 +78,20 @@ interface ProfileInfoFormValue {
     HlmAlertIcon,
     HlmAlertTitle,
     HlmAlertDescription,
+    JsonPipe,
   ],
-  providers: [provideIcons({ lucideMail, lucideChevronRight, lucideUser, lucideTriangleAlert })],
+  providers: [
+    provideIcons({
+      lucideMail,
+      lucideChevronRight,
+      lucideUser,
+      lucideTriangleAlert,
+    }),
+  ],
   templateUrl: './profile-info-step.html',
 })
 export class ProfileInfoStep {
-  registrationId = model<string | undefined>();
+  registrationId = model<string | null>(null);
   formSubmitted = output<void>();
   registrationService = inject(RegistrationService);
   fieldErrors = input<Record<string, string[]>>({});
@@ -97,10 +106,10 @@ export class ProfileInfoStep {
   ]);
 
   formValue = model<ProfileInfoFormValue>({
-    firstName: '',
-    lastName: '',
-    jobTitle: '',
-    email: '',
+    firstName: 'Owen',
+    lastName: 'Kelvin',
+    jobTitle: 'dean',
+    email: 'otieno@yahoo.com',
   });
 
   public readonly profileInfoForm = form<ProfileInfoFormValue>(
@@ -128,18 +137,11 @@ export class ProfileInfoStep {
       );
       if (result.registrationId) {
         this.registrationId.set(result.registrationId);
-        this.formSubmitted.emit()
+        this.formSubmitted.emit();
       }
       return undefined;
     } catch (e) {
-      const errorMessage = (e as HttpErrorResponse).message;
-      return [
-        {
-          fieldTree: profileInfoForm,
-          kind: 'server',
-          message: errorMessage || 'An error occurred',
-        },
-      ];
+      return formatGraphqlError(e, profileInfoForm);
     }
   };
 

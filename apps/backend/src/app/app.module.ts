@@ -35,6 +35,8 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { ActivityLogModule } from '@fsms/backend/activity-log-backend';
 import { ActivityLogBackendServiceModule } from '@fsms/backend/activity-log-backend-service';
 import { RegistrationModule } from '@fsms/backend/registration-backend';
+import { APP_FILTER } from '@nestjs/core';
+import { GqlValidationFilter } from './gql-validation.filter';
 
 @Module({
   imports: [
@@ -75,6 +77,11 @@ import { RegistrationModule } from '@fsms/backend/registration-backend';
     ActivityLogBackendServiceModule,
     RegistrationModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: GqlValidationFilter,
+    },
+  ],
 })
 export class AppModule {}

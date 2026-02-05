@@ -68,35 +68,11 @@
     <!-- Main Content -->
     <main class="flex-1 p-8 md:p-12">
       <div>
-        <!-- Error Message -->
-        @if (error()) {
-          <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-sm font-semibold text-red-600 mb-2">{{ error() }}</p>
-            @if (fieldErrors() && getFieldErrorKeys().length > 0) {
-              <ul class="text-xs text-red-600 space-y-1 mt-2">
-                @for (field of getFieldErrorKeys(); track field) {
-                  <li class="font-medium">{{ field }}:</li>
-                  <ul class="ml-4 list-disc">
-                    @for (errorMsg of fieldErrors()[field]; track errorMsg) {
-                      <li>{{ errorMsg }}</li>
-                    }
-                  </ul>
-                }
-              </ul>
-            }
-          </div>
-        }
-
-        <!-- Loading Overlay -->
-        @if (isLoading()) {
-          <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p class="text-sm text-blue-600">Processing... Please wait.</p>
-          </div>
-        }
 
         @switch (currentStep()) {
           @case (0) {
             <app-profile-info-step
+              [(registrationId)]="registrationId"
               [(formValue)]="profileInfoValue"
               [fieldErrors]="fieldErrors()"
               (formSubmitted)="onProfileInfoSubmit()"
@@ -104,11 +80,9 @@
           }
           @case (1) {
             <app-institution-details-step
+              [registrationId]="registrationId() ?? ''"
               [(formValue)]="institutionDetailsValue"
-              [(isValid)]="institutionDetailsValid"
-              [isLoading]="isLoading()"
-              [fieldErrors]="fieldErrors()"
-              (submitForm)="onInstitutionDetailsSubmit($event)"
+              (formSubmitted)="onInstitutionDetailsSubmit()"
               (back)="previousStep()"
             />
           }
@@ -150,7 +124,7 @@
       </p>
       @if (currentStep() === 2) {
         <div class="flex items-center gap-2 text-green-600">
-          <ng-icon name="lucideShieldCheck" size="14" />
+          <ng-icon hlmIcon name="lucideShieldCheck" size="base" />
           <span class="font-medium">SSL SECURE CONNECTION</span>
         </div>
       }

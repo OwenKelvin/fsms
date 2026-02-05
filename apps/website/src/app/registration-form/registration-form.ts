@@ -18,9 +18,9 @@ import {
   IAdminCredentialsInput,
   IDocumentType,
   IInstitutionDetailsInput,
-  IProfileInfoInput,
+  IInstitutionType,
 } from '@fsms/data-access/core';
-import { JsonPipe } from '@angular/common';
+import { HlmIcon } from '@fsms/ui/icon';
 
 interface Step {
   id: string;
@@ -35,17 +35,6 @@ interface ProfileInfoFormValue {
   lastName: string;
   jobTitle: string;
   email: string;
-}
-
-interface InstitutionDetailsFormValue {
-  legalName: string;
-  institutionType: string;
-  accreditationNumber: string;
-  streetAddress: string;
-  city: string;
-  stateProvince: string;
-  zipPostalCode: string;
-  officialWebsite: string;
 }
 
 interface DocumentsFormValue {
@@ -71,7 +60,7 @@ interface AdminCredentialsFormValue {
     DocumentsStep,
     AdminCredentialsStep,
     Header,
-    JsonPipe,
+    HlmIcon,
   ],
   providers: [
     RegistrationService,
@@ -133,9 +122,9 @@ export default class RegistrationForm {
   });
   profileInfoValid = signal(false);
 
-  institutionDetailsValue = signal<InstitutionDetailsFormValue>({
+  institutionDetailsValue = signal<Required<IInstitutionDetailsInput>>({
     legalName: '',
-    institutionType: '',
+    institutionType: IInstitutionType.University,
     accreditationNumber: '',
     streetAddress: '',
     city: '',
@@ -212,66 +201,42 @@ export default class RegistrationForm {
 
   onProfileInfoSubmit() {
     this.nextStep();
-
-    // this.registrationService
-    //   .submitProfileInfo(data, this.registrationId() ?? undefined)
-    //   .subscribe({
-    //     next: (response) => {
-    //       if (response.registrationId) {
-    //         this.registrationId.set(response.registrationId);
-    //       }
-    //       this.profileInfoValue.set(data);
-    //       this.isLoading.set(false);
-    //       this.nextStep();
-    //     },
-    //     error: (err) => {
-    //       this.isLoading.set(false);
-    //
-    //       // Handle structured validation errors
-    //       if (err.validationErrors) {
-    //         this.fieldErrors.set(err.validationErrors);
-    //         this.error.set('Please fix the validation errors below');
-    //       } else {
-    //         this.error.set(err.message || 'Failed to submit profile information');
-    //       }
-    //       console.error('Profile info submission error:', err);
-    //     },
-    //   });
   }
 
-  onInstitutionDetailsSubmit(data: IInstitutionDetailsInput) {
-    const regId = this.registrationId();
-    if (!regId) {
-      this.error.set('Registration ID not found. Please start from step 1.');
-      return;
-    }
-
-    this.isLoading.set(true);
-    this.error.set(null);
-    this.fieldErrors.set({});
-
-    this.registrationService.submitInstitutionDetails(regId, data).subscribe({
-      next: (response) => {
-        // Map the API response back to form value format
-        this.institutionDetailsValue.set({
-          ...data,
-          officialWebsite: data.officialWebsite || '',
-        });
-        this.isLoading.set(false);
-        this.nextStep();
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-
-        if (err.validationErrors) {
-          this.fieldErrors.set(err.validationErrors);
-          this.error.set('Please fix the validation errors below');
-        } else {
-          this.error.set(err.message || 'Failed to submit institution details');
-        }
-        console.error('Institution details submission error:', err);
-      },
-    });
+  onInstitutionDetailsSubmit() {
+    this.nextStep();
+    // const regId = this.registrationId();
+    // if (!regId) {
+    //   this.error.set('Registration ID not found. Please start from step 1.');
+    //   return;
+    // }
+    //
+    // this.isLoading.set(true);
+    // this.error.set(null);
+    // this.fieldErrors.set({});
+    //
+    // this.registrationService.submitInstitutionDetails(regId, data).subscribe({
+    //   next: (response) => {
+    //     // Map the API response back to form value format
+    //     this.institutionDetailsValue.set({
+    //       ...data,
+    //       officialWebsite: data.officialWebsite || '',
+    //     });
+    //     this.isLoading.set(false);
+    //     this.nextStep();
+    //   },
+    //   error: (err) => {
+    //     this.isLoading.set(false);
+    //
+    //     if (err.validationErrors) {
+    //       this.fieldErrors.set(err.validationErrors);
+    //       this.error.set('Please fix the validation errors below');
+    //     } else {
+    //       this.error.set(err.message || 'Failed to submit institution details');
+    //     }
+    //     console.error('Institution details submission error:', err);
+    //   },
+    // });
   }
 
   onDocumentsSubmit(data: DocumentsFormValue) {
