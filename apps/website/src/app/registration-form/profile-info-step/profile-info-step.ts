@@ -2,7 +2,6 @@ import {
   Component,
   computed,
   inject,
-  input,
   model,
   output,
   signal,
@@ -37,12 +36,10 @@ import {
   HlmSelectValue,
 } from '@fsms/ui/select';
 import { HlmIcon } from '@fsms/ui/icon';
-import { formatGraphqlError, IProfileInfoInput } from '@fsms/data-access/core';
+import { formatGraphqlError } from '@fsms/data-access/core';
 import { RegistrationService } from '@fsms/data-access/registration';
 import { lastValueFrom } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
 import { HlmAlert, HlmAlertDescription, HlmAlertIcon, HlmAlertTitle } from '@fsms/ui/alert';
-import { JsonPipe } from '@angular/common';
 
 interface ProfileInfoFormValue {
   firstName: string;
@@ -78,7 +75,6 @@ interface ProfileInfoFormValue {
     HlmAlertIcon,
     HlmAlertTitle,
     HlmAlertDescription,
-    JsonPipe,
   ],
   providers: [
     provideIcons({
@@ -94,7 +90,7 @@ export class ProfileInfoStep {
   registrationId = model<string | null>(null);
   formSubmitted = output<void>();
   registrationService = inject(RegistrationService);
-  fieldErrors = input<Record<string, string[]>>({});
+
 
   jobTitles = signal([
     { id: 'registrar', label: 'Registrar' },

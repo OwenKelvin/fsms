@@ -185,33 +185,42 @@
 
       <!-- Official Website -->
       <div class="space-y-2">
-        <label hlmLabel for="officialWebsite">Official Website</label>
-        <div class="relative">
+        <hlm-form-field>
+          <label hlmLabel for="officialWebsite">Official Website</label>
+          <div class="relative">
               <span
                 class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm"
               >
                 https://
               </span>
-          <input
-            hlmInput
-            id="officialWebsite"
-            type="text"
-            [formField]="$any(institutionDetailsForm.officialWebsite)"
-            placeholder="www.university.edu"
-            class="w-full pl-16"
-          />
-        </div>
-        @if (institutionDetailsForm.officialWebsite().touched() &&
-        institutionDetailsForm.officialWebsite().invalid()) {
-          <p class="text-xs text-red-600">
-            @for (error of institutionDetailsForm.officialWebsite().errors();
-              track error) {
-              {{ error.message }}
-            }
-          </p>
-        }
+            <input
+              hlmInput
+              id="officialWebsite"
+              type="text"
+              [formField]="$any(institutionDetailsForm.officialWebsite)"
+              placeholder="www.university.edu"
+              class="w-full pl-16"
+            />
+          </div>
+          @for (error of institutionDetailsForm.officialWebsite().errors();
+            track error) {
+            <hlm-error>{{ error.message }}</hlm-error>
+          }
+        </hlm-form-field>
       </div>
     </section>
+
+    @if (institutionDetailsForm().errors().length > 0) {
+      <div hlmAlert variant="destructive" class="my-8">
+        <ng-icon hlmIcon hlmAlertIcon name="lucideTriangleAlert" />
+
+        <h4 hlmAlertTitle>An Error Occurred</h4>
+
+        @for (error of institutionDetailsForm().errors(); track error.kind) {
+          <p hlmAlertDescription>{{ error.message }}</p>
+        }
+      </div>
+    }
 
     <!-- Form Actions -->
     <div

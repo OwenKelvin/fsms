@@ -48,8 +48,12 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RegistrationService } from '@fsms/data-access/registration';
 import { lastValueFrom, map } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
-import { JsonPipe } from '@angular/common';
+import {
+  HlmAlert,
+  HlmAlertDescription,
+  HlmAlertIcon,
+  HlmAlertTitle,
+} from '@fsms/ui/alert';
 
 @Component({
   selector: 'app-institution-details-step',
@@ -73,7 +77,10 @@ import { JsonPipe } from '@angular/common';
     HlmFormControl,
     HlmPrefix,
     BrnSelect,
-    JsonPipe,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmAlertIcon,
+    HlmAlertTitle,
   ],
   providers: [
     provideIcons({

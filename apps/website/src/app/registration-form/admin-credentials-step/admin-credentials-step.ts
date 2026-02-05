@@ -1,18 +1,52 @@
-import { Component, computed, input, model, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideCheckCircle,
   lucideChevronLeft,
   lucideLock,
   lucideShieldCheck,
+  lucideTriangleAlert,
   lucideUser,
 } from '@ng-icons/lucide';
-import { form, FormField, minLength, required, submit, validate } from '@angular/forms/signals';
+import {
+  FieldTree,
+  form,
+  FormField,
+  minLength,
+  required,
+  submit,
+  validate,
+} from '@angular/forms/signals';
 import { HlmLabel } from '@fsms/ui/label';
 import { HlmInput } from '@fsms/ui/input';
 import { HlmButton } from '@fsms/ui/button';
-import { HlmError, HlmFormControl, HlmHint, HlmPrefix } from '@fsms/ui/form-field';
-import { IAdminCredentialsInput } from '@fsms/data-access/core';
+import {
+  HlmError,
+  HlmFormControl,
+  HlmHint,
+  HlmPrefix,
+} from '@fsms/ui/form-field';
+import {
+  formatGraphqlError,
+  IAdminCredentialsInput,
+} from '@fsms/data-access/core';
+import { RegistrationService } from '@fsms/data-access/registration';
+import { lastValueFrom } from 'rxjs';
+import {
+  HlmAlert,
+  HlmAlertDescription,
+  HlmAlertIcon,
+  HlmAlertTitle,
+} from '@fsms/ui/alert';
+import { HlmIcon } from '@fsms/ui/icon';
+import { HlmCheckbox } from '@fsms/ui/checkbox';
 
 interface AdminCredentialsFormValue {
   username: string;
@@ -34,6 +68,12 @@ interface AdminCredentialsFormValue {
     HlmPrefix,
     HlmError,
     HlmHint,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmAlertIcon,
+    HlmAlertTitle,
+    HlmIcon,
+    HlmCheckbox,
   ],
   providers: [
     provideIcons({
@@ -42,6 +82,7 @@ interface AdminCredentialsFormValue {
       lucideShieldCheck,
       lucideChevronLeft,
       lucideCheckCircle,
+      lucideTriangleAlert,
     }),
   ],
   template: `
@@ -62,7 +103,7 @@ interface AdminCredentialsFormValue {
           <div
             class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground"
           >
-            <ng-icon name="lucideUser" size="18" />
+            <ng-icon hlmIcon name="lucideUser" size="sm" />
             <span>ACCOUNT IDENTITY</span>
           </div>
 
@@ -83,16 +124,12 @@ interface AdminCredentialsFormValue {
               />
             </hlm-form-control>
 
-            @for (
-                error of adminCredentialsForm.username().errors();
-              track error
-              ) {
+            @for (error of adminCredentialsForm.username().errors();
+              track error.kind) {
               <hlm-error>{{ error.message }}</hlm-error>
             }
 
-            <hlm-hint>
-              Must be unique and at least 6 characters.
-            </hlm-hint>
+            <hlm-hint> Must be unique and at least 6 characters.</hlm-hint>
           </div>
         </section>
 
@@ -101,7 +138,7 @@ interface AdminCredentialsFormValue {
           <div
             class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground"
           >
-            <ng-icon name="lucideLock" size="18" />
+            <ng-icon hlmIcon name="lucideLock" size="sm" />
             <span>SECURITY</span>
           </div>
 
@@ -117,10 +154,8 @@ interface AdminCredentialsFormValue {
                 placeholder="••••••••"
                 class="w-full"
               />
-              @for (
-                  error of adminCredentialsForm.password().errors();
-                track error
-                ) {
+              @for (error of adminCredentialsForm.password().errors();
+                track error.kind) {
                 <hlm-error>{{ error.message }}</hlm-error>
               }
             </div>
@@ -135,10 +170,8 @@ interface AdminCredentialsFormValue {
                 placeholder="••••••••"
                 class="w-full"
               />
-              @for (
-                  error of adminCredentialsForm.confirmPassword().errors();
-                track error
-                ) {
+              @for (error of adminCredentialsForm.confirmPassword().errors();
+                track error.kind) {
                 <hlm-error>{{ error.message }}</hlm-error>
               }
             </div>
@@ -154,7 +187,7 @@ interface AdminCredentialsFormValue {
                 {{ passwordStrengthLabel() }}
               </span>
               <span class="text-muted-foreground"
-                >{{ passwordStrength() }}%</span
+              >{{ passwordStrength() }}%</span
               >
             </div>
             <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -164,16 +197,16 @@ interface AdminCredentialsFormValue {
                 [class.bg-yellow-500]="
                   passwordStrength() >= 35 && passwordStrength() < 65
                 "
-                [class.bg-green-500]="passwordStrength() >= 65"
+                [class.bg-success]="passwordStrength() >= 65"
                 [style.width.%]="passwordStrength()"
               ></div>
             </div>
           </div>
 
           <!-- Two-Factor Authentication -->
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div class="bg-primary/5 border border-primary/50 rounded-lg p-4">
             <div class="flex items-start gap-3">
-              <input
+              <hlm-checkbox
                 type="checkbox"
                 [formField]="adminCredentialsForm.enableTwoFactor"
                 class="mt-0.5"
@@ -181,10 +214,10 @@ interface AdminCredentialsFormValue {
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="font-medium text-sm"
-                    >Enable Two-Factor Authentication (Recommended)</span
+                  >Enable Two-Factor Authentication (Recommended)</span
                   >
                   <span
-                    class="text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded"
+                    class="text-xs font-semibold text-success bg-success/10 px-2 py-0.5 rounded"
                   >
                     HIGHLY SECURE
                   </span>
@@ -198,6 +231,16 @@ interface AdminCredentialsFormValue {
             </div>
           </div>
         </section>
+
+        @if (adminCredentialsForm().errors().length > 0) {
+          <div hlmAlert variant="destructive" class="my-8">
+            <ng-icon hlmIcon hlmAlertIcon name="lucideTriangleAlert" />
+            <h4 hlmAlertTitle>Unexpected Error</h4>
+            @for (error of adminCredentialsForm().errors(); track error.kind) {
+              <p hlmAlertDescription>{{ error.message }}</p>
+            }
+          </div>
+        }
 
         <!-- Form Actions -->
         <div
@@ -217,10 +260,10 @@ interface AdminCredentialsFormValue {
           <button
             hlmBtn
             type="submit"
-            [disabled]="!adminCredentialsForm().valid() || isLoading()"
+            [disabled]="!adminCredentialsForm().valid() || submitting()"
             class="flex items-center gap-2"
           >
-            @if (isLoading()) {
+            @if (submitting()) {
               Submitting...
             } @else {
               Submit Registration
@@ -233,10 +276,10 @@ interface AdminCredentialsFormValue {
   `,
 })
 export class AdminCredentialsStep {
-  submitForm = output<IAdminCredentialsInput>();
+  formSubmitted = output<void>();
   back = output<void>();
-  isLoading = input<boolean>(false);
-  fieldErrors = input<Record<string, string[]>>({});
+  registrationId = input.required<string>();
+  registrationService = inject(RegistrationService);
 
   formValue = model<AdminCredentialsFormValue>({
     username: '',
@@ -271,6 +314,8 @@ export class AdminCredentialsStep {
     },
   );
 
+  submitting = computed(() => this.adminCredentialsForm().submitting());
+
   passwordStrength = computed(() => {
     const pwd = this.adminCredentialsForm.password().value() || '';
     let strength = 0;
@@ -292,21 +337,31 @@ export class AdminCredentialsStep {
     return 'STRONG PASSWORD';
   });
 
-  isValid = model<boolean>();
+  submitAdminCredentials = async (
+    adminCredentialsForm: FieldTree<AdminCredentialsFormValue>,
+  ) => {
+    const regId = this.registrationId();
+    const formData = adminCredentialsForm().value();
+    const apiData: IAdminCredentialsInput = {
+      username: formData.username,
+      password: formData.password,
+      passwordConfirmation: formData.confirmPassword,
+      enableTwoFactor: formData.enableTwoFactor,
+    };
+
+    try {
+      await lastValueFrom(
+        this.registrationService.submitAdminCredentials(regId, apiData),
+      );
+      this.formSubmitted.emit();
+      return undefined;
+    } catch (e) {
+      return formatGraphqlError(e, adminCredentialsForm);
+    }
+  };
 
   async handleSubmit(event: Event) {
     event.preventDefault();
-    await submit(this.adminCredentialsForm, async () => {
-      const formData = this.adminCredentialsForm().value();
-      // Map to API format
-      const apiData: IAdminCredentialsInput = {
-        username: formData.username,
-        password: formData.password,
-        passwordConfirmation: formData.confirmPassword,
-        enableTwoFactor: formData.enableTwoFactor,
-      };
-      this.submitForm.emit(apiData);
-      return undefined;
-    });
+    await submit(this.adminCredentialsForm, this.submitAdminCredentials);
   }
 }

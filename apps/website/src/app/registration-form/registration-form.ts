@@ -75,13 +75,8 @@ interface AdminCredentialsFormValue {
   templateUrl: './registration-form.html',
 })
 export default class RegistrationForm {
-  private registrationService = inject(RegistrationService);
-
   currentStep = signal(0);
   registrationId = signal<string | null>(null);
-  isLoading = signal(false);
-  error = signal<string | null>(null);
-  fieldErrors = signal<Record<string, string[]>>({});
 
   steps = signal<Step[]>([
     {
@@ -120,7 +115,6 @@ export default class RegistrationForm {
     jobTitle: '',
     email: '',
   });
-  profileInfoValid = signal(false);
 
   institutionDetailsValue = signal<Required<IInstitutionDetailsInput>>({
     legalName: '',
@@ -132,13 +126,11 @@ export default class RegistrationForm {
     zipPostalCode: '',
     officialWebsite: '',
   });
-  institutionDetailsValid = signal(false);
 
   documentsValue = signal<DocumentsFormValue>({
     accreditationCertificate: null,
     operatingLicense: null,
   });
-  documentsValid = signal(false);
 
   adminCredentialsValue = signal<AdminCredentialsFormValue>({
     username: '',
@@ -146,30 +138,9 @@ export default class RegistrationForm {
     confirmPassword: '',
     enableTwoFactor: true,
   });
-  adminCredentialsValid = signal(false);
 
-  registrationFormData = computed(() => ({
-    ...this.profileInfoValue(),
-    ...this.institutionDetailsValue(),
-    ...this.documentsValue(),
-    ...this.adminCredentialsValue(),
-  }));
 
-  currentStepValid = computed(() => {
-    const step = this.currentStep();
-    switch (step) {
-      case 0:
-        return this.profileInfoValid();
-      case 1:
-        return this.institutionDetailsValid();
-      case 2:
-        return this.documentsValid();
-      case 3:
-        return this.adminCredentialsValid();
-      default:
-        return false;
-    }
-  });
+
 
   nextStep() {
     if (this.currentStep() < this.steps().length - 1) {
@@ -188,14 +159,8 @@ export default class RegistrationForm {
     }
   }
 
-  saveAndContinue() {
-    if (this.currentStepValid()) {
-      this.nextStep();
-    }
-  }
-
   saveAndExit() {
-    console.log('Saving and exiting:', this.registrationFormData());
+    // console.log('Saving and exiting:', this.registrationFormData());
     // TODO: Implement save draft functionality
   }
 
@@ -205,159 +170,20 @@ export default class RegistrationForm {
 
   onInstitutionDetailsSubmit() {
     this.nextStep();
-    // const regId = this.registrationId();
-    // if (!regId) {
-    //   this.error.set('Registration ID not found. Please start from step 1.');
-    //   return;
-    // }
-    //
-    // this.isLoading.set(true);
-    // this.error.set(null);
-    // this.fieldErrors.set({});
-    //
-    // this.registrationService.submitInstitutionDetails(regId, data).subscribe({
-    //   next: (response) => {
-    //     // Map the API response back to form value format
-    //     this.institutionDetailsValue.set({
-    //       ...data,
-    //       officialWebsite: data.officialWebsite || '',
-    //     });
-    //     this.isLoading.set(false);
-    //     this.nextStep();
-    //   },
-    //   error: (err) => {
-    //     this.isLoading.set(false);
-    //
-    //     if (err.validationErrors) {
-    //       this.fieldErrors.set(err.validationErrors);
-    //       this.error.set('Please fix the validation errors below');
-    //     } else {
-    //       this.error.set(err.message || 'Failed to submit institution details');
-    //     }
-    //     console.error('Institution details submission error:', err);
-    //   },
-    // });
   }
 
-  onDocumentsSubmit(data: DocumentsFormValue) {
-    const regId = this.registrationId();
-    if (!regId) {
-      this.error.set('Registration ID not found. Please start from step 1.');
-      return;
-    }
+  onDocumentsSubmit() {
+    this.nextStep();
+  }
 
-    this.isLoading.set(true);
-    this.error.set(null);
-    this.fieldErrors.set({});
-
-    // Upload accreditation certificate
-    const accreditationUpload$ = data.accreditationCertificate
-      ? this.registrationService.uploadDocument(data.accreditationCertificate, {
-          registrationId: regId,
-          documentType: IDocumentType.AccreditationCertificate,
-        })
-      : null;
-
-    // Upload operating license
-    const licenseUpload$ = data.operatingLicense
-      ? this.registrationService.uploadDocument(data.operatingLicense, {
-          registrationId: regId,
-          documentType: IDocumentType.OperatingLicense,
-        })
-      : null;
-
-    // Upload both documents
-    const uploads = [accreditationUpload$, licenseUpload$].filter(Boolean);
-
-    if (uploads.length === 0) {
-      this.error.set('Please upload at least one document');
-      this.isLoading.set(false);
-      return;
-    }
-
-    // Use a simple counter to track uploads
-    let completed = 0;
-    const total = uploads.length;
-    let hasError = false;
-
-    uploads.forEach((upload$) => {
-      upload$!.subscribe({
-        next: () => {
-          completed++;
-          if (completed === total && !hasError) {
-            this.documentsValue.set(data);
-            this.isLoading.set(false);
-            this.nextStep();
-          }
-        },
-        error: (err) => {
-          if (!hasError) {
-            hasError = true;
-            this.isLoading.set(false);
-
-            if (err.validationErrors) {
-              this.fieldErrors.set(err.validationErrors);
-              this.error.set('Please fix the validation errors below');
-            } else {
-              this.error.set(err.message || 'Failed to upload documents');
-            }
-            console.error('Document upload error:', err);
-          }
-        },
-      });
+  onAdminCredentialsSubmit() {
+    // Mark the last step as completed
+    this.steps.update((steps) => {
+      const newSteps = [...steps];
+      newSteps[this.currentStep()].completed = true;
+      return newSteps;
     });
-  }
-
-  onAdminCredentialsSubmit(data: IAdminCredentialsInput) {
-    const regId = this.registrationId();
-    if (!regId) {
-      this.error.set('Registration ID not found. Please start from step 1.');
-      return;
-    }
-
-    this.isLoading.set(true);
-    this.error.set(null);
-    this.fieldErrors.set({});
-
-    this.registrationService.submitAdminCredentials(regId, data).subscribe({
-      next: (response) => {
-        // Map back to form value format
-        this.adminCredentialsValue.set({
-          username: data.username,
-          password: data.password,
-          confirmPassword: data.passwordConfirmation,
-          enableTwoFactor: data.enableTwoFactor || true,
-        });
-        this.isLoading.set(false);
-        // Mark the last step as completed
-        this.steps.update((steps) => {
-          const newSteps = [...steps];
-          newSteps[this.currentStep()].completed = true;
-          return newSteps;
-        });
-        // TODO: Navigate to success page or show success message
-        console.log('Registration completed successfully!', response);
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-
-        if (err.validationErrors) {
-          this.fieldErrors.set(err.validationErrors);
-          this.error.set('Please fix the validation errors below');
-        } else {
-          this.error.set(err.message || 'Failed to submit admin credentials');
-        }
-        console.error('Admin credentials submission error:', err);
-      },
-    });
-  }
-
-  submitRegistration() {
-    // This method is now handled by onAdminCredentialsSubmit
-    console.log('Submitting registration:', this.registrationFormData());
-  }
-
-  getFieldErrorKeys(): string[] {
-    return Object.keys(this.fieldErrors());
+    // TODO: Navigate to success page or show success message
+    console.log('Registration completed successfully!');
   }
 }

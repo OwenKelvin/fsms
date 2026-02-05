@@ -74,7 +74,6 @@
             <app-profile-info-step
               [(registrationId)]="registrationId"
               [(formValue)]="profileInfoValue"
-              [fieldErrors]="fieldErrors()"
               (formSubmitted)="onProfileInfoSubmit()"
             />
           }
@@ -88,21 +87,17 @@
           }
           @case (2) {
             <app-documents-step
+              [registrationId]="registrationId() ?? ''"
               [(formValue)]="documentsValue"
-              [(isValid)]="documentsValid"
-              [isLoading]="isLoading()"
-              [fieldErrors]="fieldErrors()"
-              (submitForm)="onDocumentsSubmit($event)"
+              (formSubmitted)="onDocumentsSubmit()"
               (back)="previousStep()"
             />
           }
           @case (3) {
             <app-admin-credentials-step
+              [registrationId]="registrationId() ?? ''"
               [(formValue)]="adminCredentialsValue"
-              [(isValid)]="adminCredentialsValid"
-              [isLoading]="isLoading()"
-              [fieldErrors]="fieldErrors()"
-              (submitForm)="onAdminCredentialsSubmit($event)"
+              (formSubmitted)="onAdminCredentialsSubmit()"
               (back)="previousStep()"
             />
           }

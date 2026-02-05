@@ -11,8 +11,8 @@ import {
 import { FileUploadModel } from './file-upload.model';
 
 export enum DocumentType {
-  ACCREDITATION_CERTIFICATE = 'accreditation_certificate',
-  OPERATING_LICENSE = 'operating_license',
+  ACCREDITATION_CERTIFICATE = 'ACCREDITATION_CERTIFICATE',
+  OPERATING_LICENSE = 'OPERATING_LICENSE',
 }
 
 export enum DocumentVerificationStatus {

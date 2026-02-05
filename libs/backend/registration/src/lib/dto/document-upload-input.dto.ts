@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
 import { DocumentType } from '@fsms/backend/db';
 
 @InputType()
@@ -11,6 +11,6 @@ export class DocumentUploadInputDto {
 
   @Field()
   @IsNotEmpty({ message: 'Registration ID is required' })
-  @IsNumber({}, { message: 'Registration ID must be a number' })
+  @IsUUID('4', { message: 'Registration ID must be a number' })
   registrationId!: string;
 }
