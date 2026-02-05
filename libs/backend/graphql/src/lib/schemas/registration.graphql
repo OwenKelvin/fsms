@@ -11,14 +11,6 @@ enum RegistrationStatus {
   REJECTED
 }
 
-enum InstitutionType {
-  EDUCATIONAL
-  HEALTHCARE
-  CORPORATE
-  GOVERNMENT
-  NON_PROFIT
-}
-
 enum DocumentType {
   ACCREDITATION_CERTIFICATE
   OPERATING_LICENSE

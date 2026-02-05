@@ -38,3 +38,4 @@ export * from './payment.model';
 export * from './question-tag.model';
 export * from './activity-log.model';
 export * from './activity-log-user.model';
+export * from './institution-type-option';

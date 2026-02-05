@@ -195,3 +195,10 @@ query GetRegistrationsRequiringReview {
     }
   }
 }
+
+query GetInstitutionTypes {
+  institutionTypes {
+    description
+    key
+  }
+}

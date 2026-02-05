@@ -1577,8 +1577,8 @@
             "name": "institutionType",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "kind": "ENUM",
+              "name": "InstitutionType",
               "ofType": null
             },
             "defaultValue": null,
@@ -4257,8 +4257,8 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "kind": "ENUM",
+              "name": "InstitutionType",
               "ofType": null
             },
             "isDeprecated": false,
@@ -4368,36 +4368,116 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "CORPORATE",
+            "name": "ADULT_EDUCATION_CENTER",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "EDUCATIONAL",
+            "name": "ECDE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "GOVERNMENT",
+            "name": "JUNIOR_SECONDARY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "HEALTHCARE",
+            "name": "NATIONAL_POLYTECHNIC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "NON_PROFIT",
+            "name": "PRIMARY_SCHOOL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SENIOR_SECONDARY",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SPECIAL_NEEDS_SCHOOL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TEACHER_TRAINING_COLLEGE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TECHNICAL_COLLEGE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TVET",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UNIVERSITY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "InstitutionTypeOption",
+        "description": null,
+        "isOneOf": null,
+        "fields": [
+          {
+            "name": "description",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "key",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "InstitutionType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
         "possibleTypes": null
       },
       {
@@ -10708,6 +10788,30 @@
             "deprecationReason": null
           },
           {
+            "name": "institutionTypes",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "InstitutionTypeOption",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "institutions",
             "description": null,
             "args": [
@@ -13821,8 +13925,8 @@
             "name": "institutionType",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "kind": "ENUM",
+              "name": "InstitutionType",
               "ofType": null
             },
             "defaultValue": null,

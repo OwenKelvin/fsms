@@ -7,6 +7,7 @@ import {
   GetRegistrationDetails,
   GetRegistrationStatus,
   ICompleteRegistrationMutation,
+  IGetInstitutionTypesQuery,
   IGetRegistrationDetailsQuery,
   IGetRegistrationStatusQuery,
   ISubmitAdminCredentialsMutation,
@@ -42,13 +43,17 @@ export interface RegistrationResponse<T = any> {
 export class RegistrationService {
   private apollo = inject(Apollo);
 
-  /**
-   * Submit profile information for registration (Step 1)
-   */
+  getInstitutionTypes = () =>
+    this.apollo.query<IGetInstitutionTypesQuery>({
+      query: GetRegistrationStatus,
+      fetchPolicy: 'cache-first',
+    });
+
   submitProfileInfo(
     input: IProfileInfoInput,
     registrationId?: string,
   ): Observable<ISubmitProfileInfoMutation['submitProfileInfo']> {
+    console.log('submitProfileInfo', input);
     return this.apollo
       .mutate<ISubmitProfileInfoMutation>({
         mutation: SubmitProfileInfo,

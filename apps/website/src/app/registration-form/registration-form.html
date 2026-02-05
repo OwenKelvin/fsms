@@ -12,6 +12,7 @@
     </button>
   </div>
 </app-header>
+
 <div class="min-h-screen bg-gray-50 pt-15">
   <div class="flex gap-0 px-2 md:px-10 lg:px-20 mx-auto">
     <!-- Sidebar Stepper -->
@@ -66,7 +67,7 @@
 
     <!-- Main Content -->
     <main class="flex-1 p-8 md:p-12">
-      <div class="max-w-3xl">
+      <div>
         <!-- Error Message -->
         @if (error()) {
           <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -97,10 +98,8 @@
           @case (0) {
             <app-profile-info-step
               [(formValue)]="profileInfoValue"
-              [(isValid)]="profileInfoValid"
-              [isLoading]="isLoading()"
               [fieldErrors]="fieldErrors()"
-              (submitForm)="onProfileInfoSubmit($event)"
+              (formSubmitted)="onProfileInfoSubmit()"
             />
           }
           @case (1) {

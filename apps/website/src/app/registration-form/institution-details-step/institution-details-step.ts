@@ -1,4 +1,4 @@
-import { Component, input, model, output, signal } from '@angular/core';
+import { Component, inject, input, model, output, signal } from '@angular/core';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { HlmButton } from '@fsms/ui/button';
 import { HlmInput } from '@fsms/ui/input';
@@ -10,6 +10,9 @@ import { HlmError, HlmFormControl, HlmFormField, HlmHint, HlmPrefix } from '@fsm
 import { HlmSelect, HlmSelectContent, HlmSelectOption, HlmSelectTrigger, HlmSelectValue } from '@fsms/ui/select';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
 import { IInstitutionDetailsInput } from '@fsms/data-access/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RegistrationService } from '@fsms/data-access/registration';
+import { map } from 'rxjs';
 
 interface InstitutionDetailsFormValue {
   legalName: string;
@@ -57,17 +60,14 @@ interface InstitutionDetailsFormValue {
 })
 export class InstitutionDetailsStep {
   submitForm = output<IInstitutionDetailsInput>();
+  registrationService = inject(RegistrationService)
   back = output<void>();
   isLoading = input<boolean>(false);
   fieldErrors = input<Record<string, string[]>>({});
 
-  institutionTypes = signal([
-    { id: 'University', label: 'University' },
-    { id: 'College', label: 'College' },
-    { id: 'Technical', label: 'Technical Institute' },
-    { id: 'community', label: 'Community College' },
-    { id: 'vocational', label: 'Vocational School' },
-  ]);
+  institutionTypes = toSignal(this.registrationService.getInstitutionTypes().pipe(
+    map((res) => res.data?.institutionTypes ?? []),
+  ), {initialValue: []})
 
   formValue = model<InstitutionDetailsFormValue>({
     legalName: '',

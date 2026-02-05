@@ -1,8 +1,27 @@
+enum InstitutionType {
+  ECDE                  # Early Childhood Development Education
+  PRIMARY_SCHOOL
+  JUNIOR_SECONDARY      # Grade 7–9 (CBC)
+  SENIOR_SECONDARY      # Grade 10–12 (CBC)
+  TVET                  # Technical & Vocational Education and Training
+  TEACHER_TRAINING_COLLEGE
+  TECHNICAL_COLLEGE
+  NATIONAL_POLYTECHNIC
+  UNIVERSITY
+  SPECIAL_NEEDS_SCHOOL
+  ADULT_EDUCATION_CENTER
+}
+
+type InstitutionTypeOption {
+  key: InstitutionType!
+  description: String!
+}
+
 type InstitutionModel {
   id: ID!
   name: String!
   legalName: String
-  institutionType: String
+  institutionType: InstitutionType
   accreditationNumber: String
   streetAddress: String
   city: String
@@ -16,7 +35,7 @@ type InstitutionModel {
 input CreateInstitutionInput {
   name: String
   legalName: String
-  institutionType: String
+  institutionType: InstitutionType
   accreditationNumber: String
   streetAddress: String
   city: String
@@ -28,7 +47,7 @@ input CreateInstitutionInput {
 input UpdateInstitutionInput {
   name: String
   legalName: String
-  institutionType: String
+  institutionType: InstitutionType
   accreditationNumber: String
   streetAddress: String
   city: String
@@ -49,6 +68,7 @@ type CreateInstitutionSuccessResponse {
 
 extend type Query {
   institutions(query: QueryParams): PaginatedInstitution!
+  institutionTypes: [InstitutionTypeOption!]!
   institution(id: ID!): InstitutionModel
 }
 

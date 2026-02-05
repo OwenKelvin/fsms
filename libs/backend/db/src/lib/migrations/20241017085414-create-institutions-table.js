@@ -1,6 +1,8 @@
 'use strict';
 
 const { DataTypes, fn } = require('sequelize');
+
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface) => {
     await queryInterface.createTable('institutions', {
@@ -10,12 +12,65 @@ module.exports = {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
+
       name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      createdById: {
-        field: 'created_by_id',
+
+      legal_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      institution_type: {
+        type: DataTypes.ENUM(
+          'ECDE',
+          'PRIMARY_SCHOOL',
+          'JUNIOR_SECONDARY',
+          'SENIOR_SECONDARY',
+          'TVET',
+          'TEACHER_TRAINING_COLLEGE',
+          'TECHNICAL_COLLEGE',
+          'NATIONAL_POLYTECHNIC',
+          'UNIVERSITY',
+          'SPECIAL_NEEDS_SCHOOL',
+          'ADULT_EDUCATION_CENTER',
+        ),
+        allowNull: true,
+      },
+
+      accreditation_number: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      street_address: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      city: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      state_province: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      zip_postal_code: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      official_website: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      created_by_id: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -25,31 +80,38 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      createdAt: {
-        field: 'created_at',
+
+      created_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: fn('NOW'),
       },
-      updatedAt: {
-        field: 'updated_at',
+
+      updated_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: fn('NOW'),
       },
-      deletedAt: {
-        field: 'deleted_at',
+
+      deleted_at: {
         type: DataTypes.DATE,
         allowNull: true,
       },
     });
 
-    // Add indexes
+    // Indexes
     await queryInterface.addIndex('institutions', ['id']);
     await queryInterface.addIndex('institutions', ['created_by_id']);
+    await queryInterface.addIndex('institutions', ['institution_type']);
+    await queryInterface.addIndex('institutions', ['accreditation_number']);
   },
 
   down: async (queryInterface) => {
     await queryInterface.dropTable('institutions');
+
+    // Drop ENUM explicitly for Postgres
+    await queryInterface.sequelize.query(
+      'DROP TYPE IF EXISTS "enum_institutions_institution_type";',
+    );
   },
 };

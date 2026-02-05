@@ -55,19 +55,24 @@ export type IGetRegistrationDetailsQueryVariables = Types.Exact<{
 }>;
 
 
-export type IGetRegistrationDetailsQuery = { getRegistrationDetails?: { id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: string | null, accreditationNumber?: string | null, streetAddress?: string | null, city?: string | null, stateProvince?: string | null, zipPostalCode?: string | null, officialWebsite?: string | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: string, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> } | null };
+export type IGetRegistrationDetailsQuery = { getRegistrationDetails?: { id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: Types.IInstitutionType | null, accreditationNumber?: string | null, streetAddress?: string | null, city?: string | null, stateProvince?: string | null, zipPostalCode?: string | null, officialWebsite?: string | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: string, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> } | null };
 
 export type IGetRegistrationsQueryVariables = Types.Exact<{
   filter?: Types.InputMaybe<Types.IRegistrationFilterInput>;
 }>;
 
 
-export type IGetRegistrationsQuery = { getRegistrations: Array<{ id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: string | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null }> };
+export type IGetRegistrationsQuery = { getRegistrations: Array<{ id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: Types.IInstitutionType | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null }> };
 
 export type IGetRegistrationsRequiringReviewQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type IGetRegistrationsRequiringReviewQuery = { getRegistrationsRequiringReview: Array<{ id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: string | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: string, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> }> };
+export type IGetRegistrationsRequiringReviewQuery = { getRegistrationsRequiringReview: Array<{ id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: Types.IInstitutionType | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: string, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> }> };
+
+export type IGetInstitutionTypesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type IGetInstitutionTypesQuery = { institutionTypes: Array<{ description: string, key: Types.IInstitutionType }> };
 
 
 export const SubmitProfileInfo = gql`
@@ -265,6 +270,14 @@ export const GetRegistrationsRequiringReview = gql`
       changedBy
       notes
     }
+  }
+}
+    `;
+export const GetInstitutionTypes = gql`
+    query GetInstitutionTypes {
+  institutionTypes {
+    description
+    key
   }
 }
     `;

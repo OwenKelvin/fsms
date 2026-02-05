@@ -20,6 +20,7 @@ import {
   IInstitutionDetailsInput,
   IProfileInfoInput,
 } from '@fsms/data-access/core';
+import { JsonPipe } from '@angular/common';
 
 interface Step {
   id: string;
@@ -70,6 +71,7 @@ interface AdminCredentialsFormValue {
     DocumentsStep,
     AdminCredentialsStep,
     Header,
+    JsonPipe,
   ],
   providers: [
     RegistrationService,
@@ -87,7 +89,7 @@ export default class RegistrationForm {
   private registrationService = inject(RegistrationService);
 
   currentStep = signal(0);
-  registrationId = signal<number | null>(null);
+  registrationId = signal<string | null>(null);
   isLoading = signal(false);
   error = signal<string | null>(null);
   fieldErrors = signal<Record<string, string[]>>({});
@@ -208,35 +210,33 @@ export default class RegistrationForm {
     // TODO: Implement save draft functionality
   }
 
-  onProfileInfoSubmit(data: IProfileInfoInput) {
-    this.isLoading.set(true);
-    this.error.set(null);
-    this.fieldErrors.set({});
+  onProfileInfoSubmit() {
+    this.nextStep();
 
-    this.registrationService
-      .submitProfileInfo(data, this.registrationId() ?? undefined)
-      .subscribe({
-        next: (response) => {
-          if (response.registrationId) {
-            this.registrationId.set(response.registrationId);
-          }
-          this.profileInfoValue.set(data);
-          this.isLoading.set(false);
-          this.nextStep();
-        },
-        error: (err) => {
-          this.isLoading.set(false);
-          
-          // Handle structured validation errors
-          if (err.validationErrors) {
-            this.fieldErrors.set(err.validationErrors);
-            this.error.set('Please fix the validation errors below');
-          } else {
-            this.error.set(err.message || 'Failed to submit profile information');
-          }
-          console.error('Profile info submission error:', err);
-        },
-      });
+    // this.registrationService
+    //   .submitProfileInfo(data, this.registrationId() ?? undefined)
+    //   .subscribe({
+    //     next: (response) => {
+    //       if (response.registrationId) {
+    //         this.registrationId.set(response.registrationId);
+    //       }
+    //       this.profileInfoValue.set(data);
+    //       this.isLoading.set(false);
+    //       this.nextStep();
+    //     },
+    //     error: (err) => {
+    //       this.isLoading.set(false);
+    //
+    //       // Handle structured validation errors
+    //       if (err.validationErrors) {
+    //         this.fieldErrors.set(err.validationErrors);
+    //         this.error.set('Please fix the validation errors below');
+    //       } else {
+    //         this.error.set(err.message || 'Failed to submit profile information');
+    //       }
+    //       console.error('Profile info submission error:', err);
+    //     },
+    //   });
   }
 
   onInstitutionDetailsSubmit(data: IInstitutionDetailsInput) {
@@ -262,7 +262,7 @@ export default class RegistrationForm {
       },
       error: (err) => {
         this.isLoading.set(false);
-        
+
         if (err.validationErrors) {
           this.fieldErrors.set(err.validationErrors);
           this.error.set('Please fix the validation errors below');
@@ -329,7 +329,7 @@ export default class RegistrationForm {
           if (!hasError) {
             hasError = true;
             this.isLoading.set(false);
-            
+
             if (err.validationErrors) {
               this.fieldErrors.set(err.validationErrors);
               this.error.set('Please fix the validation errors below');
@@ -375,7 +375,7 @@ export default class RegistrationForm {
       },
       error: (err) => {
         this.isLoading.set(false);
-        
+
         if (err.validationErrors) {
           this.fieldErrors.set(err.validationErrors);
           this.error.set('Please fix the validation errors below');

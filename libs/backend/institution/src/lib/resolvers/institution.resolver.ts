@@ -15,7 +15,7 @@ import {
   Permissions,
   PermissionsEnum,
 } from '@fsms/backend/permission-service';
-import { InstitutionModel, IQueryParam } from '@fsms/backend/db';
+import { InstitutionModel, InstitutionType, InstitutionTypeOption, IQueryParam } from '@fsms/backend/db';
 import { UpdateInstitutionInputDto } from '../dto/update-institution-input.dto';
 import { InstitutionUpdatedEvent } from '../events/institution-updated.event';
 import { DeleteInstitutionInputDto } from '../dto/delete-institution-input.dto';
@@ -28,6 +28,57 @@ export class InstitutionResolver {
     private institutionService: InstitutionBackendService,
     private eventEmitter: EventEmitter2,
   ) {}
+
+  @Query(() => [InstitutionTypeOption])
+  institutionTypes(): InstitutionTypeOption[] {
+    return [
+      {
+        key: 'ECDE',
+        description: 'Early Childhood Development Education (Pre-Primary)',
+      },
+      {
+        key: 'PRIMARY_SCHOOL',
+        description: 'Primary School (Grades 1–6)',
+      },
+      {
+        key: 'JUNIOR_SECONDARY',
+        description: 'Junior Secondary School (Grades 7–9)',
+      },
+      {
+        key: 'SENIOR_SECONDARY',
+        description: 'Senior Secondary School (Grades 10–12)',
+      },
+      {
+        key: 'TVET',
+        description: 'Technical and Vocational Education and Training Institution',
+      },
+      {
+        key: 'TEACHER_TRAINING_COLLEGE',
+        description: 'Teacher Training College',
+      },
+      {
+        key: 'TECHNICAL_COLLEGE',
+        description: 'Technical College',
+      },
+      {
+        key: 'NATIONAL_POLYTECHNIC',
+        description: 'National Polytechnic',
+      },
+      {
+        key: 'UNIVERSITY',
+        description: 'University',
+      },
+      {
+        key: 'SPECIAL_NEEDS_SCHOOL',
+        description: 'Special Needs Education School',
+      },
+      {
+        key: 'ADULT_EDUCATION_CENTER',
+        description: 'Adult and Continuing Education Centre',
+      },
+    ];
+  }
+
 
   @Query(() => InstitutionModel)
   institutions(@Args('query') query: IQueryParam) {

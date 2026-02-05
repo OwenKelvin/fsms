@@ -1,4 +1,5 @@
 <form (submit)="handleSubmit($event)">
+  <pre>{{ institutionTypes() }}</pre>
   <!-- Page Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold mb-2">Institution Details</h1>
@@ -55,8 +56,8 @@
               </hlm-select-trigger>
               <hlm-select-content>
                 <hlm-option [value]="">Select type</hlm-option>
-                @for (institutionType of institutionTypes(); track institutionType.id) {
-                  <hlm-option [value]="$any(institutionType.id)">{{ institutionType.label }}</hlm-option>
+                @for (institutionType of institutionTypes(); track institutionType.key) {
+                  <hlm-option [value]="$any(institutionType.key)">{{ institutionType.description }}</hlm-option>
                 }
               </hlm-select-content>
 

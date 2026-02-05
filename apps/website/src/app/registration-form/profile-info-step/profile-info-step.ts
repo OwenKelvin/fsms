@@ -1,7 +1,22 @@
-import { Component, input, model, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideChevronRight, lucideMail, lucideUser } from '@ng-icons/lucide';
-import { email, form, FormField, required, submit } from '@angular/forms/signals';
+import { lucideChevronRight, lucideMail, lucideTriangleAlert, lucideUser } from '@ng-icons/lucide';
+import {
+  email,
+  FieldTree,
+  form,
+  FormField,
+  required,
+  submit,
+} from '@angular/forms/signals';
 import { BrnSelect, BrnSelectImports } from '@spartan-ng/brain/select';
 
 import { HlmButton } from '@fsms/ui/button';
@@ -23,6 +38,10 @@ import {
 } from '@fsms/ui/select';
 import { HlmIcon } from '@fsms/ui/icon';
 import { IProfileInfoInput } from '@fsms/data-access/core';
+import { RegistrationService } from '@fsms/data-access/registration';
+import { lastValueFrom } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HlmAlert, HlmAlertDescription, HlmAlertIcon, HlmAlertTitle } from '@fsms/ui/alert';
 
 interface ProfileInfoFormValue {
   firstName: string;
@@ -54,13 +73,18 @@ interface ProfileInfoFormValue {
     HlmIcon,
     HlmFormControl,
     HlmPrefix,
+    HlmAlert,
+    HlmAlertIcon,
+    HlmAlertTitle,
+    HlmAlertDescription,
   ],
-  providers: [provideIcons({ lucideMail, lucideChevronRight, lucideUser })],
+  providers: [provideIcons({ lucideMail, lucideChevronRight, lucideUser, lucideTriangleAlert })],
   templateUrl: './profile-info-step.html',
 })
 export class ProfileInfoStep {
-  submitForm = output<IProfileInfoInput>();
-  isLoading = input<boolean>(false);
+  registrationId = model<string | undefined>();
+  formSubmitted = output<void>();
+  registrationService = inject(RegistrationService);
   fieldErrors = input<Record<string, string[]>>({});
 
   jobTitles = signal([
@@ -90,14 +114,37 @@ export class ProfileInfoStep {
     },
   );
 
-  isValid = model<boolean>(false);
+  submitting = computed(() => this.profileInfoForm().submitting());
+
+  submitProfileInfoForm = async (
+    profileInfoForm: FieldTree<ProfileInfoFormValue>,
+  ) => {
+    try {
+      const result = await lastValueFrom(
+        this.registrationService.submitProfileInfo(
+          profileInfoForm().value(),
+          this.registrationId() ?? undefined,
+        ),
+      );
+      if (result.registrationId) {
+        this.registrationId.set(result.registrationId);
+        this.formSubmitted.emit()
+      }
+      return undefined;
+    } catch (e) {
+      const errorMessage = (e as HttpErrorResponse).message;
+      return [
+        {
+          fieldTree: profileInfoForm,
+          kind: 'server',
+          message: errorMessage || 'An error occurred',
+        },
+      ];
+    }
+  };
 
   async handleSubmit(event: Event) {
     event.preventDefault();
-    await submit(this.profileInfoForm, async () => {
-      const formData = this.profileInfoForm().value();
-      this.submitForm.emit(formData);
-      return undefined;
-    });
+    await submit(this.profileInfoForm, this.submitProfileInfoForm);
   }
 }

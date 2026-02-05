@@ -201,7 +201,7 @@ export type ICreateGroupExamineeInput = {
 export type ICreateInstitutionInput = {
   accreditationNumber?: InputMaybe<Scalars['String']['input']>;
   city?: InputMaybe<Scalars['String']['input']>;
-  institutionType?: InputMaybe<Scalars['String']['input']>;
+  institutionType?: InputMaybe<IInstitutionType>;
   legalName?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   officialWebsite?: InputMaybe<Scalars['String']['input']>;
@@ -519,7 +519,7 @@ export type IInstitutionModel = {
   city?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  institutionType?: Maybe<Scalars['String']['output']>;
+  institutionType?: Maybe<IInstitutionType>;
   legalName?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   officialWebsite?: Maybe<Scalars['String']['output']>;
@@ -530,12 +530,24 @@ export type IInstitutionModel = {
 };
 
 export enum IInstitutionType {
-  Corporate = 'CORPORATE',
-  Educational = 'EDUCATIONAL',
-  Government = 'GOVERNMENT',
-  Healthcare = 'HEALTHCARE',
-  NonProfit = 'NON_PROFIT'
+  AdultEducationCenter = 'ADULT_EDUCATION_CENTER',
+  Ecde = 'ECDE',
+  JuniorSecondary = 'JUNIOR_SECONDARY',
+  NationalPolytechnic = 'NATIONAL_POLYTECHNIC',
+  PrimarySchool = 'PRIMARY_SCHOOL',
+  SeniorSecondary = 'SENIOR_SECONDARY',
+  SpecialNeedsSchool = 'SPECIAL_NEEDS_SCHOOL',
+  TeacherTrainingCollege = 'TEACHER_TRAINING_COLLEGE',
+  TechnicalCollege = 'TECHNICAL_COLLEGE',
+  Tvet = 'TVET',
+  University = 'UNIVERSITY'
 }
+
+export type IInstitutionTypeOption = {
+  __typename?: 'InstitutionTypeOption';
+  description: Scalars['String']['output'];
+  key: IInstitutionType;
+};
 
 export type IInstructionModel = {
   __typename?: 'InstructionModel';
@@ -1492,6 +1504,7 @@ export type IQuery = {
   getRegistrationsRequiringReview: Array<IRegistrationDetailsResponse>;
   healthCheck?: Maybe<Scalars['String']['output']>;
   institution?: Maybe<IInstitutionModel>;
+  institutionTypes: Array<IInstitutionTypeOption>;
   institutions: IPaginatedInstitution;
   instruction?: Maybe<IInstructionModel>;
   instructions: IPaginatedInstruction;
@@ -2058,7 +2071,7 @@ export type IUpdateExamineeInput = {
 export type IUpdateInstitutionInput = {
   accreditationNumber?: InputMaybe<Scalars['String']['input']>;
   city?: InputMaybe<Scalars['String']['input']>;
-  institutionType?: InputMaybe<Scalars['String']['input']>;
+  institutionType?: InputMaybe<IInstitutionType>;
   legalName?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   officialWebsite?: InputMaybe<Scalars['String']['input']>;
