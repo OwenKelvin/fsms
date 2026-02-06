@@ -219,11 +219,13 @@
       "@fsms/ui/typography": ["libs/shared/ui/typography/src/index.ts"],
       "@fsms/ui/utils": ["libs/shared/ui/utils/src/index.ts"],
       "@fsms/data-access": ["libs/shared/data-access/src/index.ts"],
-      "@fsms/data-access/core": [
-        "libs/shared/data-access/core/src/index.ts"
-      ],
+      "@fsms/data-access/core": ["libs/shared/data-access/core/src/index.ts"],
       "@fsms/data-access/registration": [
         "libs/shared/data-access/registration/src/index.ts"
+      ],
+      "@fsms/admin-portal-pages": ["libs/admin-portal/pages/src/index.ts"],
+      "@fsms/admin-portal-pages/auth": [
+        "libs/admin-portal/pages/auth/src/index.ts"
       ]
     }
   },
