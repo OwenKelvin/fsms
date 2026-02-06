@@ -1,8 +1,14 @@
-import { Component, computed, effect, inject, model } from '@angular/core';
-import { NgIcon, provideIcons, provideNgIconLoader } from '@ng-icons/core';
-import { lucideArrowRight, lucideLock, lucideMail } from '@ng-icons/lucide';
+import { Component, computed, inject, model } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowRight,
+  lucideLock,
+  lucideMail,
+  lucideTriangleAlert,
+} from '@ng-icons/lucide';
 import {
   email,
+  FieldTree,
   form,
   FormField,
   required,
@@ -19,10 +25,18 @@ import {
   HlmPrefix,
 } from '@fsms/ui/form-field';
 import { HlmIcon } from '@fsms/ui/icon';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '@fsms/data-access/auth';
+import { lastValueFrom } from 'rxjs';
+import { formatGraphqlError } from '@fsms/data-access/core';
+import {
+  HlmAlert,
+  HlmAlertDescription,
+  HlmAlertIcon,
+  HlmAlertTitle,
+} from '@fsms/ui/alert';
 
-interface LoginFormComponentValue {
+interface LoginFormValue {
   email: string;
   password: string;
 }
@@ -41,40 +55,30 @@ interface LoginFormComponentValue {
     HlmFormControl,
     HlmPrefix,
     NgIcon,
+    HlmAlert,
+    HlmAlertDescription,
+    HlmAlertIcon,
+    HlmAlertTitle,
   ],
   providers: [
     provideIcons({
       lucideMail,
       lucideLock,
       lucideArrowRight,
+      lucideTriangleAlert,
     }),
-    provideNgIconLoader((name) =>
-      fetch(`images/${name}.svg`).then((res) => res.text()),
-    ),
   ],
   templateUrl: './login.html',
 })
 export class Login {
   http = inject(HttpClient);
-  logoSvg = toSignal(
-    this.http.get('images/logo.svg', { responseType: 'text' }),
-  );
-  constructor() {
-    effect(() => {
-      const svg = this.logoSvg();
-      if (svg) {
-        provideIcons({
-          logoSvg: svg,
-        });
-      }
-    });
-  }
-  formValue = model<LoginFormComponentValue>({
+  authService = inject(AuthService);
+  formValue = model<LoginFormValue>({
     email: '',
     password: '',
   });
 
-  public readonly loginForm = form<LoginFormComponentValue>(
+  public readonly loginForm = form<LoginFormValue>(
     this.formValue,
     (schemaPath) => {
       required(schemaPath.email, { message: 'Email is required' });
@@ -85,17 +89,22 @@ export class Login {
 
   submitting = computed(() => this.loginForm().submitting());
 
+  submitLoginForm = async (loginForm: FieldTree<LoginFormValue>) => {
+    try {
+      const result = await lastValueFrom(
+        this.authService.loginWithPassword(loginForm().value()),
+      );
+
+      console.log({ result });
+
+      return undefined;
+    } catch (e) {
+      return formatGraphqlError(e, loginForm);
+    }
+  };
+
   async handleSubmit(event: Event) {
     event.preventDefault();
-    await submit(this.loginForm, async (loginForm) => {
-      // TODO: Implement actual login logic here
-      console.log('Login form submitted:', loginForm().value());
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      // On success, you might navigate or show a success message
-      // On error, you might set form errors
-      // For now, just logging
-      return undefined;
-    });
+    await submit(this.loginForm, this.submitLoginForm);
   }
 }

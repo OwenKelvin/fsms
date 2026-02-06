@@ -38,7 +38,7 @@
               class="w-full"
             />
           </hlm-form-control>
-          @for (error of loginForm.email().errors(); track error) {
+          @for (error of loginForm.email().errors(); track error.kind) {
             <hlm-error>{{ error.message }}</hlm-error>
           }
         </hlm-form-field>
@@ -64,6 +64,18 @@
             <hlm-error>{{ error.message }}</hlm-error>
           }
         </hlm-form-field>
+
+        @if (loginForm().errors().length > 0) {
+          <div hlmAlert variant="destructive" class="my-8">
+            <ng-icon hlmIcon hlmAlertIcon name="lucideTriangleAlert" />
+
+            <h4 hlmAlertTitle>An Error Occurred</h4>
+
+            @for (error of loginForm().errors(); track error.kind) {
+              <p hlmAlertDescription>{{ error.message }}</p>
+            }
+          </div>
+        }
 
         <div class="flex items-center justify-between">
           <div class="text-sm">
