@@ -18,6 +18,7 @@ export * from './lib/hlm-dialog-overlay';
 export * from './lib/hlm-dialog-title';
 export * from './lib/hlm-dialog-trigger';
 export * from './lib/hlm-dialog.service';
+export * from './lib/confirmation-dialog';
 
 export const HlmDialogImports = [
   HlmDialog,

@@ -35,6 +35,7 @@ import {
   HlmAlertIcon,
   HlmAlertTitle,
 } from '@fsms/ui/alert';
+import { Router } from '@angular/router';
 
 interface LoginFormValue {
   email: string;
@@ -72,6 +73,7 @@ interface LoginFormValue {
 })
 export class Login {
   http = inject(HttpClient);
+  router = inject(Router);
   authService = inject(AuthService);
   formValue = model<LoginFormValue>({
     email: '',
@@ -94,9 +96,9 @@ export class Login {
       const result = await lastValueFrom(
         this.authService.loginWithPassword(loginForm().value()),
       );
-
-      console.log({ result });
-
+      if(result.accessToken) {
+        this.router.navigate(['/dashboard']);
+      }
       return undefined;
     } catch (e) {
       return formatGraphqlError(e, loginForm);

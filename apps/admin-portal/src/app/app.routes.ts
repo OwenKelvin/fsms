@@ -10,6 +10,10 @@ export const appRoutes: Route[] = [
         path: 'auth',
         loadChildren: () => import('@fsms/admin-portal-pages/auth'),
       },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('@fsms/admin-portal-pages/dashboard'),
+      },
     ],
   },
 ];

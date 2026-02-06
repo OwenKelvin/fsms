@@ -97,6 +97,45 @@ export type UserResponse = {
 export class AuthService {
   private apollo = inject(Apollo);
 
+  private readonly ACCESS_TOKEN_KEY = 'accessToken';
+  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
+  private readonly REFRESH_TOKEN_ID_KEY = 'refreshTokenKey';
+
+  private _saveTokens(tokens: LoginResponse): void {
+    if (tokens.accessToken) {
+      localStorage.setItem(this.ACCESS_TOKEN_KEY, tokens.accessToken);
+    }
+    if (tokens.refreshToken) {
+      localStorage.setItem(this.REFRESH_TOKEN_KEY, tokens.refreshToken);
+    }
+    if (tokens.refreshTokenKey) {
+      localStorage.setItem(this.REFRESH_TOKEN_ID_KEY, tokens.refreshTokenKey);
+    }
+  }
+
+  public getAccessToken(): string | null {
+    return localStorage.getItem(this.ACCESS_TOKEN_KEY);
+  }
+
+  public getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+  }
+
+  public getRefreshTokenKey(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_ID_KEY);
+  }
+
+  public clearTokens(): void {
+    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_ID_KEY);
+  }
+
+  public async logout(): Promise<void> {
+    this.clearTokens();
+    await this.apollo.client.resetStore(); // Clear Apollo Client cache
+  }
+
   // ==================== Google Authentication ====================
 
   /**
@@ -113,7 +152,9 @@ export class AuthService {
           if (!result.data?.signInWithGoogle) {
             throw new Error('Failed to sign in with Google');
           }
-          return result.data.signInWithGoogle;
+          const loginResponse = result.data.signInWithGoogle;
+          this._saveTokens(loginResponse);
+          return loginResponse;
         }),
         catchError(this.handleGraphQLError('Google sign-in failed')),
       );
@@ -133,7 +174,9 @@ export class AuthService {
           if (!result.data?.signupGoogleUser) {
             throw new Error('Failed to sign up with Google');
           }
-          return result.data.signupGoogleUser;
+          const loginResponse = result.data.signupGoogleUser;
+          this._saveTokens(loginResponse);
+          return loginResponse;
         }),
         catchError(this.handleGraphQLError('Google sign-up failed')),
       );
@@ -153,7 +196,9 @@ export class AuthService {
           if (!result.data?.continueWithGoogle) {
             throw new Error('Failed to continue with Google');
           }
-          return result.data.continueWithGoogle;
+          const loginResponse = result.data.continueWithGoogle;
+          this._saveTokens(loginResponse);
+          return loginResponse;
         }),
         catchError(this.handleGraphQLError('Continue with Google failed')),
       );
@@ -175,7 +220,9 @@ export class AuthService {
           if (!result.data?.loginWithToken) {
             throw new Error('Failed to login with token');
           }
-          return result.data.loginWithToken;
+          const loginResponse = result.data.loginWithToken;
+          this._saveTokens(loginResponse);
+          return loginResponse;
         }),
         catchError(this.handleGraphQLError('Token login failed')),
       );
@@ -195,7 +242,9 @@ export class AuthService {
           if (!result.data?.loginWithResetPasswordToken) {
             throw new Error('Failed to login with reset password token');
           }
-          return result.data.loginWithResetPasswordToken;
+          const loginResponse = result.data.loginWithResetPasswordToken;
+          this._saveTokens(loginResponse);
+          return loginResponse;
         }),
         catchError(
           this.handleGraphQLError('Reset password token login failed'),
@@ -217,7 +266,11 @@ export class AuthService {
           if (!result.data?.requestAccessToken) {
             throw new Error('Failed to request access token');
           }
-          return result.data.requestAccessToken;
+          const accessTokenResponse = result.data.requestAccessToken;
+          if (accessTokenResponse.accessToken) {
+            localStorage.setItem(this.ACCESS_TOKEN_KEY, accessTokenResponse.accessToken);
+          }
+          return accessTokenResponse;
         }),
         catchError(this.handleGraphQLError('Access token request failed')),
       );
@@ -238,7 +291,9 @@ export class AuthService {
           if (!result.data?.loginWithPassword) {
             throw new Error('Failed to login with password');
           }
-          return result.data.loginWithPassword;
+          const loginResponse = result.data.loginWithPassword;
+          this._saveTokens(loginResponse);
+          return loginResponse;
         }),
         catchError(this.handleGraphQLError('Login failed')),
       );
@@ -347,7 +402,9 @@ export class AuthService {
           if (!result.data?.validateOtp) {
             throw new Error('Failed to validate OTP');
           }
-          return result.data.validateOtp;
+          const loginResponse = result.data.validateOtp;
+          this._saveTokens(loginResponse);
+          return loginResponse;
         }),
         catchError(this.handleGraphQLError('OTP validation failed')),
       );
@@ -393,7 +450,9 @@ export class AuthService {
           if (!result.data?.changePasswordUsingResetToken) {
             throw new Error('Failed to change password using reset token');
           }
-          return result.data.changePasswordUsingResetToken;
+          const loginResponse = result.data.changePasswordUsingResetToken;
+          this._saveTokens(loginResponse);
+          return loginResponse;
         }),
         catchError(this.handleGraphQLError('Password reset failed')),
       );
