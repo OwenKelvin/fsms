@@ -38,6 +38,30 @@ const config: CodegenConfig = {
         },
       },
     },
+    'libs/shared/data-access/auth/src/generated/graphql.ts': {
+      documents: `libs/shared/data-access/auth/src/lib/**/*.gql`,
+      plugins: ['typescript-operations', 'typescript-document-nodes'],
+      preset: 'near-operation-file',
+      presetConfig: {
+        extension: '.generated.ts',
+        baseTypesPath: '~@fsms/data-access/core',
+      },
+      config: {
+        gqlImport: '@apollo/client#gql',
+        addExplicitOverride: true,
+        typesPrefix: 'I',
+        skipTypename: true,
+        scalars: {
+          DateTime: 'string',
+          URL: 'string',
+          UUID: 'string',
+          PositiveInt: 'number',
+          PositiveFloat: 'number',
+          EmailAddress: 'string',
+          PhoneNumber: 'string',
+        },
+      },
+    },
   },
 };
 

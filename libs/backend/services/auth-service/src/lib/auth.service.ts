@@ -340,7 +340,7 @@ export class AuthService {
    */
   async setupTwoFactorAuth(userId: string): Promise<TwoFactorSetup> {
     validateUUID(userId, 'userId');
-    
+
     const user = await this.userService.findById(userId);
     if (!user) {
       throw new BadRequestException('User not found');
@@ -376,7 +376,7 @@ export class AuthService {
    */
   async enableTwoFactorAuth(userId: string, token: string): Promise<boolean> {
     validateUUID(userId, 'userId');
-    
+
     const user = await this.userService.findById(userId);
     if (!user || !user.twoFactorSecret) {
       throw new BadRequestException('Two-factor authentication not set up');
@@ -404,7 +404,7 @@ export class AuthService {
    */
   async disableTwoFactorAuth(userId: string, token: string): Promise<boolean> {
     validateUUID(userId, 'userId');
-    
+
     const user = await this.userService.findById(userId);
     if (!user || !user.twoFactorEnabled) {
       throw new BadRequestException('Two-factor authentication not enabled');
@@ -416,8 +416,8 @@ export class AuthService {
     }
 
     user.twoFactorEnabled = false;
-    user.twoFactorSecret = null;
-    user.twoFactorBackupCodes = null;
+    user.twoFactorSecret = undefined;
+    user.twoFactorBackupCodes = undefined;
     await user.save();
 
     return true;
@@ -497,7 +497,7 @@ export class AuthService {
     token: string,
   ): Promise<string[]> {
     validateUUID(userId, 'userId');
-    
+
     const user = await this.userService.findById(userId);
     if (!user || !user.twoFactorEnabled) {
       throw new BadRequestException('Two-factor authentication not enabled');

@@ -1,0 +1,193 @@
+mutation SignInWithGoogle($token: String!) {
+  signInWithGoogle(token: $token) {
+    accessToken
+    refreshToken
+    refreshTokenKey
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation SignupGoogleUser($token: String!) {
+  signupGoogleUser(token: $token) {
+    accessToken
+    refreshToken
+    refreshTokenKey
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation ContinueWithGoogle($token: String!) {
+  continueWithGoogle(token: $token) {
+    accessToken
+    refreshToken
+    refreshTokenKey
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation LoginWithToken($token: String!) {
+  loginWithToken(token: $token) {
+    accessToken
+    refreshToken
+    refreshTokenKey
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation LoginWithResetPasswordToken($token: String!) {
+  loginWithResetPasswordToken(token: $token) {
+    accessToken
+    refreshToken
+    refreshTokenKey
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation RequestAccessToken($refreshToken: String!) {
+  requestAccessToken(refreshToken: $refreshToken) {
+    accessToken
+  }
+}
+
+mutation LoginWithPassword($email: String!, $password: String!) {
+  loginWithPassword(email: $email, password: $password) {
+    accessToken
+    refreshToken
+    refreshTokenKey
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation SendPasswordResetLinkEmail($email: String!) {
+  sendPasswordResetLinkEmail(email: $email) {
+    success
+    message
+  }
+}
+
+mutation SendVerificationLinkEmail {
+  sendVerificationLinkEmail {
+    success
+    message
+  }
+}
+
+mutation VerifyEmail($token: String!) {
+  verifyEmail(token: $token) {
+    success
+    message
+  }
+}
+
+mutation SendPasswordResetOtpEmail($email: String!) {
+  sendPasswordResetOtpEmail(email: $email) {
+    success
+    message
+  }
+}
+
+mutation ValidateOtp($identifier: String!, $token: String!) {
+  validateOtp(identifier: $identifier, token: $token) {
+    accessToken
+    refreshToken
+    refreshTokenKey
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation ChangePassword(
+  $oldPassword: String
+  $password: String!
+  $passwordConfirmation: String!
+) {
+  changePassword(
+    oldPassword: $oldPassword
+    password: $password
+    passwordConfirmation: $passwordConfirmation
+  ) {
+    success
+    message
+  }
+}
+
+mutation ChangePasswordUsingResetToken(
+  $token: String!
+  $password: String!
+  $passwordConfirmation: String!
+) {
+  changePasswordUsingResetToken(
+    token: $token
+    password: $password
+    passwordConfirmation: $passwordConfirmation
+  ) {
+    accessToken
+    refreshToken
+    refreshTokenKey
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+mutation ValidatePasswordResetToken($token: String) {
+  validatePasswordResetToken(token: $token) {
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+subscription RefreshedAccessToken($refreshToken: String!) {
+  refreshedAccessToken(refreshToken: $refreshToken) {
+    accessToken
+  }
+}
+
+subscription ResetPasswordNotification($notificationKey: String) {
+  resetPasswordNotification(notificationKey: $notificationKey) {
+    success
+    message
+  }
+}
+

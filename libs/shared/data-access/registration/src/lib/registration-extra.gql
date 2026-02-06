@@ -1,0 +1,204 @@
+# Registration Mutations
+
+mutation SubmitProfileInfo($input: ProfileInfoInput!, $registrationId: ID) {
+  submitProfileInfo(input: $input, registrationId: $registrationId) {
+    success
+    registrationId
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation SubmitInstitutionDetails($registrationId: ID!, $input: InstitutionDetailsInput!) {
+  submitInstitutionDetails(registrationId: $registrationId, input: $input) {
+    success
+    registrationId
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation UploadDocument($file: Upload!, $input: DocumentUploadInput!) {
+  uploadRegistrationDocument(file: $file, input: $input) {
+    success
+    documentId
+    fileUploadId
+    documentType
+    fileName
+    fileSize
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation SubmitAdminCredentials($registrationId: ID!, $input: AdminCredentialsInput!) {
+  submitAdminCredentials(registrationId: $registrationId, input: $input) {
+    success
+    registrationId
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation CompleteRegistration(
+  $registrationId: ID!
+  $profileInfo: ProfileInfoInput!
+  $institutionDetails: InstitutionDetailsInput!
+  $adminCredentials: AdminCredentialsInput!
+) {
+  completeRegistration(
+    registrationId: $registrationId
+    profileInfo: $profileInfo
+    institutionDetails: $institutionDetails
+    adminCredentials: $adminCredentials
+  ) {
+    success
+    institutionId
+    adminUserId
+    message
+    errors {
+      field
+      message
+    }
+  }
+}
+
+# Registration Queries
+
+query GetRegistrationStatus($registrationId: ID!) {
+  getRegistrationStatus(registrationId: $registrationId) {
+    id
+    status
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    createdAt
+    updatedAt
+    completedAt
+    institutionId
+    adminUserId
+  }
+}
+
+query GetRegistrationDetails($registrationId: ID!) {
+  getRegistrationDetails(registrationId: $registrationId) {
+    id
+    status
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    createdAt
+    updatedAt
+    completedAt
+    institutionId
+    adminUserId
+    institution {
+      id
+      legalName
+      institutionType
+      accreditationNumber
+      streetAddress
+      city
+      stateProvince
+      zipPostalCode
+      officialWebsite
+    }
+    adminUser {
+      id
+      firstName
+      lastName
+      email
+    }
+    statusHistory {
+      id
+      previousStatus
+      newStatus
+      changedAt
+      changedBy
+      notes
+    }
+  }
+}
+
+query GetRegistrations($filter: RegistrationFilterInput) {
+  getRegistrations(filter: $filter) {
+    id
+    status
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    createdAt
+    updatedAt
+    completedAt
+    institutionId
+    adminUserId
+    institution {
+      id
+      legalName
+      institutionType
+    }
+    adminUser {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+query GetRegistrationsRequiringReview {
+  getRegistrationsRequiringReview {
+    id
+    status
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    createdAt
+    updatedAt
+    completedAt
+    institutionId
+    adminUserId
+    institution {
+      id
+      legalName
+      institutionType
+    }
+    adminUser {
+      id
+      firstName
+      lastName
+      email
+    }
+    statusHistory {
+      id
+      previousStatus
+      newStatus
+      changedAt
+      changedBy
+      notes
+    }
+  }
+}
+
+query GetInstitutionTypes {
+  institutionTypes {
+    description
+    key
+  }
+}
