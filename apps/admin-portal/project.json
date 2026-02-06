@@ -1,31 +1,41 @@
 {
-  "name": "website",
+  "name": "admin-portal",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "apps/website/src",
+  "sourceRoot": "apps/admin-portal/src",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/website",
-        "browser": "apps/website/src/main.ts",
-        "tsConfig": "apps/website/tsconfig.app.json",
+        "outputPath": "dist/apps/admin-portal",
+        "browser": "apps/admin-portal/src/main.ts",
+        "tsConfig": "apps/admin-portal/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/website/public"
+            "input": "apps/admin-portal/public"
+          },
+          {
+            "glob": "{logo.svg,auth-background.svg}",
+            "input": "libs/shared/ui/core/src/lib/images",
+            "output": "images"
           }
         ],
         "styles": [
           {
             "input": "libs/shared/ui/core/src/lib/styles.scss"
           },
-          "apps/website/src/styles.scss"
-        ]
+          "apps/admin-portal/src/styles.scss"
+        ],
+        "server": "apps/admin-portal/src/main.server.ts",
+        "ssr": {
+          "entry": "apps/admin-portal/src/server.ts"
+        },
+        "outputMode": "server"
       },
       "configurations": {
         "production": {
@@ -56,10 +66,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "website:build:production"
+          "buildTarget": "admin-portal:build:production"
         },
         "development": {
-          "buildTarget": "website:build:development"
+          "buildTarget": "admin-portal:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -75,8 +85,8 @@
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "website:build",
-        "staticFilePath": "dist/apps/website/browser",
+        "buildTarget": "admin-portal:build",
+        "staticFilePath": "dist/apps/admin-portal/browser",
         "spa": true
       }
     }

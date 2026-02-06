@@ -1,0 +1,87 @@
+<div class="flex min-h-screen">
+  <!-- Left side (optional, for design) -->
+  <div class="p-20 hidden bg-primary lg:flex lg:flex-1 xl:flex-2 items-end bg-[url('/images/auth-background.svg')] bg-cover bg-center bg-no-repeat">
+    <!-- Could add some illustration or marketing content here -->
+    <h1 class="text-4xl font-bold text-primary-foreground">Furaha school Management System</h1>
+  </div>
+
+  <!-- Right side (login form) -->
+  <div class="flex flex-1 items-center justify-center p-6 lg:p-12  bg-[url('/images/auth-background.svg')] bg-cover bg-center bg-no-repeat lg:bg-none ">
+    <div class="mx-auto w-full max-w-md space-y-8">
+      <div class="flex flex-col items-center">
+        <!-- Logo -->
+          <ng-icon
+            size="10rem"
+            hlmIcon
+            name="logo"
+          />
+        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+          Sign in to your account
+        </h2>
+      </div>
+
+      <form (submit)="handleSubmit($event)" class="space-y-6">
+        <!-- Email Input -->
+        <hlm-form-field>
+          <label hlmLabel for="email">Email address</label>
+          <hlm-form-control>
+            <hlm-prefix>
+              <ng-icon hlmIcon name="lucideMail" />
+            </hlm-prefix>
+            <input
+              hlmInput
+              id="email"
+              autocomplete="username"
+              type="email"
+              [formField]="loginForm.email"
+              placeholder="you@example.com"
+              class="w-full"
+            />
+          </hlm-form-control>
+          @for (error of loginForm.email().errors(); track error) {
+            <hlm-error>{{ error.message }}</hlm-error>
+          }
+        </hlm-form-field>
+
+        <!-- Password Input -->
+        <hlm-form-field>
+          <label hlmLabel for="password">Password</label>
+          <hlm-form-control>
+            <hlm-prefix>
+              <ng-icon hlmIcon name="lucideLock" />
+            </hlm-prefix>
+            <input
+              hlmInput
+              autocomplete="current-password"
+              id="password"
+              type="password"
+              [formField]="loginForm.password"
+              placeholder="••••••••"
+              class="w-full"
+            />
+          </hlm-form-control>
+          @for (error of loginForm.password().errors(); track error) {
+            <hlm-error>{{ error.message }}</hlm-error>
+          }
+        </hlm-form-field>
+
+        <div class="flex items-center justify-between">
+          <div class="text-sm">
+            <a href="#" class="font-medium text-primary hover:text-primary-foreground">
+              Forgot your password?
+            </a>
+          </div>
+        </div>
+
+        <button hlmBtn type="submit" [disabled]="!loginForm().valid() || submitting()" class="w-full flex items-center gap-2">
+          @if (submitting()) {
+            Signing in...
+          } @else {
+            Sign in
+            <ng-icon hlmIcon name="lucideArrowRight" size="base" />
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
