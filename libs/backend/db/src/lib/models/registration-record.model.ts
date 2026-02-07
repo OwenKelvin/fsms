@@ -14,14 +14,14 @@ import { UserModel } from './user.model';
 import { RegistrationDocumentModel } from './registration-document.model';
 
 export enum RegistrationStatus {
-  PENDING = 'pending',
-  PROFILE_INFO_COLLECTED = 'profile_info_collected',
-  INSTITUTION_DETAILS_COLLECTED = 'institution_details_collected',
-  DOCUMENTS_UPLOADED = 'documents_uploaded',
-  ADMIN_CREDENTIALS_SET = 'admin_credentials_set',
-  UNDER_REVIEW = 'under_review',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
+  PENDING = 'PENDING',
+  PROFILE_INFO_COLLECTED = 'PROFILE_INFO_COLLECTED',
+  INSTITUTION_DETAILS_COLLECTED = 'INSTITUTION_DETAILS_COLLECTED',
+  DOCUMENTS_UPLOADED = 'DOCUMENTS_UPLOADED',
+  ADMIN_CREDENTIALS_SET = 'ADMIN_CREDENTIALS_SET',
+  UNDER_REVIEW = 'UNDER_REVIEW',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
 }
 
 @Table({
@@ -39,14 +39,14 @@ export class RegistrationRecordModel extends Model {
 
   @Column({
     type: DataType.ENUM(
-      'pending',
-      'profile_info_collected',
-      'institution_details_collected',
-      'documents_uploaded',
-      'admin_credentials_set',
-      'under_review',
-      'approved',
-      'rejected',
+      'PENDING',
+      'PROFILE_INFO_COLLECTED',
+      'INSTITUTION_DETAILS_COLLECTED',
+      'DOCUMENTS_UPLOADED',
+      'ADMIN_CREDENTIALS_SET',
+      'UNDER_REVIEW',
+      'APPROVED',
+      'REJECTED',
     ),
     allowNull: false,
     defaultValue: RegistrationStatus.PENDING,
@@ -139,14 +139,14 @@ export class RegistrationStatusHistoryModel extends Model {
 
   @Column({
     type: DataType.ENUM(
-      'pending',
-      'profile_info_collected',
-      'institution_details_collected',
-      'documents_uploaded',
-      'admin_credentials_set',
-      'under_review',
-      'approved',
-      'rejected',
+      'PENDING',
+      'PROFILE_INFO_COLLECTED',
+      'INSTITUTION_DETAILS_COLLECTED',
+      'DOCUMENTS_UPLOADED',
+      'ADMIN_CREDENTIALS_SET',
+      'UNDER_REVIEW',
+      'APPROVED',
+      'REJECTED',
     ),
     allowNull: true,
   })
@@ -154,14 +154,14 @@ export class RegistrationStatusHistoryModel extends Model {
 
   @Column({
     type: DataType.ENUM(
-      'pending',
-      'profile_info_collected',
-      'institution_details_collected',
-      'documents_uploaded',
-      'admin_credentials_set',
-      'under_review',
-      'approved',
-      'rejected',
+      'PENDING',
+      'PROFILE_INFO_COLLECTED',
+      'INSTITUTION_DETAILS_COLLECTED',
+      'DOCUMENTS_UPLOADED',
+      'ADMIN_CREDENTIALS_SET',
+      'UNDER_REVIEW',
+      'APPROVED',
+      'REJECTED',
     ),
     allowNull: false,
   })

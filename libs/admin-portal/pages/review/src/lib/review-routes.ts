@@ -14,7 +14,7 @@ export const ReviewRoutes: Routes = [
       ),
   },
   {
-    path: 'detail/:id',
+    path: 'detail/:registrationId',
     loadComponent: () =>
       import('./detail/registration-detail.component').then(
         (m) => m.RegistrationDetailComponent

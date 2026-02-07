@@ -1,9 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { DatePipe, JsonPipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { map, Observable, firstValueFrom } from 'rxjs';
-import { HlmCardImports } from '@fsms/ui/card';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
+import {
+  HlmCard,
+  HlmCardContent,
+  HlmCardDescription,
+  HlmCardHeader,
+  HlmCardTitle,
+} from '@fsms/ui/card';
 import { HlmButton } from '@fsms/ui/button';
 import { HlmSpinner } from '@fsms/ui/spinner';
 import { HlmBadge } from '@fsms/ui/badge';
@@ -17,13 +24,14 @@ import {
 import { HlmDialogService } from '@fsms/ui/dialog';
 import {
   RegistrationConfirmationDialogComponent,
-  type RegistrationConfirmationResult
+  type RegistrationConfirmationResult,
 } from '../shared/confirmation-dialog.component';
 import { HlmToaster } from '@fsms/ui/sonner';
 import { toast } from 'ngx-sonner';
 import {
   ApproveRegistration,
   GetRegistrationDetail,
+  IGetRegistrationDetailsQuery,
   RejectRegistration,
 } from '@fsms/data-access/registration';
 
@@ -104,8 +112,6 @@ interface RejectRegistrationMutationResult {
   selector: 'fsms-registration-detail',
   standalone: true,
   imports: [
-    CommonModule,
-    ...HlmCardImports,
     HlmButton,
     HlmSpinner,
     HlmBadge,
@@ -115,99 +121,69 @@ interface RejectRegistrationMutationResult {
     HlmEmptyHeader,
     HlmEmptyTitle,
     HlmToaster,
+    HlmCard,
+    HlmCardHeader,
+    HlmCardTitle,
+    HlmCardDescription,
+    HlmCardContent,
+    DatePipe,
+    DatePipe,
   ],
   templateUrl: './registration-detail.component.html',
   styleUrls: ['./registration-detail.component.scss'],
 })
-export class RegistrationDetailComponent implements OnInit {
-  private apollo = inject(Apollo);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private dialogService = inject(HlmDialogService);
+export class RegistrationDetailComponent {
+  protected readonly apollo = inject(Apollo);
+  protected readonly router = inject(Router);
+  protected readonly dialogService = inject(HlmDialogService);
+  readonly registrationId = input<string>();
 
-  registrationId!: string;
-  registration$!: Observable<RegistrationDetail | null>;
-  loading = true;
-  error: string | null = null;
-  isProcessing = false;
-
-  ngOnInit(): void {
-    this.registrationId = this.route.snapshot.paramMap.get('id') || '';
-
-    if (!this.registrationId) {
-      this.error = 'Invalid registration ID';
-      this.loading = false;
-      return;
-    }
-
-    this.loadRegistrationDetail();
-  }
-
-  private loadRegistrationDetail(): void {
-    this.loading = true;
-    this.error = null;
-
-    this.registration$ = this.apollo
-      .watchQuery<RegistrationDetailQueryResult>({
+  protected readonly registrationResource = rxResource({
+    params: () => ({ registrationId: this.registrationId() }),
+    stream: ({ params }) =>
+      this.apollo.watchQuery<IGetRegistrationDetailsQuery>({
         query: GetRegistrationDetail,
-        variables: { registrationId: this.registrationId },
+        variables: { registrationId: params.registrationId },
         fetchPolicy: 'network-only',
-      })
-      .valueChanges.pipe(
-        map((result) => {
-          this.loading = result.loading;
-          if (result.error) {
-            this.error = 'Failed to load registration details. Please try again.';
-            return null;
-          }
-          const data = result.data?.getRegistrationDetails;
-          if (!data) {
-            return null;
-          }
-          // Map to ensure all required fields are defined
-          return {
-            id: data.id || '',
-            status: data.status || '',
-            createdAt: data.createdAt || '',
-            updatedAt: data.updatedAt || '',
-            completedAt: data.completedAt || null,
-            institutionId: data.institutionId || '',
-            adminUserId: data.adminUserId || '',
-            profileInfoCompleted: data.profileInfoCompleted || false,
-            institutionDetailsCompleted: data.institutionDetailsCompleted || false,
-            documentsUploaded: data.documentsUploaded || false,
-            adminCredentialsCompleted: data.adminCredentialsCompleted || false,
-            institution: {
-              id: data.institution?.id || '',
-              legalName: data.institution?.legalName || '',
-              institutionType: data.institution?.institutionType || '',
-              accreditationNumber: data.institution?.accreditationNumber || null,
-              streetAddress: data.institution?.streetAddress || '',
-              city: data.institution?.city || '',
-              stateProvince: data.institution?.stateProvince || '',
-              zipPostalCode: data.institution?.zipPostalCode || '',
-              officialWebsite: data.institution?.officialWebsite || null,
-              active: data.institution?.active || false,
-            },
-            adminUser: {
-              id: data.adminUser?.id || '',
-              firstName: data.adminUser?.firstName || '',
-              lastName: data.adminUser?.lastName || '',
-              email: data.adminUser?.email || '',
-              jobTitle: data.adminUser?.jobTitle || null,
-            },
-            statusHistory: (data.statusHistory || []).map(entry => ({
-              id: entry?.id || '',
-              previousStatus: entry?.previousStatus || null,
-              newStatus: entry?.newStatus || '',
-              changedAt: entry?.changedAt || '',
-              changedBy: entry?.changedBy || null,
-              notes: entry?.notes || null,
-            })),
-          } as RegistrationDetail;
-        })
-      );
-  }
+      }).valueChanges,
+  });
+
+  protected readonly registration = computed(
+    () => this.registrationResource.value()?.data?.getRegistrationDetails,
+  );
+
+  protected readonly loading = computed(
+    () => this.registrationResource.value()?.loading ?? true,
+  );
+
+  protected readonly error = computed(
+    () => this.registrationResource.value()?.error,
+  );
+
+  // Signal for processing state during mutations
+  protected readonly isProcessing = signal(false);
+
+  // Computed signals for UI
+  protected readonly statusBadgeVariant = computed(() => {
+    const status = this.registration()?.status;
+    if (!status) return 'outline' as const;
+
+    switch (status) {
+      case 'APPROVED':
+        return 'default' as const;
+      case 'REJECTED':
+        return 'destructive' as const;
+      case 'UNDER_REVIEW':
+        return 'secondary' as const;
+      default:
+        return 'outline' as const;
+    }
+  });
+
+  protected readonly statusLabel = computed(() => {
+    const status = this.registration()?.status;
+    return status ? status.replace(/_/g, ' ') : '';
+  });
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -229,7 +205,9 @@ export class RegistrationDetailComponent implements OnInit {
     });
   }
 
-  getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
+  getStatusBadgeVariant(
+    status?: string,
+  ): 'default' | 'secondary' | 'destructive' | 'outline' {
     switch (status) {
       case 'APPROVED':
         return 'default';
@@ -242,8 +220,8 @@ export class RegistrationDetailComponent implements OnInit {
     }
   }
 
-  getStatusLabel(status: string): string {
-    return status.replace(/_/g, ' ');
+  getStatusLabel(status?: string): string {
+    return status?.replace(/_/g, ' ') ?? '';
   }
 
   onBack(): void {
@@ -251,22 +229,26 @@ export class RegistrationDetailComponent implements OnInit {
   }
 
   async onApprove(): Promise<void> {
-    // Get current registration data
-    const registration = await firstValueFrom(this.registration$);
+    const registration = this.registration();
     if (!registration) {
       toast.error('Unable to approve registration. Please try again.');
       return;
     }
 
     // Show confirmation dialog
-    const dialogRef = this.dialogService.open(RegistrationConfirmationDialogComponent, {
-      context: {
-        action: 'approve',
-        institutionName: registration.institution.legalName,
+    const dialogRef = this.dialogService.open(
+      RegistrationConfirmationDialogComponent,
+      {
+        context: {
+          action: 'approve',
+          institutionName: registration.institution?.legalName,
+        },
       },
-    });
+    );
 
-    const result = await firstValueFrom(dialogRef.closed$) as RegistrationConfirmationResult | undefined;
+    const result = (await firstValueFrom(dialogRef.closed$)) as
+      | RegistrationConfirmationResult
+      | undefined;
 
     // User cancelled
     if (!result || !result.confirmed) {
@@ -274,7 +256,7 @@ export class RegistrationDetailComponent implements OnInit {
     }
 
     // Disable buttons during mutation
-    this.isProcessing = true;
+    this.isProcessing.set(true);
 
     try {
       // Call APPROVE_REGISTRATION mutation
@@ -283,11 +265,11 @@ export class RegistrationDetailComponent implements OnInit {
           mutation: ApproveRegistration,
           variables: {
             input: {
-              registrationId: this.registrationId,
+              registrationId: this.registrationId(),
               notes: result.notes || undefined,
             },
           },
-        })
+        }),
       );
 
       const response = mutationResult.data?.approveRegistration;
@@ -303,34 +285,41 @@ export class RegistrationDetailComponent implements OnInit {
       } else {
         // Show error message
         toast.error(response?.error || 'Failed to approve registration');
-        this.isProcessing = false;
+        this.isProcessing.set(false);
       }
     } catch (error) {
       // Handle errors and keep user on page
       console.error('Error approving registration:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred while approving the registration';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'An error occurred while approving the registration';
       toast.error(errorMessage);
-      this.isProcessing = false;
+      this.isProcessing.set(false);
     }
   }
 
   async onReject(): Promise<void> {
-    // Get current registration data
-    const registration = await firstValueFrom(this.registration$);
+    const registration = this.registration();
     if (!registration) {
       toast.error('Unable to reject registration. Please try again.');
       return;
     }
 
     // Show confirmation dialog with reason field
-    const dialogRef = this.dialogService.open(RegistrationConfirmationDialogComponent, {
-      context: {
-        action: 'reject',
-        institutionName: registration.institution.legalName,
+    const dialogRef = this.dialogService.open(
+      RegistrationConfirmationDialogComponent,
+      {
+        context: {
+          action: 'reject',
+          institutionName: registration.institution?.legalName,
+        },
       },
-    });
+    );
 
-    const result = await firstValueFrom(dialogRef.closed$) as RegistrationConfirmationResult | undefined;
+    const result = (await firstValueFrom(dialogRef.closed$)) as
+      | RegistrationConfirmationResult
+      | undefined;
 
     // User cancelled or didn't provide reason
     if (!result || !result.confirmed) {
@@ -344,7 +333,7 @@ export class RegistrationDetailComponent implements OnInit {
     }
 
     // Disable buttons during mutation
-    this.isProcessing = true;
+    this.isProcessing.set(true);
 
     try {
       // Call REJECT_REGISTRATION mutation
@@ -353,11 +342,11 @@ export class RegistrationDetailComponent implements OnInit {
           mutation: RejectRegistration,
           variables: {
             input: {
-              registrationId: this.registrationId,
+              registrationId: this.registrationId(),
               reason: result.reason,
             },
           },
-        })
+        }),
       );
 
       const response = mutationResult.data?.rejectRegistration;
@@ -373,14 +362,17 @@ export class RegistrationDetailComponent implements OnInit {
       } else {
         // Show error message
         toast.error(response?.error || 'Failed to reject registration');
-        this.isProcessing = false;
+        this.isProcessing.set(false);
       }
     } catch (error) {
       // Handle errors and keep user on page
       console.error('Error rejecting registration:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred while rejecting the registration';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'An error occurred while rejecting the registration';
       toast.error(errorMessage);
-      this.isProcessing = false;
+      this.isProcessing.set(false);
     }
   }
 }

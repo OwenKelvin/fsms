@@ -20,7 +20,7 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       type: {
-        type: DataTypes.ENUM('purchase', 'exam', 'promotion'),
+        type: DataTypes.ENUM('PURCHASE', 'EXAM', 'PROMOTION'),
         allowNull: false,
       },
       amount: {

@@ -19,12 +19,14 @@ export const formatGraphqlError = (e: any, fieldTree: FieldTree<unknown>) => {
           validationErrors.push({
             fieldTree: (fieldTree as any)[field],
             kind: field,
-            message: message
-          },)
-
+            message: message,
+          });
         },
       );
     }
   });
-  return validationErrors
+
+  console.log(validationErrors);
+
+  return validationErrors;
 };

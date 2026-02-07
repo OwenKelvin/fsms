@@ -14,19 +14,19 @@ module.exports = {
       },
       documentType: {
         field: 'document_type',
-        type: DataTypes.ENUM('accreditation_certificate', 'operating_license'),
+        type: DataTypes.ENUM('ACCREDITATION_CERTIFICATE', 'OPERATING_LICENCE'),
         allowNull: false,
       },
       verificationStatus: {
         field: 'verification_status',
         type: DataTypes.ENUM(
-          'pending',
-          'approved',
-          'rejected',
-          'requires_resubmission',
+          'PENDING',
+          'APPROVED',
+          'REJECTED',
+          'REQUIRES_RESUBMISSION',
         ),
         allowNull: false,
-        defaultValue: 'pending',
+        defaultValue: 'PENDING',
       },
       verifiedAt: {
         field: 'verified_at',

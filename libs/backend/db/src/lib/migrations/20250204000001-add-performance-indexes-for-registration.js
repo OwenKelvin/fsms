@@ -4,7 +4,7 @@
 module.exports = {
   async up(queryInterface) {
     // Add composite index for registration status and date range queries
-    // This optimizes queries like: WHERE status = 'pending' AND created_at BETWEEN date1 AND date2
+    // This optimizes queries like: WHERE status = 'PENDING' AND created_at BETWEEN date1 AND date2
     await queryInterface.addIndex(
       'registration_records',
       ['status', 'created_at'],

@@ -16,7 +16,7 @@ module.exports = {
       },
       answerType: {
         field: 'answer_type',
-        type: DataTypes.ENUM('CheckBox', 'Radio', 'Input'),
+        type: DataTypes.ENUM('CHECKBOX', 'RADIO', 'INPUT'),
         allowNull: false,
       },
       autoMark: {

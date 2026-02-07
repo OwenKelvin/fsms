@@ -202,7 +202,6 @@ export class RegistrationQueryResolver {
     try {
       const registrations =
         await this.registrationService.getRegistrationsRequiringReview();
-
       // Transform to response DTOs
       const results = await Promise.all(
         registrations.map(async (registration) => {

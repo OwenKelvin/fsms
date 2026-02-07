@@ -23,7 +23,7 @@
         <div hlmEmptyContent>
           <div hlmEmptyHeader>
             <h3 hlmEmptyTitle>Error Loading Registrations</h3>
-            <p hlmEmptyDescription>{{ error }}</p>
+            <p hlmEmptyDescription>{{ error() }}</p>
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@
                 </td>
                 <td hlmTd>
                   @if (registration?.createdAt) {
-                    {{ formatDate(registration.createdAt) }}
+                    {{ registration.createdAt | date: 'medium' }}
                   }
 
                 </td>

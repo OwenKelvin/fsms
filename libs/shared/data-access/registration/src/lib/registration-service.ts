@@ -3,7 +3,8 @@ import { Apollo } from 'apollo-angular';
 import { catchError, from, map, Observable, throwError } from 'rxjs';
 
 import {
-  CompleteRegistration, GetInstitutionTypes,
+  CompleteRegistration,
+  GetInstitutionTypes,
   GetRegistrationDetails,
   GetRegistrationStatus,
   ICompleteRegistrationMutation,
@@ -17,7 +18,7 @@ import {
   SubmitAdminCredentials,
   SubmitInstitutionDetails,
   SubmitProfileInfo,
-  UploadDocument
+  UploadDocument,
 } from './registration.generated';
 import {
   IAdminCredentialsInput,
@@ -49,7 +50,7 @@ export class RegistrationService {
       query: GetInstitutionTypes,
       fetchPolicy: 'cache-first',
     });
-  }
+  };
 
   submitProfileInfo(
     input: IProfileInfoInput,

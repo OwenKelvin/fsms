@@ -223,12 +223,16 @@
       "@fsms/data-access/registration": [
         "libs/shared/data-access/registration/src/index.ts"
       ],
-      "@fsms/data-access/auth": [
-        "libs/shared/data-access/auth/src/index.ts"
-      ],
+      "@fsms/data-access/auth": ["libs/shared/data-access/auth/src/index.ts"],
       "@fsms/admin-portal-pages": ["libs/admin-portal/pages/src/index.ts"],
       "@fsms/admin-portal-pages/auth": [
         "libs/admin-portal/pages/auth/src/index.ts"
+      ],
+      "@fsms/admin-portal-pages/dashboard": [
+        "libs/admin-portal/pages/dashboard/src/index.ts"
+      ],
+      "@fsms/admin-portal-pages/review": [
+        "libs/admin-portal/pages/review/src/index.ts"
       ]
     }
   },

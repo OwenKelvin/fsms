@@ -35,7 +35,7 @@ module.exports = {
       },
       userRole: {
         field: 'user_role',
-        type: DataTypes.ENUM('Owner', 'Administrator', 'Examiner'),
+        type: DataTypes.ENUM('OWNER', 'ADMINISTRATOR', 'EXAMINER'),
         allowNull: false,
       },
       createdAt: {

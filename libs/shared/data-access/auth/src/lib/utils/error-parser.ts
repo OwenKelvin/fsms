@@ -1,15 +1,15 @@
 /**
  * Parses validation error messages and groups them by field name
- * 
+ *
  * @param errors - Array of error messages from the API
  * @returns Object with field names as keys and arrays of error messages as values
- * 
+ *
  * @example
  * Input: ["firstName must be a string", "First name is required", "email is invalid"]
  * Output: { firstName: ["firstName must be a string", "First name is required"], email: ["email is invalid"] }
  */
 export function parseValidationErrors(
-  errors: Array<{ field: string; message: string }> | string[]
+  errors: Array<{ field: string; message: string }> | string[],
 ): Record<string, string[]> {
   const errorMap: Record<string, string[]> = {};
 
@@ -38,9 +38,9 @@ export function parseValidationErrors(
     // - "firstName must be a string"
     // - "First name is required"
     // - "email is invalid"
-    
+
     const field = extractFieldName(errorMessage);
-    
+
     if (!errorMap[field]) {
       errorMap[field] = [];
     }
@@ -84,19 +84,19 @@ function extractFieldName(errorMessage: string): string {
     'first name': 'firstName',
     'last name': 'lastName',
     'job title': 'jobTitle',
-    'email': 'email',
+    email: 'email',
     'legal name': 'legalName',
     'institution type': 'institutionType',
     'accreditation number': 'accreditationNumber',
     'street address': 'streetAddress',
-    'city': 'city',
-    'state': 'stateProvince',
-    'province': 'stateProvince',
-    'zip': 'zipPostalCode',
+    city: 'city',
+    state: 'stateProvince',
+    province: 'stateProvince',
+    zip: 'zipPostalCode',
     'postal code': 'zipPostalCode',
     'official website': 'officialWebsite',
-    'username': 'username',
-    'password': 'password',
+    username: 'username',
+    password: 'password',
   };
 
   for (const pattern of fieldNamePatterns) {
@@ -117,7 +117,7 @@ function extractFieldName(errorMessage: string): string {
  * Formats error map for display
  */
 export function formatErrorsForDisplay(
-  errorMap: Record<string, string[]>
+  errorMap: Record<string, string[]>,
 ): string {
   return Object.entries(errorMap)
     .map(([field, messages]) => `${field}: ${messages.join(', ')}`)

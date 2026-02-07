@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ProfileInfoInputDto } from '../dto/profile-info-input.dto';
 import { InstitutionDetailsInputDto } from '../dto/institution-details-input.dto';
@@ -10,6 +10,7 @@ import { RejectRegistrationInputDto } from '../dto/reject-registration-input.dto
 import { ApproveRegistrationResponseDto } from '../dto/approve-registration-response.dto';
 import { RejectRegistrationResponseDto } from '../dto/reject-registration-response.dto';
 import { RegistrationDetailsResponseDto } from '../dto/registration-details-response.dto';
+import { RegistrationStatusResponseDto } from '../dto/registration-status-response.dto';
 import { CurrentUser } from '@fsms/backend/auth';
 import {
   CompleteRegistrationData,

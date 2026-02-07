@@ -9,4 +9,4 @@ export const apolloConfig = () => {
     link: httpLink.create({ uri: 'http://localhost:3000/graphql' }),
     cache: new InMemoryCache(),
   };
-}
+};

@@ -268,7 +268,10 @@ export class AuthService {
           }
           const accessTokenResponse = result.data.requestAccessToken;
           if (accessTokenResponse.accessToken) {
-            localStorage.setItem(this.ACCESS_TOKEN_KEY, accessTokenResponse.accessToken);
+            localStorage.setItem(
+              this.ACCESS_TOKEN_KEY,
+              accessTokenResponse.accessToken,
+            );
           }
           return accessTokenResponse;
         }),

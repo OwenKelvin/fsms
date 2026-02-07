@@ -26,7 +26,7 @@ import {
   GetRegistrationsRequiringReview,
   IGetRegistrationsRequiringReviewQuery,
 } from '@fsms/data-access/registration';
-import { JsonPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 type Registration =
   IGetRegistrationsRequiringReviewQuery['getRegistrationsRequiringReview'][number];
@@ -50,7 +50,7 @@ type Registration =
     HlmButton,
     HlmSpinner,
     HlmBadge,
-    JsonPipe,
+    DatePipe,
   ],
   templateUrl: './review-queue.component.html',
   styleUrls: ['./review-queue.component.scss'],
@@ -80,18 +80,8 @@ export class ReviewQueueComponent {
 
   onSelectRegistration(registrationId?: string): void {
     if (registrationId) {
-      this.router.navigate(['/review/detail', registrationId]);
+      this.router.navigate(['/dashboard/review/detail', registrationId]);
     }
-
-  }
-
-  formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
   }
 
   getDocumentStatus(registration: Registration): string {

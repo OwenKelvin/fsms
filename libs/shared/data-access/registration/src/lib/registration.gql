@@ -116,12 +116,14 @@ query GetRegistrationDetails($registrationId: ID!) {
       stateProvince
       zipPostalCode
       officialWebsite
+      active
     }
     adminUser {
       id
       firstName
       lastName
       email
+      jobTitle
     }
     statusHistory {
       id
@@ -179,6 +181,7 @@ query GetRegistrationsRequiringReview {
       stateProvince
       zipPostalCode
       officialWebsite
+      active
     }
     adminUser {
       id
