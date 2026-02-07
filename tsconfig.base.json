@@ -233,7 +233,9 @@
       ],
       "@fsms/admin-portal-pages/review": [
         "libs/admin-portal/pages/review/src/index.ts"
-      ]
+      ],
+      "@fsms/layout": ["libs/shared/layout/src/index.ts"],
+      "@fsms/layout/dashboard": ["libs/shared/layout/dashboard/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

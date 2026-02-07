@@ -26,7 +26,7 @@ import {
   GetRegistrationsRequiringReview,
   IGetRegistrationsRequiringReviewQuery,
 } from '@fsms/data-access/registration';
-import { DatePipe } from '@angular/common';
+import { DatePipe, JsonPipe } from '@angular/common';
 
 type Registration =
   IGetRegistrationsRequiringReviewQuery['getRegistrationsRequiringReview'][number];
@@ -51,6 +51,7 @@ type Registration =
     HlmSpinner,
     HlmBadge,
     DatePipe,
+    JsonPipe,
   ],
   templateUrl: './review-queue.component.html',
   styleUrls: ['./review-queue.component.scss'],
@@ -75,7 +76,7 @@ export class ReviewQueueComponent {
     () => this.getRegistrationsQueryResult()?.loading,
   );
   protected readonly error = computed(
-    () => this.getRegistrationsQueryResult()?.error,
+    () => this.getRegistrationsQueryResult()?.error?.message,
   );
 
   onSelectRegistration(registrationId?: string): void {
