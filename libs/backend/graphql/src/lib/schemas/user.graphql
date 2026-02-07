@@ -9,6 +9,7 @@ type UserModel {
   profilePhotoLink: String
   createdAt: String
   updatedAt: String
+  jobTitle: String
 }
 
 type PaginatedUser {

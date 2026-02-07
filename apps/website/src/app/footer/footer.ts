@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideGlobe, lucideMail, lucideShare2 } from '@ng-icons/lucide';
-import { NgOptimizedImage } from '@angular/common';
+import { HlmIcon } from '@fsms/ui/icon';
 
 interface FooterLink {
   label: string;
@@ -16,7 +16,7 @@ interface SocialLink {
 
 @Component({
   selector: 'app-footer',
-  imports: [NgIcon, NgOptimizedImage],
+  imports: [NgIcon, HlmIcon],
   providers: [provideIcons({ lucideShare2, lucideGlobe, lucideMail })],
   templateUrl: './footer.html',
   standalone: true,

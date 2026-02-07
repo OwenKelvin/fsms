@@ -67,7 +67,7 @@ export type IGetRegistrationsQuery = { getRegistrations: Array<{ id: string, sta
 export type IGetRegistrationsRequiringReviewQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type IGetRegistrationsRequiringReviewQuery = { getRegistrationsRequiringReview: Array<{ id: string, status: Types.IRegistrationStatus, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, createdAt: string, updatedAt: string, completedAt?: string | null, institutionId?: string | null, adminUserId?: string | null, institution?: { id: string, legalName?: string | null, institutionType?: Types.IInstitutionType | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string } | null, statusHistory: Array<{ id: string, previousStatus: Types.IRegistrationStatus, newStatus: Types.IRegistrationStatus, changedAt: string, changedBy?: string | null, notes?: string | null }> }> };
+export type IGetRegistrationsRequiringReviewQuery = { getRegistrationsRequiringReview: Array<{ id: string, status: Types.IRegistrationStatus, createdAt: string, updatedAt: string, institutionId?: string | null, adminUserId?: string | null, profileInfoCompleted: boolean, institutionDetailsCompleted: boolean, documentsUploaded: boolean, adminCredentialsCompleted: boolean, institution?: { id: string, legalName?: string | null, institutionType?: Types.IInstitutionType | null, accreditationNumber?: string | null, streetAddress?: string | null, city?: string | null, stateProvince?: string | null, zipPostalCode?: string | null, officialWebsite?: string | null } | null, adminUser?: { id: string, firstName: string, lastName: string, email: string, jobTitle?: string | null } | null }> };
 
 export type IGetInstitutionTypesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
@@ -242,34 +242,32 @@ export const GetRegistrationsRequiringReview = gql`
   getRegistrationsRequiringReview {
     id
     status
-    profileInfoCompleted
-    institutionDetailsCompleted
-    documentsUploaded
-    adminCredentialsCompleted
     createdAt
     updatedAt
-    completedAt
     institutionId
     adminUserId
     institution {
       id
       legalName
       institutionType
+      accreditationNumber
+      streetAddress
+      city
+      stateProvince
+      zipPostalCode
+      officialWebsite
     }
     adminUser {
       id
       firstName
       lastName
       email
+      jobTitle
     }
-    statusHistory {
-      id
-      previousStatus
-      newStatus
-      changedAt
-      changedBy
-      notes
-    }
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
   }
 }
     `;

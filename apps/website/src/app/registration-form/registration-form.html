@@ -13,10 +13,10 @@
   </div>
 </app-header>
 
-<div class="min-h-screen bg-gray-50 pt-15">
+<div class="min-h-screen pt-15 bg-[url('/images/auth-background.svg')] bg-cover bg-center bg-no-repeat" >
   <div class="flex gap-0 px-2 md:px-10 lg:px-20 mx-auto">
     <!-- Sidebar Stepper -->
-    <aside class="w-80 bg-white border-r border-gray-200 min-h-[calc(100vh-73px)] p-8">
+    <aside class="w-80 bg-background border-r dark:border-black/20 dark:border-white/20 min-h-[calc(100vh-73px)] p-8">
       <nav class="space-y-2">
         @for (step of steps(); track step.id; let i = $index) {
           <div
@@ -26,7 +26,7 @@
             [class.border-success/10]="step.completed && currentStep() !== i"
             [class.border-success]="step.completed && currentStep() === i"
             [class.bg-success/10]="step.completed && currentStep() === i"
-            [class.hover:bg-gray-50]="currentStep() !== i"
+            [class.hover:bg-primary/20]="currentStep() !== i"
             (click)="currentStep.set(i)">
 
             <!-- Icon/Check -->
@@ -36,7 +36,7 @@
             [class.text-success]="step.completed"
             [class.bg-primary]="currentStep() === i && !step.completed"
             [class.text-white]="currentStep() === i && !step.completed"
-            [class.bg-gray-100]="currentStep() !== i && !step.completed"
+            [class.dark:bg-white/20]="currentStep() !== i && !step.completed"
             [class.text-gray-400]="currentStep() !== i && !step.completed">
           @if (step.completed) {
             <ng-icon name="lucideCheck" size="20" />
@@ -107,7 +107,7 @@
   </div>
 
   <!-- Footer -->
-  <footer class="border-t border-gray-200 bg-white px-4 md:px-10 lg:px-20 py-6">
+  <footer class="border-t border-gray-200 bg-background px-4 md:px-10 lg:px-20 py-6">
     <div class="flex items-center justify-between text-xs text-muted-foreground max-w-7xl mx-auto">
       <p>
         © 2024 EduReg Global. All rights reserved.

@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-
 export const ReviewRoutes: Routes = [
   {
     path: '',
@@ -9,6 +8,16 @@ export const ReviewRoutes: Routes = [
   },
   {
     path: 'queue',
-    loadComponent: () => import('./queue/queue').then((m) => m.Dashboard),
+    loadComponent: () =>
+      import('./queue/review-queue.component').then(
+        (m) => m.ReviewQueueComponent
+      ),
+  },
+  {
+    path: 'detail/:id',
+    loadComponent: () =>
+      import('./detail/registration-detail.component').then(
+        (m) => m.RegistrationDetailComponent
+      ),
   },
 ];

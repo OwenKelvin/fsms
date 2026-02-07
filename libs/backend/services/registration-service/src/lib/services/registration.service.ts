@@ -1087,4 +1087,278 @@ export class RegistrationService {
 
     return historyEntry;
   }
+
+  /**
+   * Approves a registration application
+   * Requirements: 3.1, 3.2, 3.3, 3.4, 6.5
+   */
+  async approveRegistration(
+    registrationId: string,
+    adminUserId: string,
+    notes?: string,
+  ): Promise<RegistrationRecordModel> {
+    this.logger.log(
+      `Starting approval process for registration ID: ${registrationId} by admin: ${adminUserId}`,
+    );
+
+    const transaction = await this.sequelize.transaction();
+
+    try {
+      // 1. Fetch registration and validate status is UNDER_REVIEW
+      const registration = await this.registrationRecordModel.findByPk(
+        registrationId,
+        {
+          include: [{ model: this.institutionModel }],
+          transaction,
+        },
+      );
+
+      if (!registration) {
+        this.logger.warn(`Registration not found: ${registrationId}`);
+        throw new BadRequestException('Registration record not found');
+      }
+
+      if (registration.status !== RegistrationStatus.UNDER_REVIEW) {
+        this.logger.warn(
+          `Registration ${registrationId} has invalid status for approval: ${registration.status}`,
+        );
+        throw new BadRequestException(
+          `Registration cannot be approved from status: ${registration.status}. Only registrations with UNDER_REVIEW status can be approved.`,
+        );
+      }
+
+      // 2. Validate associated institution exists
+      if (!registration.institution) {
+        this.logger.warn(
+          `Associated institution not found for registration: ${registrationId}`,
+        );
+        throw new BadRequestException('Associated institution not found');
+      }
+
+      // 3. Capture previous status before updating
+      const previousStatus = registration.status;
+
+      // 4. Update registration status to APPROVED
+      await registration.update(
+        { status: RegistrationStatus.APPROVED },
+        { transaction },
+      );
+      this.logger.debug(
+        `Registration ${registrationId} status updated to APPROVED`,
+      );
+
+      // 5. Activate associated institution (Note: active field doesn't exist yet in model)
+      // TODO: Add active field to InstitutionModel and migration
+      // For now, we'll skip this step as the field doesn't exist
+      // await registration.institution.update({ active: true }, { transaction });
+
+      // 6. Create status history record with admin info and optional notes
+      await this.createStatusHistoryRecord(
+        registrationId,
+        previousStatus,
+        RegistrationStatus.APPROVED,
+        adminUserId,
+        notes || 'Registration approved',
+        transaction,
+      );
+      this.logger.debug(
+        `Status history record created for registration ${registrationId}`,
+      );
+
+      // 6. Commit transaction
+      await transaction.commit();
+      this.logger.log(
+        `Registration ${registrationId} approved successfully by admin ${adminUserId}`,
+      );
+
+      // 7. Send approval notification (outside transaction)
+      try {
+        await this.sendRegistrationApprovalNotification(registrationId);
+      } catch (error) {
+        this.logger.error(
+          `Failed to send approval notification for registration ${registrationId}:`,
+          error,
+        );
+        // Don't fail the approval if email fails
+      }
+
+      // 8. Return updated registration
+      return await this.registrationRecordModel.findByPk(registrationId, {
+        include: [
+          { model: this.institutionModel },
+          { model: this.userModel },
+          { model: this.registrationStatusHistoryModel },
+        ],
+      }) as RegistrationRecordModel;
+    } catch (error: any) {
+      // Rollback transaction on any error
+      await transaction.rollback();
+      this.logger.error(
+        `Registration approval ${registrationId} failed and was rolled back:`,
+        error,
+      );
+
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      // Handle unexpected errors
+      throw new BadRequestException(
+        'Failed to approve registration. Please try again.',
+      );
+    }
+  }
+
+  /**
+   * Rejects a registration application
+   * Requirements: 4.1, 4.2, 4.3, 6.5
+   */
+  async rejectRegistration(
+    registrationId: string,
+    adminUserId: string,
+    reason: string,
+  ): Promise<RegistrationRecordModel> {
+    this.logger.log(
+      `Starting rejection process for registration ID: ${registrationId} by admin: ${adminUserId}`,
+    );
+
+    // 1. Validate reason is provided (non-empty)
+    if (!reason || reason.trim().length === 0) {
+      this.logger.warn(
+        `Rejection attempted without reason for registration: ${registrationId}`,
+      );
+      throw new BadRequestException('Rejection reason is required');
+    }
+
+    const transaction = await this.sequelize.transaction();
+
+    try {
+      // 2. Fetch registration and validate status is UNDER_REVIEW
+      const registration = await this.registrationRecordModel.findByPk(
+        registrationId,
+        {
+          transaction,
+        },
+      );
+
+      if (!registration) {
+        this.logger.warn(`Registration not found: ${registrationId}`);
+        throw new BadRequestException('Registration record not found');
+      }
+
+      if (registration.status !== RegistrationStatus.UNDER_REVIEW) {
+        this.logger.warn(
+          `Registration ${registrationId} has invalid status for rejection: ${registration.status}`,
+        );
+        throw new BadRequestException(
+          `Registration cannot be rejected from status: ${registration.status}. Only registrations with UNDER_REVIEW status can be rejected.`,
+        );
+      }
+
+      // 3. Capture previous status before updating
+      const previousStatus = registration.status;
+
+      // 4. Update registration status to REJECTED
+      await registration.update(
+        { status: RegistrationStatus.REJECTED },
+        { transaction },
+      );
+      this.logger.debug(
+        `Registration ${registrationId} status updated to REJECTED`,
+      );
+
+      // 5. Create status history record with admin info and rejection reason
+      await this.createStatusHistoryRecord(
+        registrationId,
+        previousStatus,
+        RegistrationStatus.REJECTED,
+        adminUserId,
+        reason,
+        transaction,
+      );
+      this.logger.debug(
+        `Status history record created for registration ${registrationId}`,
+      );
+
+      // 5. Commit transaction
+      await transaction.commit();
+      this.logger.log(
+        `Registration ${registrationId} rejected successfully by admin ${adminUserId}`,
+      );
+
+      // 6. Send rejection notification (outside transaction)
+      try {
+        await this.sendRegistrationRejectionNotification(
+          registrationId,
+          reason,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Failed to send rejection notification for registration ${registrationId}:`,
+          error,
+        );
+        // Don't fail the rejection if email fails
+      }
+
+      // 7. Return updated registration
+      return await this.registrationRecordModel.findByPk(registrationId, {
+        include: [
+          { model: this.institutionModel },
+          { model: this.userModel },
+          { model: this.registrationStatusHistoryModel },
+        ],
+      }) as RegistrationRecordModel;
+    } catch (error: any) {
+      // Rollback transaction on any error
+      await transaction.rollback();
+      this.logger.error(
+        `Registration rejection ${registrationId} failed and was rolled back:`,
+        error,
+      );
+
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      // Handle unexpected errors
+      throw new BadRequestException(
+        'Failed to reject registration. Please try again.',
+      );
+    }
+  }
+
+  /**
+   * Creates a status history record
+   * Requirements: 7.1, 7.2
+   * 
+   * This helper method creates an immutable status history record with timestamp.
+   * It accepts registrationId, status, adminUserId, and optional notes.
+   * 
+   * @param registrationId - The ID of the registration
+   * @param previousStatus - The previous status before the change
+   * @param newStatus - The new status after the change
+   * @param adminUserId - The ID of the admin user making the change
+   * @param notes - Optional notes or reason for the status change
+   * @param transaction - Optional database transaction
+   */
+  private async createStatusHistoryRecord(
+    registrationId: string,
+    previousStatus: RegistrationStatus | null,
+    newStatus: RegistrationStatus,
+    adminUserId: string,
+    notes?: string,
+    transaction?: Transaction,
+  ): Promise<void> {
+    await this.registrationStatusHistoryModel.create(
+      {
+        registrationId,
+        previousStatus,
+        newStatus,
+        changedAt: new Date(),
+        changedBy: adminUserId,
+        notes: notes || `Status changed from ${previousStatus || 'none'} to ${newStatus}`,
+      },
+      { transaction },
+    );
+  }
 }

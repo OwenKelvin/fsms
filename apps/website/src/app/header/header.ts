@@ -10,7 +10,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { BrnNavigationMenuImports } from '@spartan-ng/brain/navigation-menu';
 import { HlmNavigationMenuImports } from '@fsms/ui/navigation-menu';
@@ -26,7 +26,6 @@ import { lucideMenu, lucideX } from '@ng-icons/lucide';
     HlmNavigationMenuImports,
     BrnNavigationMenuImports,
     HlmButton,
-    NgOptimizedImage,
     NgIcon,
     HlmIcon,
   ],

@@ -98,6 +98,16 @@ input RegistrationFilterInput {
   endDate: String
 }
 
+input ApproveRegistrationInput {
+  registrationId: ID!
+  notes: String
+}
+
+input RejectRegistrationInput {
+  registrationId: ID!
+  reason: String!
+}
+
 # Response Types
 
 type ValidationError {
@@ -129,6 +139,20 @@ type DocumentUploadResponse {
   fileSize: Int
   message: String
   errors: [ValidationError!]
+}
+
+type ApproveRegistrationResponse {
+  success: Boolean!
+  registration: RegistrationDetailsResponse
+  message: String
+  error: String
+}
+
+type RejectRegistrationResponse {
+  success: Boolean!
+  registration: RegistrationDetailsResponse
+  message: String
+  error: String
 }
 
 # Queries
@@ -181,4 +205,14 @@ extend type Mutation {
     file: Upload!
     input: DocumentUploadInput!
   ): DocumentUploadResponse!
+
+  # Approve a registration application
+  approveRegistration(
+    input: ApproveRegistrationInput!
+  ): ApproveRegistrationResponse!
+
+  # Reject a registration application
+  rejectRegistration(
+    input: RejectRegistrationInput!
+  ): RejectRegistrationResponse!
 }

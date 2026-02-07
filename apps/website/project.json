@@ -18,6 +18,11 @@
           {
             "glob": "**/*",
             "input": "apps/website/public"
+          },
+          {
+            "glob": "{logo.svg,auth-background.svg}",
+            "input": "libs/shared/ui/core/src/lib/images",
+            "output": "images"
           }
         ],
         "styles": [

@@ -165,34 +165,32 @@ query GetRegistrationsRequiringReview {
   getRegistrationsRequiringReview {
     id
     status
-    profileInfoCompleted
-    institutionDetailsCompleted
-    documentsUploaded
-    adminCredentialsCompleted
     createdAt
     updatedAt
-    completedAt
     institutionId
     adminUserId
     institution {
       id
       legalName
       institutionType
+      accreditationNumber
+      streetAddress
+      city
+      stateProvince
+      zipPostalCode
+      officialWebsite
     }
     adminUser {
       id
       firstName
       lastName
       email
+      jobTitle
     }
-    statusHistory {
-      id
-      previousStatus
-      newStatus
-      changedAt
-      changedBy
-      notes
-    }
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
   }
 }
 

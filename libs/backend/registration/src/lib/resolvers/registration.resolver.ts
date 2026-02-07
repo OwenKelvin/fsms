@@ -5,6 +5,12 @@ import { InstitutionDetailsInputDto } from '../dto/institution-details-input.dto
 import { AdminCredentialsInputDto } from '../dto/admin-credentials-input.dto';
 import { RegistrationStepResponseDto } from '../dto/registration-step-response.dto';
 import { CompleteRegistrationResponseDto } from '../dto/complete-registration-response.dto';
+import { ApproveRegistrationInputDto } from '../dto/approve-registration-input.dto';
+import { RejectRegistrationInputDto } from '../dto/reject-registration-input.dto';
+import { ApproveRegistrationResponseDto } from '../dto/approve-registration-response.dto';
+import { RejectRegistrationResponseDto } from '../dto/reject-registration-response.dto';
+import { RegistrationDetailsResponseDto } from '../dto/registration-details-response.dto';
+import { CurrentUser } from '@fsms/backend/auth';
 import {
   CompleteRegistrationData,
   RegistrationService,
@@ -290,6 +296,171 @@ export class RegistrationResolver {
       return {
         success: false,
         errors: [{ field: 'general', message: 'An unexpected error occurred' }],
+      };
+    }
+  }
+
+  /**
+   * Approves a registration application
+   * Requirements: 6.1, 6.2, 6.3, 6.4
+   */
+  @Mutation(() => ApproveRegistrationResponseDto)
+  async approveRegistration(
+    @Args('input', new ValidationPipe()) input: ApproveRegistrationInputDto,
+    @CurrentUser() user?: { id: string },
+  ): Promise<ApproveRegistrationResponseDto> {
+    try {
+      // Extract admin user ID from context
+      if (!user || !user.id) {
+        return {
+          success: false,
+          error: 'Authentication required. Admin user not found in context.',
+        };
+      }
+
+      // Validate input parameters
+      if (!input.registrationId) {
+        return {
+          success: false,
+          error: 'Registration ID is required',
+        };
+      }
+
+      // Call service method
+      const registration = await this.registrationService.approveRegistration(
+        input.registrationId,
+        user.id,
+        input.notes,
+      );
+
+      // Map to response DTO
+      const registrationDto: RegistrationDetailsResponseDto = {
+        id: registration.id,
+        status: registration.status,
+        profileInfoCompleted: registration.profileInfoCompleted,
+        institutionDetailsCompleted: registration.institutionDetailsCompleted,
+        documentsUploaded: registration.documentsUploaded,
+        adminCredentialsCompleted: registration.adminCredentialsCompleted,
+        createdAt: registration.createdAt,
+        updatedAt: registration.updatedAt,
+        completedAt: registration.completedAt,
+        institutionId: registration.institutionId,
+        adminUserId: registration.adminUserId,
+      };
+
+      return {
+        success: true,
+        registration: registrationDto,
+        message: 'Registration approved successfully',
+      };
+    } catch (error: any) {
+      // Handle BadRequestException from service
+      if (error instanceof BadRequestException) {
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+
+      // Handle validation errors from class-validator
+      if (error.response?.message && Array.isArray(error.response.message)) {
+        return {
+          success: false,
+          error: error.response.message.join(', '),
+        };
+      }
+
+      // Handle unexpected errors
+      console.error('Error approving registration:', error);
+      return {
+        success: false,
+        error: 'An unexpected error occurred while approving the registration',
+      };
+    }
+  }
+
+  /**
+   * Rejects a registration application
+   * Requirements: 6.1, 6.2, 6.3, 6.4
+   */
+  @Mutation(() => RejectRegistrationResponseDto)
+  async rejectRegistration(
+    @Args('input', new ValidationPipe()) input: RejectRegistrationInputDto,
+    @CurrentUser() user?: { id: string },
+  ): Promise<RejectRegistrationResponseDto> {
+    try {
+      // Extract admin user ID from context
+      if (!user || !user.id) {
+        return {
+          success: false,
+          error: 'Authentication required. Admin user not found in context.',
+        };
+      }
+
+      // Validate input parameters
+      if (!input.registrationId) {
+        return {
+          success: false,
+          error: 'Registration ID is required',
+        };
+      }
+
+      if (!input.reason || input.reason.trim() === '') {
+        return {
+          success: false,
+          error: 'Rejection reason is required',
+        };
+      }
+
+      // Call service method
+      const registration = await this.registrationService.rejectRegistration(
+        input.registrationId,
+        user.id,
+        input.reason,
+      );
+
+      // Map to response DTO
+      const registrationDto: RegistrationDetailsResponseDto = {
+        id: registration.id,
+        status: registration.status,
+        profileInfoCompleted: registration.profileInfoCompleted,
+        institutionDetailsCompleted: registration.institutionDetailsCompleted,
+        documentsUploaded: registration.documentsUploaded,
+        adminCredentialsCompleted: registration.adminCredentialsCompleted,
+        createdAt: registration.createdAt,
+        updatedAt: registration.updatedAt,
+        completedAt: registration.completedAt,
+        institutionId: registration.institutionId,
+        adminUserId: registration.adminUserId,
+      };
+
+      return {
+        success: true,
+        registration: registrationDto,
+        message: 'Registration rejected successfully',
+      };
+    } catch (error: any) {
+      // Handle BadRequestException from service
+      if (error instanceof BadRequestException) {
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+
+      // Handle validation errors from class-validator
+      if (error.response?.message && Array.isArray(error.response.message)) {
+        return {
+          success: false,
+          error: error.response.message.join(', '),
+        };
+      }
+
+      // Handle unexpected errors
+      console.error('Error rejecting registration:', error);
+      return {
+        success: false,
+        error: 'An unexpected error occurred while rejecting the registration',
       };
     }
   }

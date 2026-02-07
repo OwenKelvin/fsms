@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ReviewRoutes } from '@fsms/admin-portal-pages/review';
 
 
 export const DashboardRoutes: Routes = [
@@ -8,7 +9,7 @@ export const DashboardRoutes: Routes = [
     children: [
       {
         path: 'review',
-        loadChildren: () => import('@fsms/admin-portal-pages/review'),
+        children: ReviewRoutes
       }
     ]
   }

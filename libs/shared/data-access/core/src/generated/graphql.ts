@@ -54,6 +54,19 @@ export type IAdminCredentialsInput = {
   username: Scalars['String']['input'];
 };
 
+export type IApproveRegistrationInput = {
+  notes?: InputMaybe<Scalars['String']['input']>;
+  registrationId: Scalars['ID']['input'];
+};
+
+export type IApproveRegistrationResponse = {
+  __typename?: 'ApproveRegistrationResponse';
+  error?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  registration?: Maybe<IRegistrationDetailsResponse>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type IAssignExamineeToExamPaperInput = {
   examPaperId: Scalars['ID']['input'];
   examineeGroups: Array<ISelectCategory>;
@@ -516,6 +529,7 @@ export type IInstitutionDetailsInput = {
 export type IInstitutionModel = {
   __typename?: 'InstitutionModel';
   accreditationNumber?: Maybe<Scalars['String']['output']>;
+  active?: Maybe<Scalars['Boolean']['output']>;
   city?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
@@ -565,6 +579,7 @@ export type ILoginResponse = {
 
 export type IMutation = {
   __typename?: 'Mutation';
+  approveRegistration: IApproveRegistrationResponse;
   assignExamineeGroupToExamPaper?: Maybe<ISuccessResponse>;
   assignRoleToUser?: Maybe<ISuccessResponse>;
   changePassword?: Maybe<ISuccessResponse>;
@@ -627,6 +642,7 @@ export type IMutation = {
   markNotificationAsRead?: Maybe<INotificationMarkedAsReadResponse>;
   publishExamPaper?: Maybe<ICreateExamPaperSuccessResponse>;
   register?: Maybe<ILoginResponse>;
+  rejectRegistration: IRejectRegistrationResponse;
   requestAccessToken?: Maybe<IAccessToken>;
   requestMpesaStk?: Maybe<ISuccessResponse>;
   sendPasswordResetLinkEmail?: Maybe<ISuccessResponse>;
@@ -667,6 +683,11 @@ export type IMutation = {
   validateOtp?: Maybe<ILoginResponse>;
   validatePasswordResetToken?: Maybe<IValidatePasswordResetTokenResponse>;
   verifyEmail?: Maybe<ISuccessResponse>;
+};
+
+
+export type IMutationApproveRegistrationArgs = {
+  input: IApproveRegistrationInput;
 };
 
 
@@ -991,6 +1012,11 @@ export type IMutationRegisterArgs = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   passwordConfirmation: Scalars['String']['input'];
+};
+
+
+export type IMutationRejectRegistrationArgs = {
+  input: IRejectRegistrationInput;
 };
 
 
@@ -1951,6 +1977,19 @@ export type IRegistrationStepResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type IRejectRegistrationInput = {
+  reason: Scalars['String']['input'];
+  registrationId: Scalars['ID']['input'];
+};
+
+export type IRejectRegistrationResponse = {
+  __typename?: 'RejectRegistrationResponse';
+  error?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  registration?: Maybe<IRegistrationDetailsResponse>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type IRoleModel = {
   __typename?: 'RoleModel';
   id: Scalars['ID']['output'];
@@ -2168,6 +2207,7 @@ export type IUserModel = {
   emailVerifiedAt?: Maybe<Scalars['String']['output']>;
   firstName: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  jobTitle?: Maybe<Scalars['String']['output']>;
   lastName: Scalars['String']['output'];
   phone?: Maybe<Scalars['String']['output']>;
   phoneVerifiedAt?: Maybe<Scalars['String']['output']>;

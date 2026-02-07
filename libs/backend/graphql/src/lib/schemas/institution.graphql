@@ -30,6 +30,7 @@ type InstitutionModel {
   officialWebsite: String
   createdAt: String
   updatedAt: String
+  active: Boolean
 }
 
 input CreateInstitutionInput {

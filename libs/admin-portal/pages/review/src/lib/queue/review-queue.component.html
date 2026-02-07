@@ -1,0 +1,106 @@
+<div class="container mx-auto py-8 px-4">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold">Registration Review Queue</h1>
+    <p class="text-muted-foreground mt-2">
+      Review and approve pending school registration applications
+    </p>
+  </div>
+
+  <!-- Loading State -->
+
+  @if (loading()) {
+    <div class="flex justify-center items-center py-12">
+      <hlm-spinner />
+      <span class="ml-3 text-muted-foreground">Loading registrations...</span>
+    </div>
+  }
+
+
+  <!-- Error State -->
+  @if (error() && !loading()) {
+    <div class="py-8">
+      <div hlmEmpty>
+        <div hlmEmptyContent>
+          <div hlmEmptyHeader>
+            <h3 hlmEmptyTitle>Error Loading Registrations</h3>
+            <p hlmEmptyDescription>{{ error }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!loading() && !error()) {
+    @if (registrations().length === 0) {
+      <div class="py-8">
+        <div hlmEmpty>
+          <div hlmEmptyContent>
+            <div hlmEmptyHeader>
+              <h3 hlmEmptyTitle>No Pending Registrations</h3>
+              <p hlmEmptyDescription>
+                There are no registration applications awaiting review at this time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Table with Registrations -->
+    @if (registrations().length! > 0) {
+
+      <div hlmTableContainer>
+        <table hlmTable>
+          <thead hlmTHead>
+          <tr hlmTr>
+            <th hlmTh>Institution Name</th>
+            <th hlmTh>Submission Date</th>
+            <th hlmTh>Document Status</th>
+            <th hlmTh>Actions</th>
+          </tr>
+          </thead>
+          <tbody hlmTBody>
+            @for (registration of registrations(); track registration.id) {
+              <tr
+                hlmTr
+                class="cursor-pointer hover:bg-muted/50"
+                (click)="onSelectRegistration(registration?.id)"
+              >
+                <td hlmTd class="font-medium">
+                  {{ registration?.institution?.legalName }}
+                </td>
+                <td hlmTd>
+                  @if (registration?.createdAt) {
+                    {{ formatDate(registration.createdAt) }}
+                  }
+
+                </td>
+                <td hlmTd>
+                <span
+                  hlmBadge
+                  [variant]="
+                    registration.documentsUploaded ? 'default' : 'secondary'
+                  "
+                >
+                  {{ getDocumentStatus(registration) }}
+                </span>
+                </td>
+                <td hlmTd>
+                  <button
+                    hlmBtn
+                    variant="outline"
+                    size="sm"
+                    (click)="onSelectRegistration(registration.id); $event.stopPropagation()"
+                  >
+                    Review
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</div>

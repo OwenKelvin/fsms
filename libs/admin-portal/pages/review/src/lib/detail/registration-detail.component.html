@@ -1,0 +1,293 @@
+<div class="container mx-auto py-8 px-4 max-w-6xl">
+  <hlm-toaster />
+  <!-- Header -->
+  <div class="mb-6">
+    <button hlmBtn variant="ghost" size="sm" (click)="onBack()" class="mb-4">
+      <span class="mr-2">←</span> Back to Queue
+    </button>
+    <h1 class="text-3xl font-bold">Registration Details</h1>
+    <p class="text-muted-foreground mt-2">
+      Review complete registration information and take action
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <hlm-spinner />
+    <span class="ml-3 text-muted-foreground">Loading registration details...</span>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="py-8">
+    <div hlmEmpty>
+      <div hlmEmptyContent>
+        <div hlmEmptyHeader>
+          <h3 hlmEmptyTitle>Error Loading Registration</h3>
+          <p hlmEmptyDescription>{{ error }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registration Detail Content -->
+  <ng-container *ngIf="!loading && !error && (registration$ | async) as registration">
+    <div class="space-y-6">
+      <!-- Status and Actions -->
+      <div hlmCard class="group/card">
+        <div hlmCardHeader>
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 hlmCardTitle>Registration Status</h3>
+              <p hlmCardDescription>Current status and available actions</p>
+            </div>
+            <span hlmBadge [variant]="getStatusBadgeVariant(registration.status)">
+              {{ getStatusLabel(registration.status) }}
+            </span>
+          </div>
+        </div>
+        <div hlmCardContent>
+          <div class="flex gap-3">
+            <button
+              hlmBtn
+              variant="default"
+              (click)="onApprove()"
+              [disabled]="registration.status !== 'UNDER_REVIEW' || isProcessing"
+            >
+              @if (isProcessing) {
+                <hlm-spinner class="mr-2" />
+              }
+              Approve Registration
+            </button>
+            <button
+              hlmBtn
+              variant="destructive"
+              (click)="onReject()"
+              [disabled]="registration.status !== 'UNDER_REVIEW' || isProcessing"
+            >
+              @if (isProcessing) {
+                <hlm-spinner class="mr-2" />
+              }
+              Reject Registration
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Information -->
+      <div hlmCard class="group/card">
+        <div hlmCardHeader>
+          <h3 hlmCardTitle>Profile Information</h3>
+          <p hlmCardDescription>Administrator contact details</p>
+        </div>
+        <div hlmCardContent>
+          <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Name</dt>
+              <dd class="mt-1 text-sm">
+                {{ registration.adminUser.firstName }} {{ registration.adminUser.lastName }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Email</dt>
+              <dd class="mt-1 text-sm">{{ registration.adminUser.email }}</dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Job Title</dt>
+              <dd class="mt-1 text-sm">
+                {{ registration.adminUser.jobTitle || 'Not provided' }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Submission Date</dt>
+              <dd class="mt-1 text-sm">{{ formatShortDate(registration.createdAt) }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- Institution Details -->
+      <div hlmCard class="group/card">
+        <div hlmCardHeader>
+          <h3 hlmCardTitle>Institution Details</h3>
+          <p hlmCardDescription>School information and location</p>
+        </div>
+        <div hlmCardContent>
+          <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Legal Name</dt>
+              <dd class="mt-1 text-sm font-medium">{{ registration.institution.legalName }}</dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Institution Type</dt>
+              <dd class="mt-1 text-sm">{{ registration.institution.institutionType }}</dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Accreditation Number</dt>
+              <dd class="mt-1 text-sm">
+                {{ registration.institution.accreditationNumber || 'Not provided' }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Official Website</dt>
+              <dd class="mt-1 text-sm">
+                <a
+                  *ngIf="registration.institution.officialWebsite"
+                  [href]="registration.institution.officialWebsite"
+                  target="_blank"
+                  class="text-primary hover:underline"
+                >
+                  {{ registration.institution.officialWebsite }}
+                </a>
+                <span *ngIf="!registration.institution.officialWebsite">Not provided</span>
+              </dd>
+            </div>
+            <div class="md:col-span-2">
+              <dt class="text-sm font-medium text-muted-foreground">Address</dt>
+              <dd class="mt-1 text-sm">
+                {{ registration.institution.streetAddress }}<br />
+                {{ registration.institution.city }}, {{ registration.institution.stateProvince }}
+                {{ registration.institution.zipPostalCode }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-muted-foreground">Institution Active</dt>
+              <dd class="mt-1 text-sm">
+                <span hlmBadge [variant]="registration.institution.active ? 'default' : 'secondary'">
+                  {{ registration.institution.active ? 'Active' : 'Inactive' }}
+                </span>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- Uploaded Documents -->
+      <div hlmCard class="group/card">
+        <div hlmCardHeader>
+          <h3 hlmCardTitle>Uploaded Documents</h3>
+          <p hlmCardDescription>Required registration documents</p>
+        </div>
+        <div hlmCardContent>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 border rounded-md">
+              <div>
+                <p class="text-sm font-medium">Accreditation Certificate</p>
+                <p class="text-xs text-muted-foreground">Required document for verification</p>
+              </div>
+              <div>
+                <span
+                  hlmBadge
+                  [variant]="registration.documentsUploaded ? 'default' : 'destructive'"
+                >
+                  {{ registration.documentsUploaded ? 'Uploaded' : 'Missing' }}
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-3 border rounded-md">
+              <div>
+                <p class="text-sm font-medium">Operating License</p>
+                <p class="text-xs text-muted-foreground">Required document for verification</p>
+              </div>
+              <div>
+                <span
+                  hlmBadge
+                  [variant]="registration.documentsUploaded ? 'default' : 'destructive'"
+                >
+                  {{ registration.documentsUploaded ? 'Uploaded' : 'Missing' }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mt-4">
+            Note: Document preview and download functionality will be implemented in a future update.
+          </p>
+        </div>
+      </div>
+
+      <!-- Status History -->
+      <div hlmCard class="group/card">
+        <div hlmCardHeader>
+          <h3 hlmCardTitle>Status History</h3>
+          <p hlmCardDescription>Timeline of all status changes</p>
+        </div>
+        <div hlmCardContent>
+          <div *ngIf="registration.statusHistory.length === 0" class="text-sm text-muted-foreground">
+            No status changes recorded yet.
+          </div>
+          <div *ngIf="registration.statusHistory.length > 0" class="space-y-4">
+            <div
+              *ngFor="let entry of registration.statusHistory"
+              class="border-l-2 border-muted pl-4 pb-4 last:pb-0"
+            >
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <span hlmBadge [variant]="getStatusBadgeVariant(entry.newStatus)" size="sm">
+                      {{ getStatusLabel(entry.newStatus) }}
+                    </span>
+                    <span class="text-xs text-muted-foreground">
+                      {{ formatDate(entry.changedAt) }}
+                    </span>
+                  </div>
+                  <p *ngIf="entry.previousStatus" class="text-xs text-muted-foreground mt-1">
+                    Changed from: {{ getStatusLabel(entry.previousStatus) }}
+                  </p>
+                  <p *ngIf="entry.changedBy" class="text-xs text-muted-foreground mt-1">
+                    Changed by: {{ entry.changedBy }}
+                  </p>
+                  <p *ngIf="entry.notes" class="text-sm mt-2">
+                    {{ entry.notes }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completion Status -->
+      <div hlmCard class="group/card">
+        <div hlmCardHeader>
+          <h3 hlmCardTitle>Registration Progress</h3>
+          <p hlmCardDescription>Completion status of registration steps</p>
+        </div>
+        <div hlmCardContent>
+          <dl class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <dt class="text-xs text-muted-foreground">Profile Info</dt>
+              <dd class="mt-1">
+                <span hlmBadge [variant]="registration.profileInfoCompleted ? 'default' : 'secondary'">
+                  {{ registration.profileInfoCompleted ? 'Complete' : 'Incomplete' }}
+                </span>
+              </dd>
+            </div>
+            <div class="text-center">
+              <dt class="text-xs text-muted-foreground">Institution Details</dt>
+              <dd class="mt-1">
+                <span hlmBadge [variant]="registration.institutionDetailsCompleted ? 'default' : 'secondary'">
+                  {{ registration.institutionDetailsCompleted ? 'Complete' : 'Incomplete' }}
+                </span>
+              </dd>
+            </div>
+            <div class="text-center">
+              <dt class="text-xs text-muted-foreground">Documents</dt>
+              <dd class="mt-1">
+                <span hlmBadge [variant]="registration.documentsUploaded ? 'default' : 'secondary'">
+                  {{ registration.documentsUploaded ? 'Complete' : 'Incomplete' }}
+                </span>
+              </dd>
+            </div>
+            <div class="text-center">
+              <dt class="text-xs text-muted-foreground">Admin Credentials</dt>
+              <dd class="mt-1">
+                <span hlmBadge [variant]="registration.adminCredentialsCompleted ? 'default' : 'secondary'">
+                  {{ registration.adminCredentialsCompleted ? 'Complete' : 'Incomplete' }}
+                </span>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

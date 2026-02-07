@@ -1,0 +1,98 @@
+# Registration Review Queries and Mutations
+
+# Query to get all registrations requiring review (UNDER_REVIEW status)
+
+
+# Query to get detailed registration information including documents and status history
+query GetRegistrationDetail($registrationId: ID!) {
+  getRegistrationDetails(registrationId: $registrationId) {
+    id
+    status
+    createdAt
+    updatedAt
+    completedAt
+    institutionId
+    adminUserId
+    profileInfoCompleted
+    institutionDetailsCompleted
+    documentsUploaded
+    adminCredentialsCompleted
+    institution {
+      id
+      legalName
+      institutionType
+      accreditationNumber
+      streetAddress
+      city
+      stateProvince
+      zipPostalCode
+      officialWebsite
+      active
+    }
+    adminUser {
+      id
+      firstName
+      lastName
+      email
+      jobTitle
+    }
+    statusHistory {
+      id
+      previousStatus
+      newStatus
+      changedAt
+      changedBy
+      notes
+    }
+  }
+}
+
+# Mutation to approve a registration application
+mutation ApproveRegistration($input: ApproveRegistrationInput!) {
+  approveRegistration(input: $input) {
+    success
+    message
+    error
+    registration {
+      id
+      status
+      updatedAt
+      completedAt
+      institution {
+        id
+        legalName
+        active
+      }
+      statusHistory {
+        id
+        previousStatus
+        newStatus
+        changedAt
+        changedBy
+        notes
+      }
+    }
+  }
+}
+
+# Mutation to reject a registration application
+mutation RejectRegistration($input: RejectRegistrationInput!) {
+  rejectRegistration(input: $input) {
+    success
+    message
+    error
+    registration {
+      id
+      status
+      updatedAt
+      statusHistory {
+        id
+        previousStatus
+        newStatus
+        changedAt
+        changedBy
+        notes
+      }
+    }
+  }
+}

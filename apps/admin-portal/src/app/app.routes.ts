@@ -14,6 +14,10 @@ export const appRoutes: Route[] = [
         path: 'dashboard',
         loadChildren: () => import('@fsms/admin-portal-pages/dashboard'),
       },
+      {
+        path: 'review',
+        loadChildren: () => import('@fsms/admin-portal-pages/review'),
+      },
     ],
   },
 ];
